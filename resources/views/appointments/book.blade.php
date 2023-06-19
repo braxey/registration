@@ -1,7 +1,7 @@
 <html>
 <head>
-<script src="{{ asset('node_modules/sweetalert2/dist/sweetalert2.all.js') }}"></script>
-<script src="{{ asset('node_modules/jquery/dist/jquery.min.js') }}"></script>
+    <script src="{{asset('js/dist/jquery.min.js')}}"></script>
+    <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
 </head>
 <body>
 
@@ -23,7 +23,7 @@
             <script>
                 var slotsLeft = "<?php echo $availableSlots;?>"
             </script>
-            <script src="{{ asset('appointments/book.js') }}"></script>
+            <script type="module" src="{{ asset('js/appt/book.js') }}"></script>
         </div>
     </div>
 </div>
