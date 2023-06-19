@@ -27,5 +27,8 @@
                 @endforeach
             </tbody>
         </table>
+        @if ($user && $user->admin)
+            <a href="{{ route('appointment.create_form') }}">Create</a>
+        @endif
     </div>
 </x-app-layout>
