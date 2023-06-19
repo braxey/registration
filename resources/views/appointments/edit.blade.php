@@ -35,12 +35,12 @@
 
             <div class="form-group">
                 <label for="total_slots">Total Slots</label>
-                <input type="number" name="total_slots" id="total_slots" class="form-control" value="{{ $appointment->total_slots }}">
+                <input type="text" name="total_slots" id="total_slots" class="form-control" value="{{ $appointment->total_slots }}">
             </div>
 
             <button type="submit" class="btn btn-primary">Update</button>
         </form>
-        <script type="module" src="{{ asset('js/appt/edit.js') }}"></script>
+        <script type="module" src="{{ asset('js/appt/createedit.js') }}"></script>
     </div>
     </body>
     </html>
