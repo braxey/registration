@@ -6,7 +6,6 @@ $(function(){
     form.addEventListener('submit', function(e){
         let slotsRequested = $('#slots').val().toString()
         e.preventDefault()
-
         // make sure the input is an integer and the number isn't unreasonably big
         if (!isInteger(slotsRequested) || slotsRequested.length >= MAX_CHAR_PER_STRING){
             errorPop('Error', 'Must enter a valid number.')

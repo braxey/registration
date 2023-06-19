@@ -22,7 +22,7 @@
             </form>
             <script>
                 var slotsLeft = "<?php echo $availableSlots;?>"
-                var userSlots = "<?php echo $userSlots;?>"
+                var userSlots = parseInt("<?php echo $userSlots;?>")
             </script>
             <script type="module" src="{{ asset('js/appt/book.js') }}"></script>
         </div>
