@@ -120,4 +120,41 @@ class AppointmentController extends Controller
         $appointment->update($validatedData);
         return redirect()->route('appointment.edit', $appointment->id);
     }
+
+    public function create(Request $request)
+    {        
+        // Retrieve the authenticated user
+        $user = Auth::user();
+
+        // See if the user is an admin
+        if($user->admin == 0) abort(404);
+
+        // If it's a GET request, return the create view
+        if ($request->isMethod('get')) {
+            return view('appointments.create');
+        }
+        
+        // Validate the form data
+        $validatedData = $request->validate([
+            'title' => 'required',
+            'description' => 'required',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date',
+            'total_slots' => 'required|integer|min:1',
+        ]);
+
+        // Create a new appointment instance
+        $appointment = new Appointment();
+        $appointment->title = $validatedData['title'];
+        $appointment->description = $validatedData['description'];
+        $appointment->start_time = $validatedData['start_time'];
+        $appointment->end_time = $validatedData['end_time'];
+        $appointment->total_slots = $validatedData['total_slots'];
+        
+        // Save the appointment to the database
+        $appointment->save();
+
+        // Redirect to a different page, such as the appointment index page
+        return redirect()->route('appointments.index');
+    }
 }

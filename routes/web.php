@@ -47,6 +47,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/appointments/{id}', [AppointmentController::class, 'update'])->name('appointment.update');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/appointments/create', [AppointmentController::class, 'create'])->name('appointment.create_form');
+    Route::post('/appointments/create', [AppointmentController::class, 'create'])->name('appointment.create');
+});
     
 
 
