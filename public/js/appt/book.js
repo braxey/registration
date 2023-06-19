@@ -22,7 +22,7 @@ $(function(){
 
         // make sure there are enough slots for the appt to allot
         if (slotsRequested > slotsLeft) {
-            errorPop('Error', 'The requested number of slots is not available.')
+            errorPop('Error', 'The requested number of slots is not available. There are only '+slotsLeft+' open slots for this time.')
             return false
         // make sure the user doesn't surpass the max allowed per user
         }else if(slotsRequested+userSlots > MAX_SLOTS_PER_USER){
