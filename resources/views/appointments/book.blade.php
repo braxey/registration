@@ -15,10 +15,10 @@
 
                 <div class="form-group">
                     <label for="slots">Slots</label>
-                    <input type="number" name="slots" id="slots" class="form-control" min="1">
+                    <input type="text" name="slots" id="slots">
                 </div>
 
-                <button type="submit" class="btn btn-primary" id="form-button">Book</button>
+                <button type="submit" class="btn btn-primary">Book</button>
             </form>
             <script>
                 var slotsLeft = "<?php echo $availableSlots;?>"
