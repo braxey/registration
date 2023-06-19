@@ -1,3 +1,5 @@
+<x-app-layout>
+
 <html>
 <head>
     <script src="{{asset('js/dist/jquery.min.js')}}"></script>
@@ -30,10 +32,4 @@
 </div>
 </body>
 </html>
-
-
-
-
-
-
-
+</x-app-layout>
