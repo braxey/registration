@@ -9,7 +9,6 @@ $(function(){
 
         // make sure the input is an integer and the number isn't unreasonably big
         if (!isInteger(slotsRequested) || slotsRequested.length >= MAX_CHAR_PER_STRING){
-            console.log('hello')
             errorPop('Error', 'Must enter a valid number.')
             return false
         }
