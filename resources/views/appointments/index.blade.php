@@ -18,7 +18,9 @@
                         <td>{{ $appointment->start_time }}</td>
                         <td>{{ $appointment->total_slots - $appointment->slots_taken }}</td>
                         <td>
+                            @if ($user && $user->admin)
                             <a href="{{ route('appointment.edit', $appointment->id) }}">Edit</a>
+                            @endif
                             <a href="{{ route('appointment.book', $appointment->id) }}">Book</a>
                         </td>
                     </tr>
