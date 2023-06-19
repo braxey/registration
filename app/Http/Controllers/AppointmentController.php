@@ -15,7 +15,8 @@ class AppointmentController extends Controller
         // Add your logic here to retrieve appointments or perform any other operations
         // Render the appointments view
         $appointments = Appointment::all();
-        return view('appointments.index', ['appointments' => $appointments]);
+        $user = Auth::user();
+        return view('appointments.index', ['appointments' => $appointments, 'user' => $user]);
     }
 
     public function book(Request $request, $id)
