@@ -2,22 +2,22 @@
     <div>
         <h1>Appointments</h1>
 
-        <table class="table-auto">
+        <table class="border border-slate-300">
             <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Start Time</th>
-                    <th>Slots Open</th>
-                    <th>Actions</th>
+                <tr class="border border-slate-300">
+                    <th class="border border-slate-300">Title</th>
+                    <th class="border border-slate-300">Start Time</th>
+                    <th class="border border-slate-300">Slots Open</th>
+                    <th class="border border-slate-300">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($appointments as $appointment)
-                    <tr>
-                        <td>{{ $appointment->title }}</td>
-                        <td>{{ $appointment->start_time }}</td>
-                        <td>{{ $appointment->total_slots - $appointment->slots_taken }}</td>
-                        <td>
+                    <tr class="border border-slate-300">
+                        <td class="border border-slate-300">{{ $appointment->title }}</td>
+                        <td class="border border-slate-300">{{ $appointment->start_time }}</td>
+                        <td class="border border-slate-300">{{ $appointment->total_slots - $appointment->slots_taken }}</td>
+                        <td class="border border-slate-300">
                             @if ($user && $user->admin)
                             <a href="{{ route('appointment.edit', $appointment->id) }}">Edit</a>
                             @endif

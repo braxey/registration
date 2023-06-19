@@ -94,21 +94,30 @@ class AppointmentController extends Controller
     }
 
 
-    public function edit(Appointment $appointment)
+    public function edit(Appointment $appointment, $id)
     {
         $user = Auth::user();
+        $appointment = Appointment::findOrFail($id);
         if($user->admin){
-            return view('appointments.edit');
+            return view('appointments.edit', ['appointment' => $appointment]);
         }else{
             return redirect()->route('appointments.index');
         }        
     }
 
-    public function update(Request $request, Appointment $appointment)
+    public function update(Request $request, $id)
     {
-        // Retrieve the authenticated user
-        
+        $appointment = Appointment::findOrFail($id);
 
-        // Update appointment logic
+        $validatedData = $request->validate([
+            'title' => 'required',
+            'description' => 'nullable',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
+            'total_slots' => 'required|integer|min:1',
+        ]);
+
+        $appointment->update($validatedData);
+        return redirect()->route('appointment.edit', $appointment->id);
     }
 }
