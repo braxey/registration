@@ -16,7 +16,7 @@
                     <tr class="border border-slate-300">
                         <td class="border border-slate-300">{{ $appointment->title }}</td>
                         <td class="border border-slate-300">{{ $appointment->start_time }}</td>
-                        <td class="border border-slate-300">{{ $appointment->total_slots - $appointment->slots_taken }}</td>
+                        <td class="border border-slate-300">{{ max($appointment->total_slots - $appointment->slots_taken, 0) }}</td>
                         <td class="border border-slate-300">
                             @if ($user && $user->admin)
                             <a href="{{ route('appointment.edit', $appointment->id) }}">Edit</a>

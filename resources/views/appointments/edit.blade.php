@@ -1,8 +1,15 @@
 <x-app-layout>
+    <html>
+    <head>
+        <script src="{{asset('js/dist/jquery.min.js')}}"></script>
+        <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
+    </head>
+    <body>
+
     <div class="container">
         <h1>Edit Appointment</h1>
 
-        <form action="{{ route('appointment.update', $appointment->id) }}" method="POST">
+        <form action="{{ route('appointment.update', $appointment->id) }}" method="POST" id="update-form">
             @csrf
             @method('PUT')
 
@@ -33,5 +40,8 @@
 
             <button type="submit" class="btn btn-primary">Update</button>
         </form>
+        <script type="module" src="{{ asset('js/appt/edit.js') }}"></script>
     </div>
+    </body>
+    </html>
 </x-app-layout>
