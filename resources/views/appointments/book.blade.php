@@ -10,18 +10,19 @@
         <div class="col-md-8 offset-md-2">
             <h2>Book Slots</h2>
 
-            <form action="{{ route('appointment.book', $appointment) }}" method="POST">
+            <form action="{{ route('appointment.book', $appointment) }}" method="POST" id="book-form">
                 @csrf
 
                 <div class="form-group">
                     <label for="slots">Slots</label>
-                    <input type="number" name="slots" id="slots" class="form-control" min="1" max="{{ $availableSlots }}">
+                    <input type="number" name="slots" id="slots" class="form-control" min="1">
                 </div>
 
                 <button type="submit" class="btn btn-primary" id="form-button">Book</button>
             </form>
             <script>
                 var slotsLeft = "<?php echo $availableSlots;?>"
+                var userSlots = "<?php echo $userSlots;?>"
             </script>
             <script type="module" src="{{ asset('js/appt/book.js') }}"></script>
         </div>

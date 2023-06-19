@@ -6,6 +6,8 @@ use App\Models\Appointment;
 use App\Models\AppointmentUser;
 use Illuminate\Support\Facades\Auth;
 
+const MAX_SLOTS_PER_USER = 6;
+
 class AppointmentController extends Controller
 {
     public function index()
@@ -23,10 +25,16 @@ class AppointmentController extends Controller
         
         // Get the available slots
         $availableSlots = $appointment->total_slots - $appointment->slots_taken;
+
+        // Retrieve the authenticated user
+        $user = Auth::user();
+
+        // Get current user slot number
+        $userSlots = $user->slots_booked;
         
         // If it's a GET request, return the book view
         if ($request->isMethod('get')) {
-            return view('appointments.book', compact('appointment', 'availableSlots'));
+            return view('appointments.book', compact('appointment', 'availableSlots', 'userSlots'));
         }
         
         // If it's a POST request, handle the form submission
@@ -39,9 +47,9 @@ class AppointmentController extends Controller
         $slotsRequested = $validatedData['slots'];
         
         // Check if the requested slots are available
-        if ($slotsRequested > $availableSlots) {
+        if ($slotsRequested > $availableSlots || $slotsRequested == 0 || $slotsRequested+$userSlots > MAX_SLOTS_PER_USER) {
             // Redirect back with an error message
-            return redirect()->back()->with('error', 'The requested number of slots is not available.');
+            return redirect()->back();
         }
         
         // Perform the booking logic
@@ -50,8 +58,6 @@ class AppointmentController extends Controller
         $appointment->save();
 
         // Create a pivot table entry or perform any other necessary actions
-        // Retrieve the authenticated user
-        $user = Auth::user();
         $user->slots_booked += $slotsRequested;
         $user->save();
 
