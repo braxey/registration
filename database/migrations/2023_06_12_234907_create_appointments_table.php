@@ -16,6 +16,7 @@ return new class extends Migration
             $table->dateTime('end_time');
             $table->unsignedInteger('total_slots');
             $table->unsignedInteger('slots_taken')->default(0);
+            $table->boolean('past_end')->default(false);
             $table->timestamps();
         });
     }
