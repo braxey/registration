@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
+use App\Models\User;
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
 use Illuminate\Support\Facades\Auth;
@@ -155,6 +156,33 @@ class AppointmentController extends Controller
         $appointment->save();
 
         // Redirect to a different page, such as the appointment index page
+        return redirect()->route('appointments.index');
+    }
+
+    public function delete(Request $request, $id){
+        // Retrieve the authenticated user
+        $user = Auth::user();
+        // See if the user is an admin
+        if($user->admin == 0) abort(404);
+
+        $appointment = Appointment::findOrFail($id);
+
+        // reallocate slots to users who booked the appt
+        $userAppointments = AppointmentUser::where('appointment_id', $appointment->id)->get();
+        foreach ($userAppointments as $userAppointment) {
+            // Access the related user and update their slots
+            $_user_id = $userAppointment->user_id;
+            $_user = User::findOrFail($_user_id);
+            $_user->slots_booked = $_user->slots_booked - $userAppointment->slots_taken;
+            $_user->save();
+        
+            // Delete the user_appointment record
+            AppointmentUser::where('appointment_id', $id)
+                   ->where('user_id', $_user_id)
+                   ->delete();
+        }
+        
+        $appointment->delete();
         return redirect()->route('appointments.index');
     }
 }

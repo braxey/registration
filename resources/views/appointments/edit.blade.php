@@ -42,6 +42,12 @@
         </form>
         <script type="module" src="{{ asset('js/appt/createedit.js') }}"></script>
     </div>
+    <div>
+    <form action="{{ route('appointment.delete', $appointment->id) }}" method="POST" id="delete-form">
+        @csrf
+        <button type="submit">Delete</button>
+    </form>
+    </div>
     </body>
     </html>
 </x-app-layout>
