@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppointmentController;
+use App\Models\Appointment;
+use App\Models\AppointmentUser;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +32,16 @@ Route::middleware([
     'verified'
 ])->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        // Get the authenticated user
+        $user = Auth::user();
+
+        // Retrieve the appointments associated with the user
+        $appointments = Appointment::whereIn(
+            'id',
+            AppointmentUser::where('user_id', $user->id)->pluck('appointment_id')
+        )->get();
+
+        return view('dashboard', compact('appointments'));
     })->name('dashboard');
 });
 
