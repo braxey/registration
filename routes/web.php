@@ -60,7 +60,7 @@ Route::middleware([
 Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
 
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::match(['GET', 'POST'], '/appointments/{id}/book', [AppointmentController::class, 'book'])->name('appointment.book');
     Route::get('/appointment/confirmation', [AppointmentController::class, 'confirmation'])->name('appointment.confirmation');
 });
