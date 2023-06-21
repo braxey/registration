@@ -6,7 +6,7 @@
     </head>
     <body>
     <div class="container">
-        <h1>Edit Appointment</h1>
+        <h1>Create Appointment</h1>
 
         <form action="{{ route('appointment.create') }}" method="POST" id="create-form">
             @csrf

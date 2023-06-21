@@ -1,10 +1,10 @@
 const MAX_CHAR_PER_STRING = 4
 
 $(function(){
-    let update_form = document.getElementById('update-form')
-    let create_form = document.getElementById('create-form')
-    let delete_form = document.getElementById('delete-form')
-    let form = (update_form == null) ? create_form : update_form
+    var update_form = document.getElementById('update-form') ?? null
+    var delete_form = document.getElementById('delete-form') ?? null
+    var create_form = document.getElementById('create-form') ?? null
+    var form = (update_form == null) ? create_form : update_form
     
     // Add a submit event listener to the form (update or create)
     form.addEventListener('submit', function(e) {
@@ -35,21 +35,23 @@ $(function(){
             form.submit()
     })
 
-    // Add listener on delete
-    delete_form.addEventListener("submit", function(e){
-        e.preventDefault()
-        Swal.fire({
-            title: 'Are you sure?',
-            text: 'You will not be able to recover this appointment!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if(result.isConfirmed){
-                delete_form.submit()
-            }
+    if(delete_form != null){
+        // Add listener on delete
+        delete_form.addEventListener("submit", function(e){
+            e.preventDefault()
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You will not be able to recover this appointment!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if(result.isConfirmed){
+                    delete_form.submit()
+                }
+            })
         })
-    })
+    }
 })
 
 function validateInput(){
@@ -81,12 +83,15 @@ function validateInput(){
     let slots = $('#total_slots').val().toString()
     if(!validNumberOfSlots(slots)) return false
 
-    // number of slots can't change after start time
-    if(start_time < new Date() && parseInt(slots) != slotsTaken){
-        errorPop("Error", "Can't change the total slots after the appointment start time.")
-        return false
+    try{
+        // number of slots can't change after start time
+        if(start_time < new Date() && parseInt(slots) != slotsTaken){
+            errorPop("Error", "Can't change the total slots after the appointment start time.")
+            return false
+        }
+    }catch(error){
+        // is not the update form, so slotsTaken not defined
     }
-
 
     return true
 }
