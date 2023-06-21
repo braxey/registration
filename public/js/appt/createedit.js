@@ -85,7 +85,7 @@ function validateInput(){
 
     try{
         // number of slots can't change after start time
-        if(start_time < new Date() && parseInt(slots) != slotsTaken){
+        if(start_time < new Date() && parseInt(slots) != slotsTotal){
             errorPop("Error", "Can't change the total slots after the appointment start time.")
             return false
         }

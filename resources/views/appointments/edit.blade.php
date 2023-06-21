@@ -41,7 +41,7 @@
             <button type="submit" class="btn btn-primary">Update</button>
         </form>
         <script>
-            var slotsTaken = parseInt("<?php echo $appointment->total_slots;?>")
+            var slotsTotal = parseInt("<?php echo $appointment->total_slots;?>")
         </script>
         <script type="module" src="{{ asset('js/appt/createedit.js') }}"></script>
     </div>
