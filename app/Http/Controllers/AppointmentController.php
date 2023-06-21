@@ -115,7 +115,7 @@ class AppointmentController extends Controller
             'description' => 'nullable',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
-            'total_slots' => 'required|integer|min:1',
+            'total_slots' => 'required|integer|min:0',
         ]);
 
         $appointment->update($validatedData);

@@ -81,6 +81,12 @@ function validateInput(){
     let slots = $('#total_slots').val().toString()
     if(!validNumberOfSlots(slots)) return false
 
+    // number of slots can't change after start time
+    if(start_time < new Date() && parseInt(slots) != slotsTaken){
+        errorPop("Error", "Can't change the total slots after the appointment start time.")
+        return false
+    }
+
 
     return true
 }
@@ -129,8 +135,8 @@ function validNumberOfSlots(slots){
 
     // make sure the number is above 0
     slots = parseInt(slots)
-    if (slots <= 0){
-        errorPop('Error', 'The number must be above 0.')
+    if (slots < 0){
+        errorPop('Error', 'The number must be greater than or equal to 0.')
         return false
     }
     return true
