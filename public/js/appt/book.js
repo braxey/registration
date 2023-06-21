@@ -6,6 +6,13 @@ $(function(){
     form.addEventListener('submit', function(e){
         let slotsRequested = $('#slots').val().toString()
         e.preventDefault()
+
+        // can't book after appt started
+        if(startTime < new Date()){
+            errorPop('Error', "Can't book slots after the start time.")
+            return false
+        }
+
         // make sure the input is an integer and the number isn't unreasonably big
         if (!isInteger(slotsRequested) || slotsRequested.length >= MAX_CHAR_PER_STRING){
             errorPop('Error', 'Must enter a valid number.')
@@ -21,7 +28,9 @@ $(function(){
 
         // make sure there are enough slots for the appt to allot
         if (slotsRequested > slotsLeft) {
-            errorPop('Error', 'The requested number of slots is not available. There are only '+slotsLeft+' open slots for this time.')
+            let left = Math.max(slotsLeft, 0)
+            errorPop('Error', left>0 ? 'The requested number of slots is not available. There are only '+slotsLeft+' open slots for this time.'
+                                     : 'There are no slots remaining for this appointment.')
             return false
         // make sure the user doesn't surpass the max allowed per user
         }else if(slotsRequested+userSlots > MAX_SLOTS_PER_USER){

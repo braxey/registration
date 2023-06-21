@@ -19,9 +19,13 @@
                         <td class="border border-slate-300">{{ max($appointment->total_slots - $appointment->slots_taken, 0) }}</td>
                         <td class="border border-slate-300">
                             @if ($user && $user->admin)
-                            <a href="{{ route('appointment.edit', $appointment->id) }}">Edit</a>
+                                <a href="{{ route('appointment.edit', $appointment->id) }}">Edit</a>
                             @endif
-                            <a href="{{ route('appointment.book', $appointment->id) }}">Book</a>
+                            @if ($appointment->start_time >= now())
+                                <a href="{{ route('appointment.book', $appointment->id) }}">Book</a>
+                            @else
+                                Closed
+                            @endif
                         </td>
                     </tr>
                 @endforeach
