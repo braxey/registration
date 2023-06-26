@@ -28,7 +28,7 @@
                             <td>{{ $appointment->description }}</td>
                             <td>{{ $appointment->start_time }}</td>
                             <td>{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
-                            <td><form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST">
+                            <td><form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST" id="cancel-form">
                                 @csrf
                                 @method('POST')
                                 <button type="submit">Cancel</button>
@@ -68,6 +68,7 @@
         @endif
         
     </div>
+    <script type="module" src="{{ asset('js/appt/cancelbooking.js') }}"></script>
     </body>
     </html>
 </x-app-layout>
