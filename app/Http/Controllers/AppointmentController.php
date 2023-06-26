@@ -85,6 +85,46 @@ class AppointmentController extends Controller
         return redirect()->route('appointment.confirmation')->with('success', 'Booking successful!');
     }
 
+    public function cancel_booking(Request $request, $id)
+    {
+        // Find the appointment
+        $appointment = Appointment::findOrFail($id);
+        
+        // Get the available slots
+        $availableSlots = $appointment->total_slots - $appointment->slots_taken;
+
+        // Retrieve the authenticated user
+        $user = Auth::user();
+
+        // Retrieve the appointment user row
+        $apptUserEntry = AppointmentUser::where('user_id', $user->id)
+            ->where('appointment_id', $appointment->id)
+            ->first();
+
+        if($apptUserEntry){
+            // Get slots to return
+            $slotsToReturn = $apptUserEntry->slots_taken;
+
+            // Decrement appt slots taken and user slots booked
+            $appointment->slots_taken -= $slotsToReturn;
+            $appointment->save();
+            $user->slots_booked -= $slotsToReturn;
+            $user->save();
+
+            // Remove entry from appt user table
+            AppointmentUser::where('user_id', $user->id)
+            ->where('appointment_id', $appointment->id)
+            ->delete();
+        
+            // Refresh the page
+            return redirect()->back();
+        }else{
+            // Redirect back with an error message
+            return redirect()->back();
+        }
+    }
+
+
     public function confirmation()
     {
         // Retrieve the appointment and any other necessary data

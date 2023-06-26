@@ -18,6 +18,7 @@
                         <th>Description</th>
                         <th>Start Time</th>
                         <th>Slots Booked</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,6 +28,11 @@
                             <td>{{ $appointment->description }}</td>
                             <td>{{ $appointment->start_time }}</td>
                             <td>{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
+                            <td><form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST">
+                                @csrf
+                                @method('POST')
+                                <button type="submit">Cancel</button>
+                            </form></td>
                         </tr>
                     @endforeach
                 </tbody>
