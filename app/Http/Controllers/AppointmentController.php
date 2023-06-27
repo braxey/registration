@@ -82,8 +82,73 @@ class AppointmentController extends Controller
         }
     
         // Redirect to a confirmation page or any other relevant page
-        return redirect()->route('appointment.confirmation')->with('success', 'Booking successful!');
+        return redirect()->route('appointment.confirmation');
     }
+
+    public function edit_booking(Request $request, $id)
+    {
+        // Find the appointment
+        $appointment = Appointment::findOrFail($id);
+        
+        // Get the available slots
+        $availableSlots = $appointment->total_slots - $appointment->slots_taken;
+
+        // Retrieve the authenticated user
+        $user = Auth::user();
+
+        // Get current user slot number
+        $userSlots = $user->slots_booked;
+
+        // Get current number of slots taken for this appt by this user
+        $apptUserSlots = AppointmentUser::where('user_id', $user->id)
+            ->where('appointment_id', $appointment->id)
+            ->first()
+            ->slots_taken;
+        
+        // If it's a GET request, return the book view
+        if ($request->isMethod('get')) {
+            return view('appointments.edit_booking', compact('appointment', 'availableSlots', 'userSlots', 'apptUserSlots'));
+        }
+        
+        // If it's a POST request, handle the form submission
+        // Validate the form data
+        $validatedData = $request->validate([
+            'slots' => 'required|integer|min:1|max:'.$availableSlots,
+        ]);
+        
+        // Get the number of slots requested
+        $slotsRequested = $validatedData['slots'];
+        
+        // Check if the requested slots are available
+        if ($slotsRequested-$apptUserSlots > $availableSlots || $slotsRequested == 0 || $slotsRequested+$userSlots-$apptUserSlots > MAX_SLOTS_PER_USER) {
+            // Redirect back with an error message
+            return redirect()->back();
+        }
+        
+        // Perform the booking logic
+        // Update the appointment slots_taken count
+        $appointment->slots_taken += $slotsRequested - $apptUserSlots;
+        $appointment->save();
+
+        // Create a pivot table entry or perform any other necessary actions
+        $user->slots_booked += $slotsRequested - $apptUserSlots;
+        $user->save();
+
+        $apptUserEntryExists = AppointmentUser::where('user_id', $user->id)
+            ->where('appointment_id', $appointment->id)
+            ->exists();
+
+        if ($apptUserEntryExists) {
+            // Update slots_taken
+            AppointmentUser::where('user_id', $user->id)
+                ->where('appointment_id', $appointment->id)
+                ->increment('slots_taken', $slotsRequested-$apptUserSlots);
+        }
+    
+        // Redirect to a confirmation page or any other relevant page
+        return redirect()->route('appointment.confirmation');
+    }
+
 
     public function cancel_booking(Request $request, $id)
     {

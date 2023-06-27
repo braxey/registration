@@ -16,7 +16,7 @@ $(function(){
             }).then((result) => {
                 // If the user confirms, submit the form
                 if (result.isConfirmed) {
-                    form.submit();
+                    form.submit()
                 }
             })
         })
