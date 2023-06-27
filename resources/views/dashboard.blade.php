@@ -32,6 +32,11 @@
                                 @csrf
                                 @method('POST')
                                 <button type="submit">Cancel</button>
+                            </form>
+                            <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="GET" id="edit-form">
+                                @csrf
+                                @method('GET')
+                                <button type="submit">Edit</button>
                             </form></td>
                         </tr>
                     @endforeach
