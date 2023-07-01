@@ -24,6 +24,9 @@ class AppointmentController extends Controller
     {
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
+
+        // Throw 404 if appointment already started
+        if($appointment->start_time < now()) abort(404);
         
         // Get the available slots
         $availableSlots = $appointment->total_slots - $appointment->slots_taken;
@@ -89,6 +92,9 @@ class AppointmentController extends Controller
     {
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
+
+        // Throw 404 if appointment already started
+        if($appointment->start_time < now()) abort(404);
         
         // Get the available slots
         $availableSlots = $appointment->total_slots - $appointment->slots_taken;
@@ -157,6 +163,9 @@ class AppointmentController extends Controller
     {
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
+
+        // Throw 404 if appointment already started
+        if($appointment->start_time < now()) abort(404);
         
         // Get the available slots
         $availableSlots = $appointment->total_slots - $appointment->slots_taken;

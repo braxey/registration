@@ -28,16 +28,18 @@
                             <td>{{ $appointment->description }}</td>
                             <td>{{ $appointment->start_time }}</td>
                             <td>{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
-                            <td><form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST" id="cancel-form">
-                                @csrf
-                                @method('POST')
-                                <button type="submit">Cancel</button>
-                            </form>
-                            <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="GET" id="edit-form">
-                                @csrf
-                                @method('GET')
-                                <button type="submit">Edit</button>
-                            </form></td>
+                            @if($appointment->start_time > now())
+                                <td><form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST" id="cancel-form">
+                                    @csrf
+                                    @method('POST')
+                                    <button type="submit">Cancel</button>
+                                </form>
+                                <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="GET" id="edit-form">
+                                    @csrf
+                                    @method('GET')
+                                    <button type="submit">Edit</button>
+                                </form></td>
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>
