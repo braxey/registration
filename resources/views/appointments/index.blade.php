@@ -26,7 +26,7 @@
                             @endif
                             @if ($appointment->start_time < now())
                                 Closed  
-                            @elseif (AppointmentUser::where('user_id', $user->id)->where('appointment_id', $appointment->id)->exists())
+                            @elseif ($user?->id && AppointmentUser::where('user_id', $user->id)->where('appointment_id', $appointment->id)->exists())
                                 <a href="{{ route('appointment.editbooking', $appointment->id) }}">Edit Booking</a>
                             @else
                                 <a href="{{ route('appointment.book', $appointment->id) }}">Book</a>

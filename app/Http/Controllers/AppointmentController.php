@@ -305,4 +305,27 @@ class AppointmentController extends Controller
         $appointment->delete();
         return redirect()->route('appointments.index');
     }
+
+    // Give appointment slots back on user delete
+    public function userDelete(User $user){
+
+        // Get user appts associated with the user
+        $userAppointments = AppointmentUser::where('user_id', $user->id)->get();
+
+        foreach ($userAppointments as $userAppointment) {
+
+            // Give slots back to user
+            $_appt_id = $userAppointment->appointment_id;
+            $appointment = Appointment::findOrFail($_appt_id);
+            if(!$appointment->past_end){
+                $appointment->slots_taken -= $userAppointment->slots_taken;
+                $appointment->save();
+            }
+        
+            // Delete the user_appointment record
+            AppointmentUser::where('appointment_id', $_appt_id)
+                   ->where('user_id', $user->id)
+                   ->delete();
+        }
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Actions\Jetstream;
 
 use App\Models\User;
 use Laravel\Jetstream\Contracts\DeletesUsers;
+use App\Http\Controllers\AppointmentController;
 
 class DeleteUser implements DeletesUsers
 {
@@ -14,6 +15,7 @@ class DeleteUser implements DeletesUsers
     {
         $user->deleteProfilePhoto();
         $user->tokens->each->delete();
+        app(AppointmentController::class)->userDelete($user);
         $user->delete();
     }
 }
