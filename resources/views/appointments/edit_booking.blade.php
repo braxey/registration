@@ -28,11 +28,16 @@
                 @method('POST')
                 <button type="submit">Cancel</button>
             </form>
+            <!-- <input type="hidden" id="availableSlots" value="{{ $availableSlots }}">
+            <input type="hidden" id="userSlots" value="userSlots">
+            <input type="hidden" id="apptUserSlots" value="apptUserSlots">
+            <input type="hidden" id="hidden_field" value="some value"> -->
+
             <script>
-                var slotsLeft = "<?php echo $availableSlots;?>"
-                var userSlots = parseInt("<?php echo $userSlots;?>")
-                var apptUserSlots = parseInt("<?php echo $apptUserSlots;?>")
-                var startTime = new Date("<?php echo $appointment->start_time;?>")
+                var slotsLeft = {{$availableSlots}}
+                var userSlots = {{$userSlots}}
+                var aUS = {{$apptUserSlots}}
+                var startTime = new Date("{{$appointment->start_time}}")
             </script>
             <script type="module" src="{{ asset('js/appt/book.js') }}"></script>
             <script type="module" src="{{ asset('js/appt/cancelbooking.js') }}"></script>
