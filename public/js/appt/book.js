@@ -5,12 +5,11 @@ $(function(){
     let book_form = document.getElementById('book-form') ?? null
     let edit_book_form = document.getElementById('edit-book-form') ?? null
     let form = (book_form != null ? book_form : edit_book_form)
+    // if appt user slots isnt defined, set to 0
+    let apptUserSlots = (book_form != null) ? 0 : aUS
     form.addEventListener('submit', function(e){
         let slotsRequested = $('#slots').val().toString()
         e.preventDefault()
-
-        // if appt user slots isnt defined, set to 0
-        if(book_form != null) var apptUserSlots = 0
 
         // can't book after appt started
         if(startTime < new Date()){
@@ -44,7 +43,10 @@ $(function(){
             return false
         // make sure the user doesn't surpass the max allowed per user
         }else if(slotsRequested+userSlots-apptUserSlots > MAX_SLOTS_PER_USER){
-            errorPop('Error', 'You can only book '+MAX_SLOTS_PER_USER+' slots at a time.')
+            errorPop('Error', 'You can only book '+MAX_SLOTS_PER_USER+' slots at a time. ' 
+                + ((userSlots > 0) 
+                    ? 'You already have '+userSlots+' slots booked.' 
+                    : 'You currently have no bookings.'))
             return false
         }
 
@@ -64,7 +66,6 @@ $(function(){
             }).then((result) => {
                 // If the user confirms, submit the form
                 if (result.isConfirmed) {
-                    console.log('submitting')
                     form.submit()
                 }
             })
