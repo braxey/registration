@@ -23,6 +23,11 @@
 
                 <button type="submit" class="btn btn-primary">Update</button>
             </form>
+            <form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST" id="cancel-form">
+                @csrf
+                @method('POST')
+                <button type="submit">Cancel</button>
+            </form>
             <script>
                 var slotsLeft = "<?php echo $availableSlots;?>"
                 var userSlots = parseInt("<?php echo $userSlots;?>")
@@ -30,6 +35,7 @@
                 var startTime = new Date("<?php echo $appointment->start_time;?>")
             </script>
             <script type="module" src="{{ asset('js/appt/book.js') }}"></script>
+            <script type="module" src="{{ asset('js/appt/cancelbooking.js') }}"></script>
         </div>
     </div>
 </div>
