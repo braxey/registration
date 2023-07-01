@@ -1,3 +1,6 @@
+@php
+    use App\Models\AppointmentUser;
+@endphp
 <x-app-layout>
     <div>
         <h1>Appointments</h1>
@@ -21,10 +24,12 @@
                             @if ($user && $user->admin)
                                 <a href="{{ route('appointment.edit', $appointment->id) }}">Edit</a>
                             @endif
-                            @if ($appointment->start_time >= now())
-                                <a href="{{ route('appointment.book', $appointment->id) }}">Book</a>
+                            @if ($appointment->start_time < now())
+                                Closed  
+                            @elseif (AppointmentUser::where('user_id', $user->id)->where('appointment_id', $appointment->id)->exists())
+                                <a href="{{ route('appointment.editbooking', $appointment->id) }}">Edit Booking</a>
                             @else
-                                Closed
+                                <a href="{{ route('appointment.book', $appointment->id) }}">Book</a>
                             @endif
                         </td>
                     </tr>
