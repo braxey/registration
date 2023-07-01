@@ -272,14 +272,17 @@ class AppointmentController extends Controller
 
         $appointment = Appointment::findOrFail($id);
 
-        // reallocate slots to users who booked the appt
+        // reallocate slots to users who booked the appt if the end time has not passed
         $userAppointments = AppointmentUser::where('appointment_id', $appointment->id)->get();
         foreach ($userAppointments as $userAppointment) {
-            // Access the related user and update their slots
             $_user_id = $userAppointment->user_id;
-            $_user = User::findOrFail($_user_id);
-            $_user->slots_booked = $_user->slots_booked - $userAppointment->slots_taken;
-            $_user->save();
+            
+            if(!$appointment->past_end){
+            // Access the related user and update their slots
+                $_user = User::findOrFail($_user_id);
+                $_user->slots_booked = $_user->slots_booked - $userAppointment->slots_taken;
+                $_user->save();
+            }
         
             // Delete the user_appointment record
             AppointmentUser::where('appointment_id', $id)
