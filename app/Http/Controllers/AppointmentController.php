@@ -113,16 +113,19 @@ class AppointmentController extends Controller
         // If it's a POST request, handle the form submission
         // Validate the form data
         $validatedData = $request->validate([
-            'slots' => 'required|integer|min:1|max:'.$availableSlots,
+            'slots' => 'required|integer|min:0|max:'.$availableSlots,
         ]);
         
         // Get the number of slots requested
         $slotsRequested = $validatedData['slots'];
         
         // Check if the requested slots are available
-        if ($slotsRequested-$apptUserSlots > $availableSlots || $slotsRequested == 0 || $slotsRequested+$userSlots-$apptUserSlots > MAX_SLOTS_PER_USER) {
+        if ($slotsRequested-$apptUserSlots > $availableSlots || $slotsRequested+$userSlots-$apptUserSlots > MAX_SLOTS_PER_USER) {
             // Redirect back with an error message
             return redirect()->back();
+        }else if ($slotsRequested == 0){
+            $this->cancel_booking($request, $appointment->id);
+            return redirect()->route('appointments.index');
         }
         
         // Perform the booking logic

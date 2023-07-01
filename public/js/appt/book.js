@@ -26,7 +26,12 @@ $(function(){
 
         // make sure the number is above 0
         slotsRequested = parseInt(slotsRequested)
-        if (slotsRequested <= 0){
+        if(slotsRequested == 0){
+            if(book_form != null){
+                errorPop('Error', 'The number must be above 0.')
+                return false
+            }
+        } else if (slotsRequested <= 0){
             errorPop('Error', 'The number must be above 0.')
             return false
         }
@@ -49,7 +54,9 @@ $(function(){
         else{
             Swal.fire({
                 title: 'Confirmation',
-                text: 'Are you sure you want to update your booking to '+ slotsRequested + ' slots?',
+                text: (book_form == null && slotsRequested == 0) 
+                    ? 'Are you sure you want to cancel your appointment?'
+                    : 'Are you sure you want to update your booking to '+ slotsRequested + ' slots?',
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Yes',
@@ -57,6 +64,7 @@ $(function(){
             }).then((result) => {
                 // If the user confirms, submit the form
                 if (result.isConfirmed) {
+                    console.log('submitting')
                     form.submit()
                 }
             })
