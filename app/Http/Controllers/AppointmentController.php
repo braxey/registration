@@ -185,7 +185,7 @@ class AppointmentController extends Controller
             ->delete();
         
             // Refresh the page
-            return redirect()->back();
+            return redirect()->route('dashboard');
         }else{
             // Redirect back with an error message
             return redirect()->back();
