@@ -37,7 +37,7 @@ $(function(){
 
         // make sure there are enough slots for the appt to allot
         if (slotsRequested - apptUserSlots > slotsLeft) {
-            let left = Math.max(slotsLeft, 0)
+            let left = Math.max(slotsLeft, 0);
             errorPop('Error', left>0 ? 'The requested number of slots is not available. There are only '+slotsLeft+' open slots for this time.'
                                      : 'There are no slots remaining for this appointment.')
             return false
