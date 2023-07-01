@@ -5,76 +5,77 @@
         <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
     </head>
     <body>
+        <div class="flex justify-center items-center h-screen text-center">
+            <div class="container">
+                <h1>Dashboard</h1>
 
-    <div class="container">
-        <h1>Dashboard</h1>
+                @if ($upcomingAppointments->count() > 0)
+                    <h2>Upcoming Appointments</h2>
+                    <table class="table mx-auto">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Start Time</th>
+                                <th>Slots Booked</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($upcomingAppointments as $appointment)
+                                <tr>
+                                    <td>{{ $appointment->title }}</td>
+                                    <td>{{ $appointment->description }}</td>
+                                    <td>{{ $appointment->start_time }}</td>
+                                    <td>{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
+                                    @if($appointment->start_time > now())
+                                        <td><form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST" id="cancel-form">
+                                            @csrf
+                                            @method('POST')
+                                            <button type="submit">Cancel</button>
+                                        </form>
+                                        <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="GET" id="edit-form">
+                                            @csrf
+                                            @method('GET')
+                                            <button type="submit">Edit</button>
+                                        </form></td>
+                                    @endif
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <p>No upcoming appointments found.</p>
+                @endif
 
-        @if ($upcomingAppointments->count() > 0)
-            <h2>Upcoming Appointments</h2>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Start Time</th>
-                        <th>Slots Booked</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($upcomingAppointments as $appointment)
-                        <tr>
-                            <td>{{ $appointment->title }}</td>
-                            <td>{{ $appointment->description }}</td>
-                            <td>{{ $appointment->start_time }}</td>
-                            <td>{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
-                            @if($appointment->start_time > now())
-                                <td><form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST" id="cancel-form">
-                                    @csrf
-                                    @method('POST')
-                                    <button type="submit">Cancel</button>
-                                </form>
-                                <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="GET" id="edit-form">
-                                    @csrf
-                                    @method('GET')
-                                    <button type="submit">Edit</button>
-                                </form></td>
-                            @endif
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @else
-            <p>No upcoming appointments found.</p>
-        @endif
-
-        @if ($pastAppointments->count() > 0)
-            <h2>Past Appointments</h2>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Start Time</th>
-                        <th>Slots Booked</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($pastAppointments as $appointment)
-                        <tr>
-                            <td>{{ $appointment->title }}</td>
-                            <td>{{ $appointment->description }}</td>
-                            <td>{{ $appointment->start_time }}</td>
-                            <td>{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @else
-            <p>No past appointments found.</p>
-        @endif
-        
-    </div>
+                @if ($pastAppointments->count() > 0)
+                    <h2>Past Appointments</h2>
+                    <table class="table mx-auto">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Start Time</th>
+                                <th>Slots Booked</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($pastAppointments as $appointment)
+                                <tr>
+                                    <td>{{ $appointment->title }}</td>
+                                    <td>{{ $appointment->description }}</td>
+                                    <td>{{ $appointment->start_time }}</td>
+                                    <td>{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <p>No past appointments found.</p>
+                @endif
+                
+            </div>
+        </div>
     <script type="module" src="{{ asset('js/appt/cancelbooking.js') }}"></script>
     </body>
     </html>
