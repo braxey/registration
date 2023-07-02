@@ -11,21 +11,37 @@ const MAX_SLOTS_PER_USER = 6;
 
 class AppointmentController extends Controller
 {
+    // Show all available appointments
     public function index(){
-        // Add your logic here to retrieve appointments or perform any other operations
-        // Render the appointments view
+        // Retrieve all appointments
         $appointments = Appointment::all();
+
+        // Retrieve the authenticated user
         $user = Auth::user();
-        return view('appointments.index', ['appointments' => $appointments, 'user' => $user]);
+
+        // Show appointments
+        return view('appointments.index', compact('appointments', 'user'));
     }
 
+    // Show the admin-only guestlist
     public function guestlist(){
+        // Retrieve all appointments
         $appointments = Appointment::all();
+
+        // Retrieve the authenticated user
         $user = Auth::user();
+
+        // Retrieve all user-appointment relationships
         $apptUsers = AppointmentUser::all();
-        return view('appointments.guestlist', ['appointments' => $appointments, 'user' => $user, 'apptUsers' => $apptUsers]);
+
+        // If the user is an admin, show guestlist
+        // Else redirect to appointments
+        return ($user->admin)
+            ? view('appointments.guestlist', compact('appointments', 'user', 'apptUsers'))
+            : redirect()->route('appointments.index');
     }
 
+    // Show booking or handle request to set booking
     public function book(Request $request, $id){
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
@@ -56,7 +72,7 @@ class AppointmentController extends Controller
         // Get the number of slots requested
         $slotsRequested = $validatedData['slots'];
         
-        // Check if the requested slots are available
+        // Check if the requested slots are not available
         if ($slotsRequested > $availableSlots || $slotsRequested == 0 || $slotsRequested+$userSlots > MAX_SLOTS_PER_USER) {
             // Redirect back with an error message
             return redirect()->back();
@@ -67,21 +83,24 @@ class AppointmentController extends Controller
         $appointment->slots_taken += $slotsRequested;
         $appointment->save();
 
-        // Create a pivot table entry or perform any other necessary actions
+        // Update the user slots booked attribute
         $user->slots_booked += $slotsRequested;
         $user->save();
 
+        // Check if the user already booked slots for this appointment
         $apptUserEntryExists = AppointmentUser::where('user_id', $user->id)
             ->where('appointment_id', $appointment->id)
             ->exists();
 
+        // If the user has slots for this appointment
         if ($apptUserEntryExists) {
-            // Update slots_taken
+            // Update slots_taken for the user-appointment
             AppointmentUser::where('user_id', $user->id)
                 ->where('appointment_id', $appointment->id)
                 ->increment('slots_taken', $slotsRequested);
+        // If the user does not have slots for this appointment
         } else {
-            // Create a new entry
+            // Create a new entry for the user-appointment
             AppointmentUser::create([
                 'user_id' => $user->id,
                 'appointment_id' => $appointment->id,
@@ -89,12 +108,12 @@ class AppointmentController extends Controller
             ]);
         }
     
-        // Redirect to a confirmation page or any other relevant page
+        // Redirect to a confirmation page
         return redirect()->route('appointment.confirmation');
     }
 
-    public function edit_booking(Request $request, $id)
-    {
+    // Show booking edit or handle request to update an existing booking
+    public function edit_booking(Request $request, $id){
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
 
@@ -116,7 +135,7 @@ class AppointmentController extends Controller
             ->first()
             ->slots_taken;
         
-        // If it's a GET request, return the book view
+        // If it's a GET request, return the edit booking view
         if ($request->isMethod('get')) {
             return view('appointments.edit_booking', compact('appointment', 'availableSlots', 'userSlots', 'apptUserSlots'));
         }
@@ -130,12 +149,15 @@ class AppointmentController extends Controller
         // Get the number of slots requested
         $slotsRequested = $validatedData['slots'];
         
-        // Check if the requested slots are available
+        // Check if the requested slots are not available
         if ($slotsRequested-$apptUserSlots > $availableSlots || $slotsRequested+$userSlots-$apptUserSlots > MAX_SLOTS_PER_USER) {
             // Redirect back with an error message
             return redirect()->back();
+        // If the user requests to update to 0 slots
         }else if ($slotsRequested == 0){
+            // Cancel their booking
             $this->cancel_booking($request, $appointment->id);
+            // Redirect to appointments page
             return redirect()->route('appointments.index');
         }
         
@@ -144,28 +166,21 @@ class AppointmentController extends Controller
         $appointment->slots_taken += $slotsRequested - $apptUserSlots;
         $appointment->save();
 
-        // Create a pivot table entry or perform any other necessary actions
+        // Update the slots booked for the user
         $user->slots_booked += $slotsRequested - $apptUserSlots;
         $user->save();
 
-        $apptUserEntryExists = AppointmentUser::where('user_id', $user->id)
+        // Update the user-appointment entry
+        AppointmentUser::where('user_id', $user->id)
             ->where('appointment_id', $appointment->id)
-            ->exists();
-
-        if ($apptUserEntryExists) {
-            // Update slots_taken
-            AppointmentUser::where('user_id', $user->id)
-                ->where('appointment_id', $appointment->id)
-                ->increment('slots_taken', $slotsRequested-$apptUserSlots);
-        }
+            ->increment('slots_taken', $slotsRequested-$apptUserSlots);
     
-        // Redirect to a confirmation page or any other relevant page
+        // Redirect to a confirmation page
         return redirect()->route('appointment.confirmation');
     }
 
-
-    public function cancel_booking(Request $request, $id)
-    {
+    // Handle request to cancel a booking
+    public function cancel_booking(Request $request, $id){
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
 
@@ -183,13 +198,16 @@ class AppointmentController extends Controller
             ->where('appointment_id', $appointment->id)
             ->first();
 
+        // If the row is not null
         if($apptUserEntry){
             // Get slots to return
             $slotsToReturn = $apptUserEntry->slots_taken;
 
-            // Decrement appt slots taken and user slots booked
+            // Decrement appt slots taken
             $appointment->slots_taken -= $slotsToReturn;
             $appointment->save();
+
+            // Decrement the user slots booked (return slots back to them)
             $user->slots_booked -= $slotsToReturn;
             $user->save();
 
@@ -198,7 +216,7 @@ class AppointmentController extends Controller
             ->where('appointment_id', $appointment->id)
             ->delete();
         
-            // Refresh the page
+            // Navigate to the dashboard
             return redirect()->route('dashboard');
         }else{
             // Redirect back with an error message
@@ -206,32 +224,30 @@ class AppointmentController extends Controller
         }
     }
 
-
-    public function confirmation()
-    {
-        // Retrieve the appointment and any other necessary data
-        // Perform any additional logic or data retrieval here
+    // Show confirmation page
+    public function confirmation(){
+        // TODO: customize by type of confirmation (initial booking vs update booking)
 
         // Return the view for the appointment confirmation page
         return view('appointments.confirmation');
     }
 
-
-    public function edit(Appointment $appointment, $id)
-    {
+    // Show the edit update appointment or handle update form submission
+    public function edit(Request $request, $id){
         $user = Auth::user();
         $appointment = Appointment::findOrFail($id);
-        if($user->admin){
-            return view('appointments.edit', ['appointment' => $appointment]);
-        }else{
-            return redirect()->route('appointments.index');
-        }        
-    }
 
-    public function update(Request $request, $id)
-    {
-        $appointment = Appointment::findOrFail($id);
+        // If it's a GET request, return the view
+        if($request->isMethod('get')){
+            // If the user is an admin, show the edit appointment page
+            // Else, redirect to appointments
+            return ($user->admin)
+                ? view('appointments.edit', compact('appointment'))
+                : redirect()->route('appointments.index');
+        }
 
+        // If it's a PUT request, handle the form submission
+        // Get the validated data
         $validatedData = $request->validate([
             'title' => 'required',
             'description' => 'nullable',
@@ -240,16 +256,18 @@ class AppointmentController extends Controller
             'total_slots' => 'required|integer|min:0',
         ]);
 
+        // Update the appointment with the validated data
         $appointment->update($validatedData);
+        // Redirect to the same page
         return redirect()->route('appointment.edit', $appointment->id);
     }
 
-    public function create(Request $request)
-    {        
+    // Show create form or handle create form submission
+    public function create(Request $request){        
         // Retrieve the authenticated user
         $user = Auth::user();
 
-        // See if the user is an admin
+        // See if the user is not an admin
         if($user->admin == 0) abort(404);
 
         // If it's a GET request, return the create view
@@ -281,33 +299,45 @@ class AppointmentController extends Controller
         return redirect()->route('appointments.index');
     }
 
+    // Handle request to delete appointment
     public function delete(Request $request, $id){
+
         // Retrieve the authenticated user
         $user = Auth::user();
-        // See if the user is an admin
+
+        // See if the user is not an admin
         if($user->admin == 0) abort(404);
 
+        // Retrieve the appointment to be deleted
         $appointment = Appointment::findOrFail($id);
 
-        // reallocate slots to users who booked the appt if the end time has not passed
+        // Reallocate slots to users who booked the appt if the end time has not passed
+
+        // Retrieve all user-appointment relationships for the appt being deleted
         $userAppointments = AppointmentUser::where('appointment_id', $appointment->id)->get();
+        // Handle each individually
         foreach ($userAppointments as $userAppointment) {
+            // Retrive a user's ID from the user-appt entry
             $_user_id = $userAppointment->user_id;
             
+            // If the appointment is past end
             if(!$appointment->past_end){
-            // Access the related user and update their slots
+            // Give the user the necessary amount of slots back
                 $_user = User::findOrFail($_user_id);
                 $_user->slots_booked = $_user->slots_booked - $userAppointment->slots_taken;
                 $_user->save();
             }
         
-            // Delete the user_appointment record
+            // Delete the user-appointment record
             AppointmentUser::where('appointment_id', $id)
                    ->where('user_id', $_user_id)
                    ->delete();
         }
         
+        // Delete the appointment
         $appointment->delete();
+
+        // Redirect to appointments
         return redirect()->route('appointments.index');
     }
 
@@ -316,18 +346,20 @@ class AppointmentController extends Controller
 
         // Get user appts associated with the user
         $userAppointments = AppointmentUser::where('user_id', $user->id)->get();
-
+        // Handle each individually
         foreach ($userAppointments as $userAppointment) {
-
-            // Give slots back to user
+            // Retrive a appointment's ID from the user-appt entry
             $_appt_id = $userAppointment->appointment_id;
+
+            // If the appointment is past end
             $appointment = Appointment::findOrFail($_appt_id);
+            // Give the appointment the necessary amount of slots back
             if(!$appointment->past_end){
                 $appointment->slots_taken -= $userAppointment->slots_taken;
                 $appointment->save();
             }
         
-            // Delete the user_appointment record
+            // Delete the user-appointment record
             AppointmentUser::where('appointment_id', $_appt_id)
                    ->where('user_id', $user->id)
                    ->delete();
