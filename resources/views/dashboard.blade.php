@@ -34,12 +34,12 @@
                                             <td class="border border-slate-300"><form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST" id="cancel-form">
                                                 @csrf
                                                 @method('POST')
-                                                <button type="submit">Cancel</button>
+                                                <button class="red-btn" type="submit">Cancel</button>
                                             </form>
                                             <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="GET" id="edit-form">
                                                 @csrf
                                                 @method('GET')
-                                                <button type="submit">Edit</button>
+                                                <button class="red-btn" type="submit">Edit</button>
                                             </form></td>
                                         @endif
                                     </tr>

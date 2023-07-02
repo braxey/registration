@@ -4,6 +4,7 @@
     <head>
         <script src="{{asset('js/dist/jquery.min.js')}}"></script>
         <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
+        <link rel="stylesheet" href="{{asset('css/main.css')}}">
     </head>
     <body>
         <div class="flex justify-center items-center h-screen text-center">
@@ -21,12 +22,12 @@
                                 <input type="text" name="slots" id="slots" value="{{ $apptUserSlots }}">
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Update</button>
+                            <button type="submit" class="red-btn">Update</button>
                         </form>
                         <form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST" id="cancel-form">
                             @csrf
                             @method('POST')
-                            <button type="submit">Cancel</button>
+                            <button type="submit" class="red-btn">Cancel</button>
                         </form>
 
                         <script>

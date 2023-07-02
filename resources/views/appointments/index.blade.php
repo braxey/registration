@@ -11,7 +11,9 @@
                 
                 <div class="container">
                     <h1 class="mx-auto flex justify-center items-center h-screen">Appointments</h1>
-
+                    @if ($user && $user->admin)
+                        <a class="mx-auto flex justify-center items-center h-screen red-btn" style="max-width: 60px;" href="{{ route('appointment.create_form') }}">Create</a>
+                    @endif
                     <table class="table mx-auto border border-slate-300">  
                         <thead>
                             <tr class="border border-slate-300">
@@ -29,23 +31,20 @@
                                     <td class="border border-slate-300">{{ max($appointment->total_slots - $appointment->slots_taken, 0) }}</td>
                                     <td class="border border-slate-300">
                                         @if ($user && $user->admin)
-                                            <a href="{{ route('appointment.edit', $appointment->id) }}">Edit</a>
+                                            <a class="red-btn" href="{{ route('appointment.edit', $appointment->id) }}">Edit</a>
                                         @endif
                                         @if ($appointment->start_time < now())
                                             Closed  
                                         @elseif ($user?->id && AppointmentUser::where('user_id', $user->id)->where('appointment_id', $appointment->id)->exists())
-                                            <a href="{{ route('appointment.editbooking', $appointment->id) }}">Edit Booking</a>
+                                            <a class="red-btn" href="{{ route('appointment.editbooking', $appointment->id) }}">Edit Booking</a>
                                         @else
-                                            <a href="{{ route('appointment.book', $appointment->id) }}">Book</a>
+                                            <a class="red-btn" href="{{ route('appointment.book', $appointment->id) }}">Book</a>
                                         @endif
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-                    @if ($user && $user->admin)
-                        <a class="mx-auto flex justify-center items-center h-screen" href="{{ route('appointment.create_form') }}">Create</a>
-                    @endif
                 </div>
             </div>
         </body>

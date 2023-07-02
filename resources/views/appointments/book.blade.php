@@ -3,6 +3,7 @@
     <head>
         <script src="{{asset('js/dist/jquery.min.js')}}"></script>
         <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
+        <link rel="stylesheet" href="{{asset('css/main.css')}}">
     </head>
     <body>
         <div class="flex justify-center items-center h-screen text-center">
@@ -18,8 +19,7 @@
                                 <label for="slots">Slots</label>
                                 <input type="text" name="slots" id="slots">
                             </div>
-
-                            <button type="submit" class="btn btn-primary">Book</button>
+                            <button class="red-btn" type="submit">Book</button>
                         </form>
                         <script>
                             var slotsLeft = {{$availableSlots}}
