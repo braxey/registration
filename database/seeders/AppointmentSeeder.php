@@ -6,10 +6,8 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Appointment;
 
-class AppointmentSeeder extends Seeder
-{
-    public function run()
-    {
+class AppointmentSeeder extends Seeder{
+    public function run(){
         Appointment::create([
             'title' => 'Appointment 1',
             'description' => 'Description for Appointment 1',
