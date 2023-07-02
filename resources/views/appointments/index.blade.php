@@ -6,7 +6,28 @@
         <div>
             <h1>Appointments</h1>
 
-            <table class="border border-slate-300">
+            <table class="table border border-slate-300">
+                <style>
+                    .table {
+                        width: 120%;
+                        border-collapse: collapse;
+                    }
+                    .table th,
+                    .table td {
+                        padding: 8px;
+                        text-align: center;
+                        border-bottom: 2px solid #ddd;
+                    }
+                    .table th {
+                        background-color: #f2f2f2;
+                    }
+                    .table tr:nth-child(even) {
+                        background-color: #f9f9f9;
+                    }
+                    .table tr:hover {
+                        background-color: #e9e9e9;
+                    }
+                </style>    
                 <thead>
                     <tr class="border border-slate-300">
                         <th class="border border-slate-300">Title</th>
