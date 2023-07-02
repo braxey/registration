@@ -3,6 +3,7 @@
         <head>
             <script src="{{asset('js/dist/jquery.min.js')}}"></script>
             <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
+            <link rel="stylesheet" href="{{asset('css/main.css')}}">
         </head>
         <body>
             <div class="flex justify-center items-center h-screen text-center">
@@ -36,7 +37,7 @@
                             <input type="text" name="total_slots" id="total_slots" class="form-control" value="{{ 1 }}">
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Create</button>
+                        <button type="submit" class="red-btn">Create</button>
                     </form>
                     <script type="module" src="{{ asset('js/appt/createedit.js') }}"></script>
                 </div>
