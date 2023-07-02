@@ -11,8 +11,7 @@ const MAX_SLOTS_PER_USER = 6;
 
 class AppointmentController extends Controller
 {
-    public function index()
-    {
+    public function index(){
         // Add your logic here to retrieve appointments or perform any other operations
         // Render the appointments view
         $appointments = Appointment::all();
@@ -20,8 +19,14 @@ class AppointmentController extends Controller
         return view('appointments.index', ['appointments' => $appointments, 'user' => $user]);
     }
 
-    public function book(Request $request, $id)
-    {
+    public function guestlist(){
+        $appointments = Appointment::all();
+        $user = Auth::user();
+        $apptUsers = AppointmentUser::all();
+        return view('appointments.guestlist', ['appointments' => $appointments, 'user' => $user, 'apptUsers' => $apptUsers]);
+    }
+
+    public function book(Request $request, $id){
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
 
