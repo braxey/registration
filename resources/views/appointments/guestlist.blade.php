@@ -1,8 +1,3 @@
-@php
-    use App\Models\AppointmentUser;
-    use App\Models\Appointment;
-    use App\Models\User;
-@endphp
 <x-app-layout>
     <html>
         <head>
@@ -17,7 +12,7 @@
                     <!-- Filter Form -->
                     <form id="filter-form" method="GET" action="{{ route('appointments.guestlist') }}">
                         <div class="filter-container flex justify-center items-center h-screen">
-                            <button id="toggle-filter-button" class="btn btn-link filter-button">Filter</button>
+                            <button id="toggle-filter-button" class="red-btn">Filter</button>
                             <div id="filter-inputs-container" style="display: none;">
                                 <div class="form-group">
                                     <label for="guest_name">Guest Name:</label>
@@ -32,8 +27,8 @@
                                     <input type="text" name="appointment_name" id="appointment_name" value="{{ request('appointment_name') }}">
                                 </div>
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-primary" id="filter-apply-button">Apply</button>
-                                    <button type="button" class="btn btn-secondary" id="filter-clear-button">Clear</button>
+                                    <button type="submit" class="red-btn" id="filter-apply-button">Apply</button>
+                                    <button type="button" class="red-btn" id="filter-clear-button">Clear</button>
                                 </div>
                             </div>
                         </div>

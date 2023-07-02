@@ -3,6 +3,7 @@
         <head>
             <script src="{{asset('js/dist/jquery.min.js')}}"></script>
             <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
+            <link rel="stylesheet" href="{{asset('css/main.css')}}">
         </head>
         <body>
             <div class="flex justify-center items-center h-screen text-center">
@@ -38,7 +39,7 @@
                             <input type="text" name="total_slots" id="total_slots" class="form-control" value="{{ $appointment->total_slots }}">
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="submit" class="red-btn">Update</button>
                     </form>
                     <script>
                         var slotsTotal = {{$appointment->total_slots}}
@@ -47,7 +48,7 @@
                 
                     <form action="{{ route('appointment.delete', $appointment->id) }}" method="POST" id="delete-form">
                         @csrf
-                        <button type="submit">Delete</button>
+                        <button type="submit" class="red-btn">Delete</button>
                     </form>
                 </div>
             </div>
