@@ -34,8 +34,8 @@
                                 </tr>
                             @endforeach
                             <tr class="border border-slate-300">
-                                <td colspan="3" style="text-align: left;"><b>Total Bookings: </b></td> 
-                                <td>{{$count}}</td>
+                                <td colspan="3" class="border border-slate-300" style="text-align: left;"><b>Total Bookings: </b></td> 
+                                <td class="border border-slate-300">{{$count}}</td>
                             </tr>
                         </tbody>
                     </table>
