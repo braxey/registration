@@ -6,13 +6,14 @@
 <x-app-layout>
     <html>
         <head>
+            <link rel="stylesheet" href="{{asset('css/main.css')}}">
         </head>
         <body>
             <div class="flex justify-center items-center h-screen">
-                <div>
-                    <h1>Guestlist</h1>
+                <div class="container">
+                    <h1 class="flex justify-center items-center h-screen">Guestlist</h1>
 
-                    <table class="border border-slate-300">
+                    <table class="table mx-auto border border-slate-300">
                         <thead>
                             <tr class="border border-slate-300">
                                 <th class="border border-slate-300">Title</th>
@@ -32,9 +33,9 @@
                                     @php $count += $apptUser->slots_taken; @endphp
                                 </tr>
                             @endforeach
-                            <tr>
-                                <td colspan="3"><b>Total Bookings: </b></td> 
-                                <td >{{$count}}</td>
+                            <tr class="border border-slate-300">
+                                <td colspan="3" class="border border-slate-300" style="text-align: left;"><b>Total Bookings: </b></td> 
+                                <td class="border border-slate-300">{{$count}}</td>
                             </tr>
                         </tbody>
                     </table>
