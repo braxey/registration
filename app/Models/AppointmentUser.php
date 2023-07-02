@@ -4,8 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AppointmentUser extends Model
-{
+class AppointmentUser extends Model{
     protected $table = 'appointment_user';
     public $timestamps = false;
 
@@ -16,13 +15,11 @@ class AppointmentUser extends Model
     ];
 
     // Define the relationships with other models
-    public function user()
-    {
+    public function user(){
         return $this->belongsTo(User::class);
     }
 
-    public function appointment()
-    {
+    public function appointment(){
         return $this->belongsTo(Appointment::class);
     }
 }
