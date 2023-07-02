@@ -139,11 +139,10 @@ class AppointmentController extends Controller
         if ($request->isMethod('get')) {
             return view('appointments.edit_booking', compact('appointment', 'availableSlots', 'userSlots', 'apptUserSlots'));
         }
-        
         // If it's a POST request, handle the form submission
         // Validate the form data
         $validatedData = $request->validate([
-            'slots' => 'required|integer|min:0|max:'.$availableSlots,
+            'slots' => 'required|integer|min:0|max:'.($availableSlots+$userSlots),
         ]);
         
         // Get the number of slots requested

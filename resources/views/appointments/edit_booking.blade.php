@@ -12,7 +12,7 @@
                     <div class="col-md-8 offset-md-2">
                         <h2>Edit Booking Slots</h2>
 
-                        <form action="{{ route('appointment.editbooking', $appointment) }}" method="POST" id="edit-book-form">
+                        <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="POST" id="edit-book-form">
                             @csrf
                             @method('PUT')
 
@@ -28,10 +28,6 @@
                             @method('POST')
                             <button type="submit">Cancel</button>
                         </form>
-                        <!-- <input type="hidden" id="availableSlots" value="{{ $availableSlots }}">
-                        <input type="hidden" id="userSlots" value="userSlots">
-                        <input type="hidden" id="apptUserSlots" value="apptUserSlots">
-                        <input type="hidden" id="hidden_field" value="some value"> -->
 
                         <script>
                             var slotsLeft = {{$availableSlots}}
