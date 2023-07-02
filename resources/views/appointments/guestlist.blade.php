@@ -6,13 +6,14 @@
 <x-app-layout>
     <html>
         <head>
+            <link rel="stylesheet" href="{{asset('css/main.css')}}">
         </head>
         <body>
             <div class="flex justify-center items-center h-screen">
                 <div>
                     <h1>Guestlist</h1>
 
-                    <table class="border border-slate-300">
+                    <table class="table mx-auto border border-slate-300">
                         <thead>
                             <tr class="border border-slate-300">
                                 <th class="border border-slate-300">Title</th>
