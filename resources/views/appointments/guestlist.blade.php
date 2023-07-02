@@ -6,6 +6,7 @@
 <x-app-layout>
     <html>
         <head>
+            <script src="{{asset('js/dist/jquery.min.js')}}"></script>
             <link rel="stylesheet" href="{{asset('css/main.css')}}">
         </head>
         <body>
@@ -13,6 +14,30 @@
                 <div class="container">
                     <h1 class="flex justify-center items-center h-screen">Guestlist</h1>
 
+                    <!-- Filter Form -->
+                    <form id="filter-form" method="GET" action="{{ route('appointments.guestlist') }}">
+                        <div class="filter-container flex justify-center items-center h-screen">
+                            <button id="toggle-filter-button" class="btn btn-link filter-button">Filter</button>
+                            <div id="filter-inputs-container" style="display: none;">
+                                <div class="form-group">
+                                    <label for="guest_name">Guest Name:</label>
+                                    <input type="text" name="guest_name" id="guest_name" value="{{ request('guest_name') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="start_time">Start Time:</label>
+                                    <input type="text" name="start_time" id="start_time" value="{{ request('start_time') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="appointment_name">Appointment Name:</label>
+                                    <input type="text" name="appointment_name" id="appointment_name" value="{{ request('appointment_name') }}">
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary" id="filter-apply-button">Apply</button>
+                                    <button type="button" class="btn btn-secondary" id="filter-clear-button">Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                     <table class="table mx-auto border border-slate-300">
                         <thead>
                             <tr class="border border-slate-300">
@@ -24,14 +49,14 @@
                         </thead>
                         <tbody>
                             @php $count = 0; @endphp
-                            @foreach ($apptUsers as $apptUser)
+                            @foreach ($guests as $guest)
                                 <tr class="border border-slate-300">
-                                    <td class="border border-slate-300">{{ Appointment::findOrFail($apptUser->appointment_id)->title }}</td>
-                                    <td class="border border-slate-300">{{ Appointment::findOrFail($apptUser->appointment_id)->start_time }}</td>
-                                    <td class="border border-slate-300">{{ User::findOrFail($apptUser->user_id)->name }}</td>
-                                    <td class="border border-slate-300">{{ $apptUser->slots_taken }}</td>
-                                    @php $count += $apptUser->slots_taken; @endphp
+                                    <td class="border border-slate-300">{{ $guest->appointment->title }}</td>
+                                    <td class="border border-slate-300">{{ $guest->appointment->start_time }}</td>
+                                    <td class="border border-slate-300">{{ $guest->user->name }}</td>
+                                    <td class="border border-slate-300">{{ $guest->slots_taken }}</td>
                                 </tr>
+                                @php $count += $guest->slots_taken; @endphp
                             @endforeach
                             <tr class="border border-slate-300">
                                 <td colspan="3" class="border border-slate-300" style="text-align: left;"><b>Total Bookings: </b></td> 
@@ -41,6 +66,7 @@
                     </table>
                 </div>
             </div>
+            <script type="module" src="{{ asset('js/appt/guestlist.js') }}"></script>
         </body>
     </html>
 </x-app-layout>
