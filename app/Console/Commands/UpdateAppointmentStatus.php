@@ -20,6 +20,7 @@ class UpdateAppointmentStatus extends Command
 
         foreach ($appointments as $appointment) {
            if($appointment->past_end == false){ 
+                // Set the appointment to past end
                 $appointment->past_end = true;
                 $appointment->save();
 

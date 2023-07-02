@@ -69,18 +69,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/appointments/{id}/edit', [AppointmentController::class, 'edit'])->name('appointment.edit');
-    Route::put('/appointments/{id}', [AppointmentController::class, 'update'])->name('appointment.update');
+    Route::put('/appointments/{id}/edit', [AppointmentController::class, 'edit'])->name('appointment.update');
     Route::get('/guestlist', [AppointmentController::class, 'guestlist'])->name('appointments.guestlist');
-});
-
-Route::middleware(['auth'])->group(function () {
     Route::get('/appointments/create', [AppointmentController::class, 'create'])->name('appointment.create_form');
     Route::post('/appointments/create', [AppointmentController::class, 'create'])->name('appointment.create');
-});
-
-Route::middleware(['auth'])->group(function(){
     Route::post('/appointments/{id}/delete', [AppointmentController::class, 'delete'])->name('appointment.delete');
 });
     
-
-
