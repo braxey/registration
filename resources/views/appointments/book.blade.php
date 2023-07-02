@@ -22,9 +22,9 @@
                             <button type="submit" class="btn btn-primary">Book</button>
                         </form>
                         <script>
-                            var slotsLeft = "<?php echo $availableSlots;?>"
-                            var userSlots = parseInt("<?php echo $userSlots;?>")
-                            var startTime = new Date("<?php echo $appointment->start_time;?>")
+                            var slotsLeft = {{$availableSlots}}
+                            var userSlots = {{$userSlots}}
+                            var startTime = new Date("{{$appointment->start_time}}")
                         </script>
                         <script type="module" src="{{ asset('js/appt/book.js') }}"></script>
                     </div>
