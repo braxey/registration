@@ -1,29 +1,9 @@
 <x-app-layout>
     <html>
         <head>
+            <link rel="stylesheet" href="{{asset('css/main.css')}}">
             <script src="{{asset('js/dist/jquery.min.js')}}"></script>
             <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
-                <style>
-                    .table {
-                        width: 100%;
-                        border-collapse: collapse;
-                    }
-                    .table th,
-                    .table td {
-                        padding: 8px;
-                        text-align: center;
-                        border-bottom: 2px solid #ddd;
-                    }
-                    .table th {
-                        background-color: #f2f2f2;
-                    }
-                    .table tr:nth-child(even) {
-                        background-color: #f9f9f9;
-                    }
-                    .table tr:hover {
-                        background-color: #e9e9e9;
-                    }
-                </style>    
         </head>
         <body>
             <div class="flex justify-center items-center h-screen text-center">
@@ -33,25 +13,25 @@
                     @if ($upcomingAppointments->count() > 0)
                         <h2>Upcoming Appointments</h2>
                         <!-- component -->
-                        <table class="table mx-auto">
+                        <table class="table mx-auto border border-slate-300">
                             <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Description</th>
-                                    <th>Start Time</th>
-                                    <th>Slots Booked</th>
-                                    <th>Actions</th>
+                                <tr class="border border-slate-300">
+                                    <th class="border border-slate-300">Title</th>
+                                    <th class="border border-slate-300">Description</th>
+                                    <th class="border border-slate-300">Start Time</th>
+                                    <th class="border border-slate-300">Slots Booked</th>
+                                    <th class="border border-slate-300">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($upcomingAppointments as $appointment)
-                                    <tr>
-                                        <td>{{ $appointment->title }}</td>
-                                        <td>{{ $appointment->description }}</td>
-                                        <td>{{ $appointment->start_time }}</td>
-                                        <td>{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
+                                    <tr class="border border-slate-300">
+                                        <td class="border border-slate-300">{{ $appointment->title }}</td>
+                                        <td class="border border-slate-300">{{ $appointment->description }}</td>
+                                        <td class="border border-slate-300">{{ $appointment->start_time }}</td>
+                                        <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
                                         @if($appointment->start_time > now())
-                                            <td><form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST" id="cancel-form">
+                                            <td class="border border-slate-300"><form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST" id="cancel-form">
                                                 @csrf
                                                 @method('POST')
                                                 <button type="submit">Cancel</button>
@@ -72,22 +52,22 @@
 
                     @if ($pastAppointments->count() > 0)
                         <h2>Past Appointments</h2>
-                        <table class="table mx-auto">
+                        <table class="table mx-auto border border-slate-300">
                             <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Description</th>
-                                    <th>Start Time</th>
-                                    <th>Slots Booked</th>
+                                <tr class="border border-slate-300">
+                                    <th class="border border-slate-300">Title</th>
+                                    <th class="border border-slate-300">Description</th>
+                                    <th class="border border-slate-300">Start Time</th>
+                                    <th class="border border-slate-300">Slots Booked</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($pastAppointments as $appointment)
-                                    <tr>
-                                        <td>{{ $appointment->title }}</td>
-                                        <td>{{ $appointment->description }}</td>
-                                        <td>{{ $appointment->start_time }}</td>
-                                        <td>{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
+                                    <tr class="border border-slate-300">
+                                        <td class="border border-slate-300">{{ $appointment->title }}</td>
+                                        <td class="border border-slate-300">{{ $appointment->description }}</td>
+                                        <td class="border border-slate-300">{{ $appointment->start_time }}</td>
+                                        <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
