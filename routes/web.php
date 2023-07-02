@@ -70,6 +70,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/appointments/{id}/edit', [AppointmentController::class, 'edit'])->name('appointment.edit');
     Route::put('/appointments/{id}', [AppointmentController::class, 'update'])->name('appointment.update');
+    Route::get('/guestlist', [AppointmentController::class, 'guestlist'])->name('appointments.guestlist');
 });
 
 Route::middleware(['auth'])->group(function () {
