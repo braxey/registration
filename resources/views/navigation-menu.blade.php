@@ -1,3 +1,17 @@
+@php
+    use Illuminate\Support\Facades\Auth;
+@endphp
+
+@auth
+    @php
+        $user = Auth::user();
+    @endphp
+@else
+    @php
+        $user = 0;
+    @endphp
+@endauth
+
 <!doctype html>
 <html>
 <head>
@@ -15,6 +29,13 @@
                     <div>
                         <!-- Navigation Links -->
                         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+            @auth
+                @if(Request::url() !== url('/guestlist') && !is_int($user) && $user->admin)
+                            <x-nav-link :href="route('appointments.guestlist')" :active="request()->routeIs('appointments.guestlist')" class="text-right">
+                                {{ __('Guestlist') }}
+                            </x-nav-link>
+                @endif
+            @endauth   
                 @if(Request::url('') !== url(''))
                             <x-nav-link :href="route('welcome')" :active="request()->routeIs('welcome')" class="text-right">
                                 {{ __('Home') }}
