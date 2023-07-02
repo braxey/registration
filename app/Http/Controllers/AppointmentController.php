@@ -24,20 +24,34 @@ class AppointmentController extends Controller
     }
 
     // Show the admin-only guestlist
-    public function guestlist(){
-        // Retrieve all appointments
-        $appointments = Appointment::all();
+    public function guestlist(Request $request){
+        
+        $guestName = $request->input('guest_name');
+        $startTime = $request->input('start_time');
+        $appointmentName = $request->input('appointment_name');
 
-        // Retrieve the authenticated user
+        $guests = AppointmentUser::query()
+            ->when($guestName, function ($query) use ($guestName) {
+                $query->whereHas('user', function ($subQuery) use ($guestName) {
+                    $subQuery->where('name', 'LIKE', '%' . $guestName . '%');
+                });
+            })
+            ->when($startTime, function ($query) use ($startTime) {
+                $query->whereHas('appointment', function ($subQuery) use ($startTime) {
+                    $subQuery->where('start_time', 'LIKE', '%' . $startTime . '%');
+                });
+            })
+            ->when($appointmentName, function ($query) use ($appointmentName) {
+                $query->whereHas('appointment', function ($subQuery) use ($appointmentName) {
+                    $subQuery->where('title', 'LIKE', '%' . $appointmentName . '%');
+                });
+            })
+            ->get();
+    
         $user = Auth::user();
 
-        // Retrieve all user-appointment relationships
-        $apptUsers = AppointmentUser::all();
-
-        // If the user is an admin, show guestlist
-        // Else redirect to appointments
         return ($user->admin)
-            ? view('appointments.guestlist', compact('appointments', 'user', 'apptUsers'))
+            ? view('appointments.guestlist', compact('guests'))
             : redirect()->route('appointments.index');
     }
 
