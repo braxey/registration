@@ -25,6 +25,15 @@
                                     <label for="appointment_name">Appointment Name:</label>
                                     <input type="text" name="appointment_name" id="appointment_name" value="{{ request('appointment_name') }}" class="form-control">
                                 </div>
+                                <div class="form-group">
+                                    <label for="status">Status:</label>
+                                    <select name="status" id="status" class="form-control">
+                                        <option value="" {{ request('status') === '' ? 'selected' : '' }}>All</option>
+                                        <option value="upcoming" {{ request('status') === 'upcoming' ? 'selected' : '' }}>Upcoming</option>
+                                        <option value="in progress" {{ request('status') === 'in progress' ? 'selected' : '' }}>In Progress</option>
+                                        <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Complete</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="form-container" style="border: none">
                                 <div class="button-container" style="justify-content: center" id="filter-buttons">
@@ -40,6 +49,7 @@
                             <tr class="border border-slate-300">
                                 <th class="border border-slate-300">Title</th>
                                 <th class="border border-slate-300">Start Time</th>
+                                <th class="border border-slate-300">Status</th>
                                 <th class="border border-slate-300">Guest</th>
                                 <th class="border border-slate-300">Slots</th>
                             </tr>
@@ -50,13 +60,14 @@
                                 <tr class="border border-slate-300">
                                     <td class="border border-slate-300">{{ $guest->appointment->title }}</td>
                                     <td class="border border-slate-300">{{ $guest->appointment->start_time }}</td>
+                                    <td class="border border-slate-300">{{ $guest->appointment->status }}</td>
                                     <td class="border border-slate-300">{{ $guest->user->name }}</td>
                                     <td class="border border-slate-300">{{ $guest->slots_taken }}</td>
                                 </tr>
                                 @php $count += $guest->slots_taken; @endphp
                             @endforeach
                             <tr class="border border-slate-300">
-                                <td colspan="3" class="border border-slate-300" style="text-align: left;"><b>Total Bookings: </b></td> 
+                                <td colspan="4" class="border border-slate-300" style="text-align: left;"><b>Total Bookings: </b></td> 
                                 <td class="border border-slate-300">{{$count}}</td>
                             </tr>
                         </tbody>
