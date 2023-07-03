@@ -29,6 +29,7 @@
                                                 <th class="border border-slate-300">Description</th>
                                                 <th class="border border-slate-300">Start Time</th>
                                                 <th class="border border-slate-300">Slots Booked</th>
+                                                <th class="border border-slate-300">Status</th>
                                                 <th class="border border-slate-300">Actions</th>
                                             </tr>
                                         </thead>
@@ -39,6 +40,7 @@
                                                     <td class="border border-slate-300">{{ $appointment->description }}</td>
                                                     <td class="border border-slate-300">{{ $appointment->start_time }}</td>
                                                     <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
+                                                    <td class="border border-slate-300">{{ $appointment->status }}</td>
                                                     @if($appointment->start_time > now())
                                                     <td class="border border-slate-300 flex justify-center items-center h-screen text-center">
                                                         <div class="button-container">
@@ -76,6 +78,7 @@
                                                 <th class="border border-slate-300">Description</th>
                                                 <th class="border border-slate-300">Start Time</th>
                                                 <th class="border border-slate-300">Slots Booked</th>
+                                                <th class="border border-slate-300">Status</th>
                                                 <th class="border border-slate-300">Actions</th>
                                             </tr>
                                         </thead>
@@ -89,6 +92,7 @@
                                                     <td class="border border-slate-300">{{ $appointment->description }}</td>
                                                     <td class="border border-slate-300">{{ $appointment->start_time }}</td>
                                                     <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
+                                                    <td class="border border-slate-300">{{ $appointment->status }}</td>
                                                     @if($appointment->start_time > now())
                                                     <td class="border border-slate-300 flex justify-center items-center h-screen text-center">
                                                         <div class="button-container">
@@ -124,6 +128,7 @@
                                                 <th class="border border-slate-300">Description</th>
                                                 <th class="border border-slate-300">Start Time</th>
                                                 <th class="border border-slate-300">Slots Booked</th>
+                                                <th class="border border-slate-300">Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -133,6 +138,7 @@
                                                     <td class="border border-slate-300">{{ $appointment->description }}</td>
                                                     <td class="border border-slate-300">{{ $appointment->start_time }}</td>
                                                     <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
+                                                    <td class="border border-slate-300">{{ $appointment->status }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
