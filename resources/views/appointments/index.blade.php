@@ -20,6 +20,7 @@
                                 <th class="border border-slate-300">Title</th>
                                 <th class="border border-slate-300">Start Time</th>
                                 <th class="border border-slate-300">Slots Open</th>
+                                <th class="border border-slate-300">Status</th>
                                 <th class="border border-slate-300">Actions</th>
                             </tr>
                         </thead>
@@ -29,6 +30,7 @@
                                     <td class="border border-slate-300">{{ $appointment->title }}</td>
                                     <td class="border border-slate-300">{{ $appointment->start_time }}</td>
                                     <td class="border border-slate-300">{{ max($appointment->total_slots - $appointment->slots_taken, 0) }}</td>
+                                    <td class="border border-slate-300">{{ $appointment->status }}</td>
                                     <td class="border border-slate-300">
                                         @if ($user && $user->admin)
                                             <a class="red-btn" href="{{ route('appointment.edit', $appointment->id) }}">Edit</a>
