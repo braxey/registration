@@ -12,23 +12,25 @@
                     <!-- Filter Form -->
                     <form id="filter-form" method="GET" action="{{ route('appointments.guestlist') }}">
                         <div class="filter-container flex justify-center items-center h-screen">
-                            <button id="toggle-filter-button" class="red-btn">Filter</button>
-                            <div id="filter-inputs-container" style="display: none;">
+                            <div id="filter-inputs-container" style="display: none;" class="form-container togglers">
                                 <div class="form-group">
                                     <label for="guest_name">Guest Name:</label>
-                                    <input type="text" name="guest_name" id="guest_name" value="{{ request('guest_name') }}">
+                                    <input type="text" name="guest_name" id="guest_name" value="{{ request('guest_name') }}" class="form-control">
                                 </div>
                                 <div class="form-group">
                                     <label for="start_time">Start Time:</label>
-                                    <input type="text" name="start_time" id="start_time" value="{{ request('start_time') }}">
+                                    <input type="text" name="start_time" id="start_time" value="{{ request('start_time') }}" class="form-control">
                                 </div>
                                 <div class="form-group">
                                     <label for="appointment_name">Appointment Name:</label>
-                                    <input type="text" name="appointment_name" id="appointment_name" value="{{ request('appointment_name') }}">
+                                    <input type="text" name="appointment_name" id="appointment_name" value="{{ request('appointment_name') }}" class="form-control">
                                 </div>
-                                <div class="form-group">
-                                    <button type="submit" class="red-btn" id="filter-apply-button">Apply</button>
-                                    <button type="button" class="red-btn" id="filter-clear-button">Clear</button>
+                            </div>
+                            <div class="form-container" style="border: none">
+                                <div class="button-container" style="justify-content: center" id="filter-buttons">
+                                    <button id="toggle-filter-button" class="red-btn">Filter</button>
+                                    <button type="submit" class="red-btn togglers" id="filter-apply-button" style="display: none;">Apply</button>
+                                    <button type="button" class="red-btn togglers" id="filter-clear-button" style="display: none;">Clear</button>
                                 </div>
                             </div>
                         </div>

@@ -24,7 +24,7 @@
     <div class="p-6 text-right z-10 max-w-7xl mx-auto items-center pt-6">
         <nav>
             <!-- Primary Navigation Menu -->
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 flex justify-end h-15" x-data="{ open: false }">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 flex justify-end h-10" x-data="{ open: false }">
                 <div class="h-16">
                     <div>
                         <!-- Navigation Links -->

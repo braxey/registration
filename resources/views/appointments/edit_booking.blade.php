@@ -8,7 +8,7 @@
     </head>
     <body>
         <div class="flex justify-center items-center h-screen text-center">
-            <div class="container">
+            <div class="container form-container">
                 <div class="row">
                     <div class="col-md-8 offset-md-2">
                         <h2>Edit Booking Slots</h2>
@@ -19,7 +19,7 @@
 
                             <div class="form-group">
                                 <label for="slots">Slots</label>
-                                <input type="text" name="slots" id="slots" value="{{ $apptUserSlots }}">
+                                <input type="text" name="slots" id="slots" value="{{ $apptUserSlots }}" class="form-control">
                             </div>
 
                             <button type="submit" class="red-btn">Update</button>
@@ -27,7 +27,10 @@
                         <form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST" id="cancel-form">
                             @csrf
                             @method('POST')
-                            <button type="submit" class="red-btn">Cancel</button>
+                            <div class="form-group" style="text-align:center">
+                                <label for="cancel">Do you want to cancel your booking?</label>
+                                <button type="submit" class="red-btn">Cancel</button>
+                            </div>
                         </form>
 
                         <script>
