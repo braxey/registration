@@ -35,6 +35,9 @@ Route::middleware([
         // Get the authenticated user
         $user = Auth::user();
 
+        $allAppointmentIds = AppointmentUser::where('user_id', $user->id)
+            ->pluck('appointment_id');
+
         // Retrieve the IDs of past and upcoming appointments associated with the user
         $pastAppointmentIds = AppointmentUser::where('user_id', $user->id)
             ->whereHas('appointment', function ($query) {
@@ -49,10 +52,11 @@ Route::middleware([
             ->pluck('appointment_id');
 
         // Retrieve the past and upcoming appointments
+        $allAppointments = Appointment::whereIn('id', $allAppointmentIds)->get();
         $pastAppointments = Appointment::whereIn('id', $pastAppointmentIds)->get();
         $upcomingAppointments = Appointment::whereIn('id', $upcomingAppointmentIds)->get();
 
-        return view('dashboard', compact('pastAppointments', 'upcomingAppointments'));
+        return view('dashboard', compact('allAppointments', 'pastAppointments', 'upcomingAppointments'));
     })->name('dashboard');
 });
 
