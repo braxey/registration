@@ -31,16 +31,20 @@
                                         <td class="border border-slate-300">{{ $appointment->start_time }}</td>
                                         <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
                                         @if($appointment->start_time > now())
-                                            <td class="border border-slate-300"><form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST" id="cancel-form">
-                                                @csrf
-                                                @method('POST')
-                                                <button class="red-btn" type="submit">Cancel</button>
-                                            </form>
-                                            <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="GET" id="edit-form">
-                                                @csrf
-                                                @method('GET')
-                                                <button class="red-btn" type="submit">Edit</button>
-                                            </form></td>
+                                        <td class="border border-slate-300 flex justify-center items-center h-screen text-center">
+                                            <div class="button-container">
+                                                <form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST" id="cancel-form">
+                                                    @csrf
+                                                    @method('POST')
+                                                    <button class="red-btn" type="submit">Cancel</button>
+                                                </form>
+                                                <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="GET" id="edit-form">
+                                                    @csrf
+                                                    @method('GET')
+                                                    <button class="red-btn" type="submit">Edit</button>
+                                                </form>
+                                            </div>
+                                        </td>
                                         @endif
                                     </tr>
                                 @endforeach

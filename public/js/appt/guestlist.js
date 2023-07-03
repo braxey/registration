@@ -5,7 +5,10 @@ $(function(){
 
     $("#toggle-filter-button").on("click", function(e){
         e.preventDefault()
-        $("#filter-inputs-container").toggle()
+        $(".togglers").toggle()
+        $("#filter-buttons").css('justify-content', ($("#filter-buttons").css('justify-content') == "center"
+            ? "left"
+            : "center"))
     })
 
     $("#filter-clear-button").on("click", function(e) {

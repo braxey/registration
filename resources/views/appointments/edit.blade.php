@@ -7,7 +7,7 @@
         </head>
         <body>
             <div class="flex justify-center items-center h-screen text-center">
-                <div class="container">
+                <div class="container form-container">
                     <h1>Edit Appointment</h1>
 
                     <form action="{{ route('appointment.update', $appointment->id) }}" method="POST" id="update-form">
@@ -48,7 +48,10 @@
                 
                     <form action="{{ route('appointment.delete', $appointment->id) }}" method="POST" id="delete-form">
                         @csrf
-                        <button type="submit" class="red-btn">Delete</button>
+                        <div class="form-group" style="text-align:left">
+                            <label for="del">Do you want to permanantly delete the appointment?</label>
+                            <button type="submit" class="red-btn">Delete</button>
+                        </div>
                     </form>
                 </div>
             </div>
