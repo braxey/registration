@@ -7,7 +7,7 @@
     </head>
     <body>
         <div class="flex justify-center items-center h-screen text-center">
-            <div class="container">
+            <div class="container form-container">
                 <div class="row">
                     <div class="col-md-8 offset-md-2">
                         <h2>Book Slots</h2>
@@ -17,7 +17,7 @@
 
                             <div class="form-group">
                                 <label for="slots">Slots</label>
-                                <input type="text" name="slots" id="slots">
+                                <input type="text" name="slots" id="slots" class="form-control">
                             </div>
                             <button class="red-btn" type="submit">Book</button>
                         </form>
