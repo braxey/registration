@@ -90,3 +90,48 @@
 .red-btn:hover {
     background-image: linear-gradient(rgb(0 0 0/20%) 0 0);
 }
+
+.tab-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.tabs {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.tab {
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.tab:first-child {
+    border-top-left-radius: 5px;
+}
+
+.tab:last-child {
+    border-top-right-radius: 5px;
+}
+
+.tab:hover {
+    background-color: #e0e0e0;
+}
+
+.tab.active {
+    background-color: #fff;
+    border-color: #ccc;
+    border-bottom: 1px solid #fff;
+}
+
+.tab-content {
+    border: 1px solid #ccc;
+    padding: 20px;
+}
+

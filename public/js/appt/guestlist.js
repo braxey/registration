@@ -1,6 +1,4 @@
 $(function(){
-    // const filterContent = document.getElementById('filter-apply-button');
-    // const clearFilterBtn = document.getElementById('filter-clear-button');
     var filterForm = document.getElementById("filter-form")
 
     $("#toggle-filter-button").on("click", function(e){
