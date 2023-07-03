@@ -29,6 +29,7 @@ class AppointmentController extends Controller
         $guestName = $request->input('guest_name');
         $startTime = $request->input('start_time');
         $appointmentName = $request->input('appointment_name');
+        $status = $request->input('status');
 
         $guests = AppointmentUser::query()
             ->when($guestName, function ($query) use ($guestName) {
@@ -46,8 +47,13 @@ class AppointmentController extends Controller
                     $subQuery->where('title', 'LIKE', '%' . $appointmentName . '%');
                 });
             })
+            ->when($status, function ($query) use ($status) {
+                $query->whereHas('appointment', function ($subQuery) use ($status) {
+                    $subQuery->where('status', $status);
+                });
+            })
             ->get();
-    
+
         $user = Auth::user();
 
         return ($user->admin)

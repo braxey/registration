@@ -16,12 +16,29 @@ class UpdateAppointmentStatus extends Command
 
     public function handle()
     {
-        $appointments = Appointment::where('end_time', '<', now())->get();
-
+        $appointments = Appointment::all();
+        $now = now();
         foreach ($appointments as $appointment) {
-           if($appointment->past_end == false){ 
+            
+            if($appointment->start_time > $now){
+                // Appointment is upcoming
+                if($appointment->status != "upcoming"){
+                    $appointment->status = "upcoming";
+                    $appointment->save();
+                }
+            }else if($appointment->end_time > $now){
+                // Appointment is in progress
+                if($appointment->status != "in progress"){
+                    $appointment->status = "in progress";
+                    $appointment->save();
+                }
+            }else if($appointment->end_time < $now && $appointment->past_end == false){ 
                 // Set the appointment to past end
                 $appointment->past_end = true;
+                $appointment->save();
+
+                // Set the status to completed
+                $appointment->status = "completed";
                 $appointment->save();
 
                 // Set the number of available slots to 0
