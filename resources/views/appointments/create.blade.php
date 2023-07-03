@@ -7,7 +7,7 @@
         </head>
         <body>
             <div class="flex justify-center items-center h-screen text-center">
-                <div class="container">
+                <div class="container form-container">
                     <h1>Create Appointment</h1>
 
                     <form action="{{ route('appointment.create') }}" method="POST" id="create-form">
