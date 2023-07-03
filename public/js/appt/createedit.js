@@ -104,7 +104,7 @@ function validateInput(){
 // 4 - clean
 function validateText(str){
     if(str.length == 0) return [false, -1]
-    if(str.length > 50) return [false, 0]
+    if(str.length > 200) return [false, 0]
     if(str.includes("\"")) return [false, 1]
 
     let strtmp = ""
