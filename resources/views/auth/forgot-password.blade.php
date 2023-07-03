@@ -2,7 +2,7 @@
     @include('../navigation-menu')
     <x-authentication-card>
         <x-slot name="logo">
-            <x-authentication-card-logo />
+            <img src="{{ asset('images/kabc-logo.png') }}" alt="Custom Logo">
         </x-slot>
 
         <div class="mb-4 text-sm text-gray-600">
