@@ -65,6 +65,7 @@
                             </div>
                             <div id="upcoming-table" class="appointment-table" style="display: none;">
                                 <!-- Upcoming appointments table content here -->
+                                @php $currCount = 0; @endphp
                                 @if ($upcomingAppointments->count() > 0)
                                     <h2>Upcoming Appointments</h2>
                                     <!-- component -->
@@ -80,6 +81,9 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($upcomingAppointments as $appointment)
+                                                @php 
+                                                    $currCount += (\App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken')); 
+                                                @endphp
                                                 <tr class="border border-slate-300">
                                                     <td class="border border-slate-300">{{ $appointment->title }}</td>
                                                     <td class="border border-slate-300">{{ $appointment->description }}</td>
@@ -137,6 +141,9 @@
                                     <p>No past appointments found.</p>
                                 @endif
                             </div>
+                        </div>
+                        <div align="right">
+                            <b>Current number of slots booked: {{$currCount}}/6</b>
                         </div>
                     </div>
                 </div>
