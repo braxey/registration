@@ -158,8 +158,8 @@ class AppointmentController extends Controller
             ]);
         }
     
-        // Redirect to a confirmation page
-        return redirect()->route('appointment.confirmation');
+        // Redirect to a dashboard
+        return redirect()->route('dashboard');
     }
 
     // Show booking edit or handle request to update an existing booking
@@ -224,8 +224,8 @@ class AppointmentController extends Controller
             ->where('appointment_id', $appointment->id)
             ->increment('slots_taken', $slotsRequested-$apptUserSlots);
     
-        // Redirect to a confirmation page
-        return redirect()->route('appointment.confirmation');
+        // Redirect to a dashboard
+        return redirect()->route('dashboard');
     }
 
     // Handle request to cancel a booking
@@ -271,14 +271,6 @@ class AppointmentController extends Controller
             // Redirect back with an error message
             return redirect()->back();
         }
-    }
-
-    // Show confirmation page
-    public function confirmation(){
-        // TODO: customize by type of confirmation (initial booking vs update booking)
-
-        // Return the view for the appointment confirmation page
-        return view('appointments.confirmation');
     }
 
     // Show the edit update appointment or handle update form submission
