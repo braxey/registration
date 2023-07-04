@@ -17,6 +17,8 @@
 
                     <!-- Filter Form -->
                     <form id="filter-form" method="GET" action="{{ route('appointments.guestlist') }}">
+                        @csrf
+                        @method('GET')
                         <div class="filter-container flex justify-center items-center h-screen">
                             <div id="filter-inputs-container" style="display: none;" class="form-container togglers">
                                 <div class="form-group">
