@@ -6,7 +6,9 @@
     <html>
         <head>
             <link rel="stylesheet" href="{{asset('css/main.css')}}">
-            <script src="{{asset('js/dist/jquery.min.js')}}"></script>
+            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
             <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
         </head>
         <body>
@@ -45,15 +47,10 @@
                                                     @if($appointment->start_time > now())
                                                     <td class="border border-slate-300 flex justify-center items-center h-screen text-center">
                                                         <div class="button-container">
-                                                            <form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST" id="cancel-form">
-                                                                @csrf
-                                                                @method('POST')
-                                                                <button class="red-btn" type="submit">Cancel</button>
-                                                            </form>
                                                             <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="GET" id="edit-form">
                                                                 @csrf
                                                                 @method('GET')
-                                                                <button class="red-btn" type="submit">Edit</button>
+                                                                <button class="red-btn" type="submit">Edit Booking</button>
                                                             </form>
                                                         </div>
                                                     </td>
@@ -94,15 +91,10 @@
                                                     @if($appointment->start_time > now())
                                                     <td class="border border-slate-300 flex justify-center items-center h-screen text-center">
                                                         <div class="button-container">
-                                                            <form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST" id="cancel-form">
-                                                                @csrf
-                                                                @method('POST')
-                                                                <button class="red-btn" type="submit">Cancel</button>
-                                                            </form>
                                                             <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="GET" id="edit-form">
                                                                 @csrf
                                                                 @method('GET')
-                                                                <button class="red-btn" type="submit">Edit</button>
+                                                                <button class="red-btn" type="submit">Edit Booking</button>
                                                             </form>
                                                         </div>
                                                     </td>

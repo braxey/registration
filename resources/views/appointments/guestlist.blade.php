@@ -5,8 +5,10 @@
     <html>
         <head>
             <title>Guestlist</title>
-            <script src="{{asset('js/dist/jquery.min.js')}}"></script>
             <link rel="stylesheet" href="{{asset('css/main.css')}}">
+            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
         </head>
         <body>
             <div class="flex justify-center items-center h-screen">
@@ -44,25 +46,27 @@
                             </div>
                             <div class="form-container" style="border: none; max-width: 1000px !important;">
                                 <div class="button-container" style="justify-content: left;" id="filter-buttons">
-                                    <button id="toggle-filter-button" class="red-btn">Filter</button>
                                     <button type="submit" class="red-btn togglers" id="filter-apply-button" style="display: none;">Apply</button>
                                     <button type="button" class="red-btn togglers" id="filter-clear-button" style="display: none;">Clear</button>
+                                    <button id="toggle-filter-button" class="red-btn">Filter</button>
                                 </div>
                             </div>
                         </div>
                     </form>
-                    <table class="table mx-auto border border-slate-300" style="margin-bottom: 200px;">
+                    <div align="right">
+                        <b>Total Slots in Table: </b> {{$totalSlotsTaken}}
+                    </div>
+                    <table class="table mx-auto border border-slate-300 appt-pagination">
                         <thead>
                             <tr class="border border-slate-300">
                                 <th class="border border-slate-300">Title</th>
                                 <th class="border border-slate-300">Start Time</th>
                                 <th class="border border-slate-300">Status</th>
                                 <th class="border border-slate-300">Guest</th>
-                                <th class="border border-slate-300">Slots</th>
+                                <th class="border border-slate-300 slot-col">Slots</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @php $count = 0; @endphp
                             @foreach ($guests as $guest)
                                 <tr class="border border-slate-300">
                                     <td class="border border-slate-300">{{ $guest->appointment->title }}</td>
@@ -71,12 +75,7 @@
                                     <td class="border border-slate-300">{{ $guest->user->name }}</td>
                                     <td class="border border-slate-300">{{ $guest->slots_taken }}</td>
                                 </tr>
-                                @php $count += $guest->slots_taken; @endphp
                             @endforeach
-                            <tr class="border border-slate-300" style="background-color: #f2f2f2;">
-                                <td colspan="4" class="border border-slate-300" style="text-align: left;"><b>Total Bookings: </b></td> 
-                                <td class="border border-slate-300">{{$count}}</td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
