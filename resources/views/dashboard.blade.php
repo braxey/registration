@@ -1,5 +1,6 @@
 @php
     use Carbon\Carbon;
+    use Illuminate\Support\Facades\Auth;
 @endphp
 <x-app-layout>
     <html>
@@ -11,7 +12,7 @@
         <body>
             <div class="flex justify-center items-center h-screen text-center">
                 <div class="container">
-                    <h1>Dashboard</h1>
+                    <h1 class="flex justify-center items-center h-screen" style="font-size: larger; margin-bottom: 25px">{{Auth::user()->name}}'s Dashboard</h1>
 
                     <div class="tab-container">
                         <div class="tabs">

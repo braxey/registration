@@ -4,13 +4,14 @@
 <x-app-layout>
     <html>
         <head>
+            <title>Guestlist</title>
             <script src="{{asset('js/dist/jquery.min.js')}}"></script>
             <link rel="stylesheet" href="{{asset('css/main.css')}}">
         </head>
         <body>
             <div class="flex justify-center items-center h-screen">
                 <div class="container">
-                    <h1 class="flex justify-center items-center h-screen">Guestlist</h1>
+                    <h1 class="flex justify-center items-center h-screen" style="font-size: larger">Admin Guestlist</h1>
 
                     <!-- Filter Form -->
                     <form id="filter-form" method="GET" action="{{ route('appointments.guestlist') }}">

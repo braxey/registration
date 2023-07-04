@@ -11,7 +11,7 @@
             <div class="flex justify-center items-center h-screen">
                 
                 <div class="container">
-                    <h1 class="mx-auto flex justify-center items-center h-screen">Appointments</h1>
+                <h1 class="flex justify-center items-center h-screen" style="font-size: larger">Appointments</h1>
                     @if ($user && $user->admin)
                         <a class="flex justify-left h-screen red-btn text-center" style="max-width: 80px;" href="{{ route('appointment.create_form') }}">Create</a>
                     @endif
