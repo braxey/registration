@@ -41,7 +41,7 @@
                                                     <td class="border border-slate-300">{{ $appointment->title }}</td>
                                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                                     <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
-                                                    <td class="border border-slate-300">{{ $appointment->status }}</td>
+                                                    <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
                                                     @if($appointment->start_time > now())
                                                     <td class="border border-slate-300 flex justify-center items-center h-screen text-center">
                                                         <div class="button-container">
@@ -90,7 +90,7 @@
                                                     <td class="border border-slate-300">{{ $appointment->title }}</td>
                                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                                     <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
-                                                    <td class="border border-slate-300">{{ $appointment->status }}</td>
+                                                    <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
                                                     @if($appointment->start_time > now())
                                                     <td class="border border-slate-300 flex justify-center items-center h-screen text-center">
                                                         <div class="button-container">
@@ -133,7 +133,7 @@
                                                     <td class="border border-slate-300">{{ $appointment->title }}</td>
                                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                                     <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
-                                                    <td class="border border-slate-300">{{ $appointment->status }}</td>
+                                                    <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -143,7 +143,7 @@
                                 @endif
                             </div>
                         </div>
-                        <div align="right">
+                        <div align="right" style="margin-bottom: 200px;">
                             <b>Current number of slots booked: {{$currCount}}/6</b>
                         </div>
                     </div>
@@ -151,6 +151,7 @@
             </div>
         <script type="module" src="{{ asset('js/appt/cancelbooking.js') }}"></script>
         <script type="module" src="{{ asset('js/appt/dashboard.js') }}"></script>
+        <script type="module" src="{{ asset('js/appt/highlight.js') }}"></script>
         </body>
     </html>
 </x-app-layout>
