@@ -41,6 +41,7 @@ class AppointmentController extends Controller
     public function guestlist(Request $request){
         
         $guestName = $request->input('guest_name');
+        $startDate = $request->input('start_date');
         $startTime = $request->input('start_time');
         $appointmentName = $request->input('appointment_name');
         $status = $request->input('status');
@@ -51,9 +52,9 @@ class AppointmentController extends Controller
                     $subQuery->where('name', 'LIKE', '%' . $guestName . '%');
                 });
             })
-            ->when($startTime, function ($query) use ($startTime) {
-                $query->whereHas('appointment', function ($subQuery) use ($startTime) {
-                    $subQuery->where('start_time', 'LIKE', '%' . $startTime . '%');
+            ->when($startDate || $startTime, function ($query) use ($startDate, $startTime) {
+                $query->whereHas('appointment', function ($subQuery) use ($startDate, $startTime) {
+                    $subQuery->where('start_time', 'LIKE', '%' . $startDate . ' ' . $startTime . '%');
                 });
             })
             ->when($appointmentName, function ($query) use ($appointmentName) {

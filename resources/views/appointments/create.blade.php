@@ -24,12 +24,14 @@
 
                         <div class="form-group">
                             <label for="start_time">Start Time</label>
-                            <input type="datetime-local" name="start_time" id="start_time" class="form-control" value="{{ now() }}">
+                            <?php $startTime = date('Y-m-d\TH:i', strtotime(now())); ?>
+                            <input type="datetime-local" name="start_time" id="start_time" class="form-control" value="{{ $startTime }}">
                         </div>
 
                         <div class="form-group">
                             <label for="end_time">End Time</label>
-                            <input type="datetime-local" name="end_time" id="end_time" class="form-control" value="{{ now()->addHours(1) }}">
+                            <?php $endTime = date('Y-m-d\TH:i', strtotime(now()->addHours(1))); ?>
+                            <input type="datetime-local" name="end_time" id="end_time" class="form-control" value="{{ $endTime }}">
                         </div>
 
                         <div class="form-group">

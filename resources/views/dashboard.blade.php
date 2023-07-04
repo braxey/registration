@@ -1,3 +1,6 @@
+@php
+    use Carbon\Carbon;
+@endphp
 <x-app-layout>
     <html>
         <head>
@@ -12,21 +15,19 @@
 
                     <div class="tab-container">
                         <div class="tabs">
-                            <button class="tab active" data-tab="all" id="all-tab">All</button>
-                            <button class="tab" data-tab="upcoming" id="upcoming-tab">Upcoming</button>
-                            <button class="tab" data-tab="past" id="past-tab">Past</button>
+                            <button class="tab active" data-tab="all" id="all-tab">All Appointments</button>
+                            <button class="tab" data-tab="upcoming" id="upcoming-tab">Upcoming Appointments</button>
+                            <button class="tab" data-tab="past" id="past-tab">Past Appointments</button>
                         </div>
                         <div class="tab-content">
                             <div id="all-table" class="appointment-table">
                                 <!-- All appointments table content here -->
                                 @if ($allAppointments->count() > 0)
-                                    <h2>Your Appointments</h2>
                                     <!-- component -->
                                     <table class="table mx-auto border border-slate-300">
                                         <thead>
                                             <tr class="border border-slate-300">
                                                 <th class="border border-slate-300">Title</th>
-                                                <th class="border border-slate-300">Description</th>
                                                 <th class="border border-slate-300">Start Time</th>
                                                 <th class="border border-slate-300">Slots Booked</th>
                                                 <th class="border border-slate-300">Status</th>
@@ -37,8 +38,7 @@
                                             @foreach ($allAppointments as $appointment)
                                                 <tr class="border border-slate-300">
                                                     <td class="border border-slate-300">{{ $appointment->title }}</td>
-                                                    <td class="border border-slate-300">{{ $appointment->description }}</td>
-                                                    <td class="border border-slate-300">{{ $appointment->start_time }}</td>
+                                                    <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                                     <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
                                                     <td class="border border-slate-300">{{ $appointment->status }}</td>
                                                     @if($appointment->start_time > now())
@@ -62,20 +62,18 @@
                                         </tbody>
                                     </table>
                                 @else
-                                    <p>No upcoming appointments found.</p>
+                                    <p>No upcoming or past appointments.</p>
                                 @endif
                             </div>
                             <div id="upcoming-table" class="appointment-table" style="display: none;">
                                 <!-- Upcoming appointments table content here -->
                                 @php $currCount = 0; @endphp
                                 @if ($upcomingAppointments->count() > 0)
-                                    <h2>Upcoming Appointments</h2>
                                     <!-- component -->
                                     <table class="table mx-auto border border-slate-300">
                                         <thead>
                                             <tr class="border border-slate-300">
                                                 <th class="border border-slate-300">Title</th>
-                                                <th class="border border-slate-300">Description</th>
                                                 <th class="border border-slate-300">Start Time</th>
                                                 <th class="border border-slate-300">Slots Booked</th>
                                                 <th class="border border-slate-300">Status</th>
@@ -89,8 +87,7 @@
                                                 @endphp
                                                 <tr class="border border-slate-300">
                                                     <td class="border border-slate-300">{{ $appointment->title }}</td>
-                                                    <td class="border border-slate-300">{{ $appointment->description }}</td>
-                                                    <td class="border border-slate-300">{{ $appointment->start_time }}</td>
+                                                    <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                                     <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
                                                     <td class="border border-slate-300">{{ $appointment->status }}</td>
                                                     @if($appointment->start_time > now())
@@ -120,12 +117,10 @@
                             <div id="past-table" class="appointment-table" style="display: none;">
                                 <!-- Past appointments table content here -->
                                 @if ($pastAppointments->count() > 0)
-                                    <h2>Past Appointments</h2>
                                     <table class="table mx-auto border border-slate-300">
                                         <thead>
                                             <tr class="border border-slate-300">
                                                 <th class="border border-slate-300">Title</th>
-                                                <th class="border border-slate-300">Description</th>
                                                 <th class="border border-slate-300">Start Time</th>
                                                 <th class="border border-slate-300">Slots Booked</th>
                                                 <th class="border border-slate-300">Status</th>
@@ -135,8 +130,7 @@
                                             @foreach ($pastAppointments as $appointment)
                                                 <tr class="border border-slate-300">
                                                     <td class="border border-slate-300">{{ $appointment->title }}</td>
-                                                    <td class="border border-slate-300">{{ $appointment->description }}</td>
-                                                    <td class="border border-slate-300">{{ $appointment->start_time }}</td>
+                                                    <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                                     <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
                                                     <td class="border border-slate-300">{{ $appointment->status }}</td>
                                                 </tr>

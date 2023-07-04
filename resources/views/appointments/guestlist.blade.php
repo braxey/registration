@@ -1,3 +1,6 @@
+@php
+    use Carbon\Carbon;
+@endphp
 <x-app-layout>
     <html>
         <head>
@@ -18,8 +21,11 @@
                                     <input type="text" name="guest_name" id="guest_name" value="{{ request('guest_name') }}" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label for="start_time">Start Time:</label>
-                                    <input type="text" name="start_time" id="start_time" value="{{ request('start_time') }}" class="form-control">
+                                    <label for="start_date_time">Start Date and Time</label>
+                                    <div class="flex">
+                                        <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" class="form-control">
+                                        <input type="time" name="start_time" id="start_time" value="{{ request('start_time') }}" class="form-control">
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="appointment_name">Appointment Name:</label>
@@ -35,8 +41,8 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-container" style="border: none">
-                                <div class="button-container" style="justify-content: center" id="filter-buttons">
+                            <div class="form-container" style="border: none; max-width: 1000px !important;">
+                                <div class="button-container" style="justify-content: left;" id="filter-buttons">
                                     <button id="toggle-filter-button" class="red-btn">Filter</button>
                                     <button type="submit" class="red-btn togglers" id="filter-apply-button" style="display: none;">Apply</button>
                                     <button type="button" class="red-btn togglers" id="filter-clear-button" style="display: none;">Clear</button>
@@ -59,7 +65,7 @@
                             @foreach ($guests as $guest)
                                 <tr class="border border-slate-300">
                                     <td class="border border-slate-300">{{ $guest->appointment->title }}</td>
-                                    <td class="border border-slate-300">{{ $guest->appointment->start_time }}</td>
+                                    <td class="border border-slate-300">{{ \Carbon\Carbon::parse($guest->appointment->start_time)->format('F d, Y g:i A') }}</td>
                                     <td class="border border-slate-300">{{ $guest->appointment->status }}</td>
                                     <td class="border border-slate-300">{{ $guest->user->name }}</td>
                                     <td class="border border-slate-300">{{ $guest->slots_taken }}</td>
