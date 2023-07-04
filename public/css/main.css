@@ -61,7 +61,7 @@
     background-color: #fff;
     border-color: #1e656d;
     outline: 0;
-    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+    box-shadow: 0 0 0 0.25rem #1e656d;
 }
 
 .button-container {
