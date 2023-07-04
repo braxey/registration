@@ -7,6 +7,9 @@ $(function(){
         $("#filter-buttons").css('justify-content', ($("#filter-buttons").css('justify-content') == "center"
             ? "left"
             : "center"))
+        $("#toggle-filter-button").text(($("#filter-buttons").css('justify-content') == "center"
+        ? "Close"
+        : "Filter"))
     })
 
     $("#filter-clear-button").on("click", function(e) {
