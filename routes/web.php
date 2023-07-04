@@ -88,7 +88,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::match(['GET', 'POST'], '/appointments/{id}/book', [AppointmentController::class, 'book'])->name('appointment.book');
     Route::match(['GET', 'PUT'], '/appointments/{id}/editbooking', [AppointmentController::class, 'edit_booking'])->name('appointment.editbooking');
     Route::post('/appointments/{id}/cancelbooking', [AppointmentController::class, 'cancel_booking'])->name('appointment.cancelbooking');
-    Route::get('/appointments/confirmation', [AppointmentController::class, 'confirmation'])->name('appointment.confirmation');
 });
 
 Route::middleware(['auth'])->group(function () {
