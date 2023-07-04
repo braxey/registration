@@ -1,6 +1,7 @@
 <x-app-layout>
     <html>
         <head>
+            <title>Edit Appointment</title>
             <script src="{{asset('js/dist/jquery.min.js')}}"></script>
             <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
             <link rel="stylesheet" href="{{asset('css/main.css')}}">
