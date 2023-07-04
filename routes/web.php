@@ -52,9 +52,29 @@ Route::middleware([
             ->pluck('appointment_id');
 
         // Retrieve the past and upcoming appointments
-        $allAppointments = Appointment::whereIn('id', $allAppointmentIds)->get();
-        $pastAppointments = Appointment::whereIn('id', $pastAppointmentIds)->get();
-        $upcomingAppointments = Appointment::whereIn('id', $upcomingAppointmentIds)->get();
+        $allAppointments = Appointment::whereIn('id', $allAppointmentIds)
+            ->orderByRaw("
+                CASE
+                    WHEN status = 'upcoming' OR status = 'in progress' THEN 1
+                    WHEN status = 'completed' THEN 2
+                    ELSE 3
+                END
+            ")
+            ->orderByRaw("
+                CASE WHEN status = 'completed' THEN start_time END DESC
+            ")
+            ->orderByRaw("
+                CASE WHEN status != 'completed' THEN ABS(DATEDIFF(start_time, NOW())) END
+            ")
+            ->get();
+        $pastAppointments = Appointment::whereIn('id', $pastAppointmentIds)
+            ->orderBy('start_time', 'desc')
+            ->get();
+        $upcomingAppointments = Appointment::whereIn('id', $upcomingAppointmentIds)
+            ->orderByRaw("
+                CASE WHEN status != 'completed' THEN ABS(DATEDIFF(start_time, NOW())) END
+            ")
+            ->get();
 
         return view('dashboard', compact('allAppointments', 'pastAppointments', 'upcomingAppointments'));
     })->name('dashboard');
