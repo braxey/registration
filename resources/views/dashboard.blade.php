@@ -5,6 +5,7 @@
 <x-app-layout>
     <html>
         <head>
+            <title>Dashboard</title>
             <link rel="stylesheet" href="{{asset('css/main.css')}}">
             <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
