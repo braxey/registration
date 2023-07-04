@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 const MAX_SLOTS_PER_USER = 6;
 
@@ -14,7 +15,20 @@ class AppointmentController extends Controller
     // Show all available appointments
     public function index(){
         // Retrieve all appointments
-        $appointments = Appointment::all();
+        $appointments = Appointment::orderByRaw("
+                CASE
+                    WHEN status = 'upcoming' OR status = 'in progress' THEN 1
+                    WHEN status = 'completed' THEN 2
+                    ELSE 3
+                END
+            ")
+            ->orderByRaw("
+                CASE WHEN status = 'completed' THEN start_time END DESC
+            ")
+            ->orderByRaw("
+                CASE WHEN status != 'completed' THEN ABS(DATEDIFF(start_time, NOW())) END
+            ")
+            ->get();
 
         // Retrieve the authenticated user
         $user = Auth::user();
@@ -52,6 +66,20 @@ class AppointmentController extends Controller
                     $subQuery->where('status', $status);
                 });
             })
+            ->join('appointments', 'appointments.id', '=', 'appointment_user.appointment_id')
+            ->orderByRaw("
+                CASE
+                    WHEN appointments.status = 'upcoming' OR appointments.status = 'in progress' THEN 1
+                    WHEN appointments.status = 'completed' THEN 2
+                    ELSE 3
+                END
+            ")
+            ->orderByRaw("
+                CASE WHEN appointments.status = 'completed' THEN appointments.start_time END DESC
+            ")
+            ->orderByRaw("
+                CASE WHEN appointments.status != 'completed' THEN ABS(DATEDIFF(appointments.start_time, NOW())) END
+            ")
             ->get();
 
         $user = Auth::user();
