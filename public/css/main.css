@@ -134,3 +134,7 @@
     padding: 20px;
 }
 
+.highlight {
+    border-radius: 10px; /* Set the border radius to make it rounded */
+    padding: 2px 5px;
+  }
