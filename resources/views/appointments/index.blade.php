@@ -6,16 +6,17 @@
     <html>
         <head>
             <link rel="stylesheet" href="{{asset('css/main.css')}}">
+            <script src="{{asset('js/dist/jquery.min.js')}}"></script>
         </head>
         <body>
             <div class="flex justify-center items-center h-screen">
                 
-                <div class="container">
-                    <h1 class="mx-auto flex justify-center items-center h-screen">Appointments</h1>
+                <div class="container" >
+                <h1 class="flex justify-center items-center h-screen" style="font-size: larger">Appointments</h1>
                     @if ($user && $user->admin)
                         <a class="flex justify-left h-screen red-btn text-center" style="max-width: 80px;" href="{{ route('appointment.create_form') }}">Create</a>
                     @endif
-                    <table class="table mx-auto border border-slate-300">  
+                    <table class="table mx-auto border border-slate-300" style="margin-bottom: 200px;">  
                         <thead>
                             <tr class="border border-slate-300">
                                 <th class="border border-slate-300">Title</th>
@@ -31,7 +32,7 @@
                                     <td class="border border-slate-300">{{ $appointment->title }}</td>
                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                     <td class="border border-slate-300">{{ max($appointment->total_slots - $appointment->slots_taken, 0) }}</td>
-                                    <td class="border border-slate-300">{{ $appointment->status }}</td>
+                                    <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
                                     <td class="border border-slate-300">
                                         @if ($user && $user->admin)
                                             <a class="red-btn" href="{{ route('appointment.edit', $appointment->id) }}">Edit</a>
@@ -50,6 +51,7 @@
                     </table>
                 </div>
             </div>
+            <script type="module" src="{{ asset('js/appt/highlight.js') }}"></script>
         </body>
     </html>
 </x-app-layout>

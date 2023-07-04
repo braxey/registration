@@ -4,13 +4,14 @@
 <x-app-layout>
     <html>
         <head>
+            <title>Guestlist</title>
             <script src="{{asset('js/dist/jquery.min.js')}}"></script>
             <link rel="stylesheet" href="{{asset('css/main.css')}}">
         </head>
         <body>
             <div class="flex justify-center items-center h-screen">
                 <div class="container">
-                    <h1 class="flex justify-center items-center h-screen">Guestlist</h1>
+                    <h1 class="flex justify-center items-center h-screen" style="font-size: larger">Admin Guestlist</h1>
 
                     <!-- Filter Form -->
                     <form id="filter-form" method="GET" action="{{ route('appointments.guestlist') }}">
@@ -50,7 +51,7 @@
                             </div>
                         </div>
                     </form>
-                    <table class="table mx-auto border border-slate-300">
+                    <table class="table mx-auto border border-slate-300" style="margin-bottom: 200px;">
                         <thead>
                             <tr class="border border-slate-300">
                                 <th class="border border-slate-300">Title</th>
@@ -66,13 +67,13 @@
                                 <tr class="border border-slate-300">
                                     <td class="border border-slate-300">{{ $guest->appointment->title }}</td>
                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($guest->appointment->start_time)->format('F d, Y g:i A') }}</td>
-                                    <td class="border border-slate-300">{{ $guest->appointment->status }}</td>
+                                    <td class="border border-slate-300"><span class="highlight text-white">{{ $guest->appointment->status }}</span></td>
                                     <td class="border border-slate-300">{{ $guest->user->name }}</td>
                                     <td class="border border-slate-300">{{ $guest->slots_taken }}</td>
                                 </tr>
                                 @php $count += $guest->slots_taken; @endphp
                             @endforeach
-                            <tr class="border border-slate-300">
+                            <tr class="border border-slate-300" style="background-color: #f2f2f2;">
                                 <td colspan="4" class="border border-slate-300" style="text-align: left;"><b>Total Bookings: </b></td> 
                                 <td class="border border-slate-300">{{$count}}</td>
                             </tr>
@@ -81,6 +82,7 @@
                 </div>
             </div>
             <script type="module" src="{{ asset('js/appt/guestlist.js') }}"></script>
+            <script type="module" src="{{ asset('js/appt/highlight.js') }}"></script>
         </body>
     </html>
 </x-app-layout>
