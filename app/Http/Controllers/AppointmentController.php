@@ -84,9 +84,10 @@ class AppointmentController extends Controller
             ->get();
 
         $user = Auth::user();
+        $totalSlotsTaken = $guests->sum('slots_taken');
 
         return ($user->admin)
-            ? view('appointments.guestlist', compact('guests'))
+            ? view('appointments.guestlist', compact('guests', 'totalSlotsTaken'))
             : redirect()->route('appointments.index');
     }
 
