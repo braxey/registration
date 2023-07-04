@@ -1,4 +1,5 @@
 @php
+    use Carbon\Carbon;
     use App\Models\AppointmentUser;
 @endphp
 <x-app-layout>
@@ -12,7 +13,7 @@
                 <div class="container">
                     <h1 class="mx-auto flex justify-center items-center h-screen">Appointments</h1>
                     @if ($user && $user->admin)
-                        <a class="mx-auto flex justify-center items-center h-screen red-btn" style="max-width: 60px;" href="{{ route('appointment.create_form') }}">Create</a>
+                        <a class="flex justify-left h-screen red-btn text-center" style="max-width: 80px;" href="{{ route('appointment.create_form') }}">Create</a>
                     @endif
                     <table class="table mx-auto border border-slate-300">  
                         <thead>
@@ -28,7 +29,7 @@
                             @foreach ($appointments as $appointment)
                                 <tr class="border border-slate-300">
                                     <td class="border border-slate-300">{{ $appointment->title }}</td>
-                                    <td class="border border-slate-300">{{ $appointment->start_time }}</td>
+                                    <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                     <td class="border border-slate-300">{{ max($appointment->total_slots - $appointment->slots_taken, 0) }}</td>
                                     <td class="border border-slate-300">{{ $appointment->status }}</td>
                                     <td class="border border-slate-300">
