@@ -10,7 +10,6 @@
                         <!-- Add your event information here -->
                         <h1>{{ $eventName }}</h1>
                     </div>
-                    <br>
                     <div>
                         <p>{{ $eventDescription }}</p>
                     </div>
