@@ -1,3 +1,4 @@
+<title>Register</title>
 <x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">
@@ -17,6 +18,11 @@
             <div class="mt-4">
                 <x-label for="email" value="{{ __('Email') }}" />
                 <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
+            </div>
+
+            <div class="mt-4">
+                <x-label for="phone_number" :value="__('Phone Number')" />
+                <x-input id="phone_number" type="text" class="mt-1 block w-full" name="phone_number" :value="old('phone_number')" required />
             </div>
 
             <div class="mt-4">
