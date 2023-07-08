@@ -1,3 +1,4 @@
+<title>Forgot Password</title>
 <x-guest-layout>
     @include('../navigation-menu')
     <x-authentication-card>

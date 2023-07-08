@@ -1,3 +1,4 @@
+<title>Two Factor Challenge</title>
 <x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">

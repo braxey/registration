@@ -1,3 +1,4 @@
+<title>Login</title>
 <x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">
