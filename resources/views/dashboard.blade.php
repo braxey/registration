@@ -15,7 +15,7 @@
         <body>
             <div class="flex justify-center items-center h-screen text-center">
                 <div class="container">
-                    <h1 class="flex justify-center items-center h-screen" style="font-size: larger; margin-bottom: 25px">{{Auth::user()->name}}'s Dashboard</h1>
+                    <h1 class="flex justify-center items-center h-screen" style="font-size: larger; margin-bottom: 25px">{{Auth::user()->first_name}}'s Dashboard</h1>
 
                     <div class="tab-container">
                         <div class="tabs">
@@ -61,7 +61,7 @@
                                         </tbody>
                                     </table>
                                 @else
-                                    <p>No upcoming or past appointments.</p>
+                                    <p>No past or upcoming appointments.</p>
                                 @endif
                             </div>
                             <div id="upcoming-table" class="appointment-table" style="display: none;">

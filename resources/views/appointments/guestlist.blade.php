@@ -21,9 +21,15 @@
                         @method('GET')
                         <div class="filter-container flex justify-center items-center h-screen">
                             <div id="filter-inputs-container" style="display: none;" class="form-container togglers">
-                                <div class="form-group">
-                                    <label for="guest_name">Guest Name:</label>
-                                    <input type="text" name="guest_name" id="guest_name" value="{{ request('guest_name') }}" class="form-control">
+                                <div class="form-group flex">
+                                    <div class = "mr-2">
+                                        <label for="first_name">First Name:</label>
+                                        <input type="text" name="first_name" id="first_name" value="{{ request('first_name') }}" class="form-control">
+                                    </div>
+                                    <div>
+                                        <label for="last_name">Last Name:</label>
+                                        <input type="text" name="last_name" id="last_name" value="{{ request('last_name') }}" class="form-control">
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="start_date_time">Start Date and Time</label>
@@ -74,7 +80,7 @@
                                     <td class="border border-slate-300">{{ $guest->appointment->title }}</td>
                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($guest->appointment->start_time)->format('F d, Y g:i A') }}</td>
                                     <td class="border border-slate-300"><span class="highlight text-white">{{ $guest->appointment->status }}</span></td>
-                                    <td class="border border-slate-300">{{ $guest->user->name }}</td>
+                                    <td class="border border-slate-300">{{ $guest->user->first_name }} {{ $guest->user->last_name }}</td>
                                     <td class="border border-slate-300">{{ $guest->slots_taken }}</td>
                                 </tr>
                             @endforeach
