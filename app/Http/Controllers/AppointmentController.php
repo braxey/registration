@@ -40,16 +40,22 @@ class AppointmentController extends Controller
     // Show the admin-only guestlist
     public function guestlist(Request $request){
         
-        $guestName = $request->input('guest_name');
+        $firstName = $request->input('first_name');
+        $lastName  = $request->input('last_name');
         $startDate = $request->input('start_date');
         $startTime = $request->input('start_time');
         $appointmentName = $request->input('appointment_name');
         $status = $request->input('status');
 
         $guests = AppointmentUser::query()
-            ->when($guestName, function ($query) use ($guestName) {
-                $query->whereHas('user', function ($subQuery) use ($guestName) {
-                    $subQuery->where('name', 'LIKE', '%' . $guestName . '%');
+            ->when($firstName, function ($query) use ($firstName) {
+                $query->whereHas('user', function ($subQuery) use ($firstName) {
+                    $subQuery->where('first_name', 'LIKE', '%' . $firstName . '%');
+                });
+            })
+            ->when($lastName, function ($query) use ($lastName) {
+                $query->whereHas('user', function ($subQuery) use ($lastName) {
+                    $subQuery->where('last_name', 'LIKE', '%' . $lastName . '%');
                 });
             })
             ->when($startDate || $startTime, function ($query) use ($startDate, $startTime) {
