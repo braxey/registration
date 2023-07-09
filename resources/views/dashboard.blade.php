@@ -1,6 +1,8 @@
 @php
     use Carbon\Carbon;
     use Illuminate\Support\Facades\Auth;
+    use App\Models\AppointmentUser;
+    $user = Auth::user();
 @endphp
 <x-app-layout>
     <html>
@@ -15,7 +17,7 @@
         <body>
             <div class="flex justify-center items-center h-screen text-center">
                 <div class="container">
-                    <h1 class="flex justify-center items-center h-screen" style="font-size: larger; margin-bottom: 25px">{{Auth::user()->first_name}}'s Dashboard</h1>
+                    <h1 class="flex justify-center items-center h-screen" style="font-size: larger; margin-bottom: 25px">{{$user->first_name}}'s Dashboard</h1>
 
                     <div class="tab-container">
                         <div class="tabs">
@@ -41,7 +43,7 @@
                                             @foreach ($allAppointments as $appointment)
                                                 <tr class="border border-slate-300">
                                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
-                                                    <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
+                                                    <td class="border border-slate-300">{{ AppointmentUser::where('appointment_id', $appointment->id)->where('user_id', $user->id)->sum('slots_taken') }}</td>
                                                     <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
                                                     @if($appointment->start_time > now())
                                                     <td class="border border-slate-300 flex justify-center items-center h-screen text-center">
@@ -79,11 +81,13 @@
                                         <tbody>
                                             @foreach ($upcomingAppointments as $appointment)
                                                 @php 
-                                                    $currCount += (\App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken')); 
+                                                    $currCount += (\App\Models\AppointmentUser::where('appointment_id', $appointment->id)
+                                                                                            ->where('user_id', $user->id)
+                                                                                            ->sum('slots_taken')); 
                                                 @endphp
                                                 <tr class="border border-slate-300">
                                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
-                                                    <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
+                                                    <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->where('user_id', $user->id)->sum('slots_taken') }}</td>
                                                     <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
                                                     @if($appointment->start_time > now())
                                                     <td class="border border-slate-300 flex justify-center items-center h-screen text-center">
@@ -119,7 +123,7 @@
                                             @foreach ($pastAppointments as $appointment)
                                                 <tr class="border border-slate-300">
                                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
-                                                    <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
+                                                    <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->where('user_id', $user->id)->sum('slots_taken') }}</td>
                                                     <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
                                                 </tr>
                                             @endforeach
