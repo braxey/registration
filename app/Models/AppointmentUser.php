@@ -12,6 +12,7 @@ class AppointmentUser extends Model{
         'user_id',
         'appointment_id',
         'slots_taken',
+        'notified',
     ];
 
     // Define the relationships with other models
