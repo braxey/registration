@@ -55,17 +55,9 @@ $(function(){
 })
 
 function validateInput(){
-    //title
-    let title = $('#title').val().toString()
-    let res = validateText(title)
-    if(res[0]==false) {
-        callErrorPop("title", res[1])
-        return false
-    }
-
     //description
     let description = $('#description').val().toString()
-    res = validateText(description)
+    let res = validateText(description)
     if(res[0]==false) {
         callErrorPop("description", res[1])
         return false
@@ -96,14 +88,12 @@ function validateInput(){
     return true
 }
 
-// -1 - title empty
 // 0 - too long
 // 1 - quotation mark included
 // 2 - includes <script>
 // 3 - changed by decoding
 // 4 - clean
 function validateText(str){
-    if(str.length == 0) return [false, -1]
     if(str.length > 200) return [false, 0]
     if(str.includes("\"")) return [false, 1]
 
@@ -156,9 +146,6 @@ function isInteger(str) {
 
 function callErrorPop(form_field, error_code){
     switch(error_code){
-        case -1:
-            errorPop("Error", "The "+form_field+" cannot be empty.")
-            break
         case 0:
             errorPop("Error", "The "+form_field+" cannot be more than 50 characters.")
             break

@@ -10,7 +10,6 @@ return new class extends Migration{
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('appointment_id');
             $table->unsignedInteger('slots_taken')->default(0);
-
             $table->index(['user_id', 'appointment_id']);
         });
     }

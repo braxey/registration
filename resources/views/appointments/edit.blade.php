@@ -16,11 +16,6 @@
                         @method('PUT')
 
                         <div class="form-group">
-                            <label for="title">Title</label>
-                            <input type="text" name="title" id="title" class="form-control" value="{{ $appointment->title }}">
-                        </div>
-
-                        <div class="form-group">
                             <label for="description">Description</label>
                             <textarea name="description" id="description" class="form-control">{{ $appointment->description }}</textarea>
                         </div>
