@@ -1,5 +1,8 @@
 @php
     use Carbon\Carbon;
+    use Illuminate\Support\Facades\Auth;
+    use App\Models\AppointmentUser;
+    $user = Auth::user();
 @endphp
 <x-app-layout>
     <html>
@@ -75,7 +78,10 @@
                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($guest->appointment->start_time)->format('F d, Y g:i A') }}</td>
                                     <td class="border border-slate-300"><span class="highlight text-white">{{ $guest->appointment->status }}</span></td>
                                     <td class="border border-slate-300">{{ $guest->user->first_name }} {{ $guest->user->last_name }}</td>
-                                    <td class="border border-slate-300">{{ $guest->slots_taken }}</td>
+                                    <td class="border border-slate-300">{{ AppointmentUser::where('appointment_id', $guest->appointment_id)
+                                                                                        ->where('user_id', $guest->user_id)
+                                                                                        ->first()
+                                                                                        ->slots_taken }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
