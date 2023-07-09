@@ -17,8 +17,7 @@ class NotifyUpcomingAppointmentsCommand extends Command
     protected $description = 'Notify users about upcoming appointments';
 
     public function handle(){
-        $upcomingAppointments = Appointment::where('status', 'upcoming')->get(); 
-        $anHourAgo = now()->subMinutes(60);
+        $upcomingAppointments = Appointment::where('status', 'upcoming')->get();
 
         $account_sid = getenv("TWILIO_SID");
         $auth_token = getenv("TWILIO_AUTH_TOKEN");
@@ -27,8 +26,7 @@ class NotifyUpcomingAppointmentsCommand extends Command
         $client = new Client($account_sid, $auth_token);
         
         foreach ($upcomingAppointments as $appointment) {
-
-            if ($appointment->start_time > $anHourAgo) {
+            if (now()->gt(Carbon::parse($appointment->start_time)->subMinutes(60))) {
                 $apptUsers = AppointmentUser::where('appointment_id', $appointment->id)->get();
                 $formattedStart = Carbon::parse($appointment->start_time, 'EST')->format('g:i A');
 
