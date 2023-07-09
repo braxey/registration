@@ -22,7 +22,6 @@
                     <table class="table mx-auto border border-slate-300 appt-pagination">  
                         <thead>
                             <tr class="border border-slate-300">
-                                <th class="border border-slate-300">Title</th>
                                 <th class="border border-slate-300">Start Time</th>
                                 <th class="border border-slate-300">Slots Open</th>
                                 <th class="border border-slate-300">Status</th>
@@ -32,7 +31,6 @@
                         <tbody>
                             @foreach ($appointments as $appointment)
                                 <tr class="border border-slate-300">
-                                    <td class="border border-slate-300">{{ $appointment->title }}</td>
                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                     <td class="border border-slate-300">{{ max($appointment->total_slots - $appointment->slots_taken, 0) }}</td>
                                     <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>

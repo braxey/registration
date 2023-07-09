@@ -13,10 +13,6 @@
 
                     <form action="{{ route('appointment.create') }}" method="POST" id="create-form">
                         @csrf
-                        <div class="form-group">
-                            <label for="title">Title</label>
-                            <input type="text" name="title" id="title" class="form-control">
-                        </div>
 
                         <div class="form-group">
                             <label for="description">Description</label>
