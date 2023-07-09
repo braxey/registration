@@ -41,10 +41,6 @@ class UpdateAppointmentStatus extends Command
                 $appointment->status = "completed";
                 $appointment->save();
 
-                // Set the number of available slots to 0
-                $appointment->total_slots = 0;
-                $appointment->save();
-
                 // Return the slots back to users
                 $appointmentUsers = AppointmentUser::where('appointment_id', $appointment->id)->get();
                 foreach ($appointmentUsers as $appointmentUser) {
