@@ -23,7 +23,7 @@
                                 <input type="text" name="slots" id="slots" value="{{ $apptUserSlots }}" class="form-control">
                             </div>
 
-                            <button type="submit" class="red-btn">Update</button>
+                            <button type="submit" class="grn-btn">Update</button>
                         </form>
                         <form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST" id="cancel-form">
                             @csrf

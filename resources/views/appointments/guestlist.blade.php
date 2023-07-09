@@ -53,7 +53,7 @@
                             </div>
                             <div class="form-container" style="border: none; max-width: 1000px !important;">
                                 <div class="button-container" style="justify-content: left;" id="filter-buttons">
-                                    <button type="submit" class="red-btn togglers" id="filter-apply-button" style="display: none;">Apply</button>
+                                    <button type="submit" class="grn-btn togglers" id="filter-apply-button" style="display: none;">Apply</button>
                                     <button type="button" class="red-btn togglers" id="filter-clear-button" style="display: none;">Clear</button>
                                     <button id="toggle-filter-button" class="red-btn">Filter</button>
                                 </div>

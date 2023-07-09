@@ -90,6 +90,26 @@
     background-image: linear-gradient(rgb(0 0 0/20%) 0 0);
 }
 
+.grn-btn {
+    background-color: #088708;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 0.5rem; /* Add margin to the top */
+    margin-bottom: 0.5rem; /* Add margin to the bottom */
+}
+
+.grn-btn + .red-btn {
+    margin-left: 0.5rem; /* Add margin to the left for horizontally neighboring buttons */
+}
+
+.grn-btn:hover {
+    background-image: linear-gradient(rgba(8, 135, 8, 0.2) 0 0);
+}
+
 .tab-container {
     display: flex;
     flex-direction: column;

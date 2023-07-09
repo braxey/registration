@@ -51,7 +51,7 @@
                                                             <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="GET" id="edit-form">
                                                                 @csrf
                                                                 @method('GET')
-                                                                <button class="red-btn" type="submit">Edit Booking</button>
+                                                                <button class="grn-btn" type="submit">Edit Booking</button>
                                                             </form>
                                                         </div>
                                                     </td>
@@ -95,7 +95,7 @@
                                                             <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="GET" id="edit-form">
                                                                 @csrf
                                                                 @method('GET')
-                                                                <button class="red-btn" type="submit">Edit Booking</button>
+                                                                <button class="grn-btn" type="submit">Edit Booking</button>
                                                             </form>
                                                         </div>
                                                     </td>

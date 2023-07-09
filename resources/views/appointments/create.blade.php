@@ -36,7 +36,7 @@
                             <input type="text" name="total_slots" id="total_slots" class="form-control" value="{{ 1 }}">
                         </div>
 
-                        <button type="submit" class="red-btn">Create</button>
+                        <button type="submit" class="grn-btn">Create</button>
                     </form>
                     <script type="module" src="{{ asset('js/appt/createedit.js') }}"></script>
                 </div>
