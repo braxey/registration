@@ -31,7 +31,6 @@
                                     <table class="table mx-auto border border-slate-300">
                                         <thead>
                                             <tr class="border border-slate-300">
-                                                <th class="border border-slate-300">Title</th>
                                                 <th class="border border-slate-300">Start Time</th>
                                                 <th class="border border-slate-300">Slots Booked</th>
                                                 <th class="border border-slate-300">Status</th>
@@ -41,7 +40,6 @@
                                         <tbody>
                                             @foreach ($allAppointments as $appointment)
                                                 <tr class="border border-slate-300">
-                                                    <td class="border border-slate-300">{{ $appointment->title }}</td>
                                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                                     <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
                                                     <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
@@ -72,7 +70,6 @@
                                     <table class="table mx-auto border border-slate-300">
                                         <thead>
                                             <tr class="border border-slate-300">
-                                                <th class="border border-slate-300">Title</th>
                                                 <th class="border border-slate-300">Start Time</th>
                                                 <th class="border border-slate-300">Slots Booked</th>
                                                 <th class="border border-slate-300">Status</th>
@@ -85,7 +82,6 @@
                                                     $currCount += (\App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken')); 
                                                 @endphp
                                                 <tr class="border border-slate-300">
-                                                    <td class="border border-slate-300">{{ $appointment->title }}</td>
                                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                                     <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
                                                     <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
@@ -114,7 +110,6 @@
                                     <table class="table mx-auto border border-slate-300">
                                         <thead>
                                             <tr class="border border-slate-300">
-                                                <th class="border border-slate-300">Title</th>
                                                 <th class="border border-slate-300">Start Time</th>
                                                 <th class="border border-slate-300">Slots Booked</th>
                                                 <th class="border border-slate-300">Status</th>
@@ -123,7 +118,6 @@
                                         <tbody>
                                             @foreach ($pastAppointments as $appointment)
                                                 <tr class="border border-slate-300">
-                                                    <td class="border border-slate-300">{{ $appointment->title }}</td>
                                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                                     <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->sum('slots_taken') }}</td>
                                                     <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>

@@ -29,6 +29,5 @@ function clearForm(){
     $("#last_name").val('')
     $("#start_date").val('')
     $("#start_time").val('')
-    $("#appointment_name").val('')
     $("#status").val('')
 }

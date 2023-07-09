@@ -44,7 +44,6 @@ class AppointmentController extends Controller
         $lastName  = $request->input('last_name');
         $startDate = $request->input('start_date');
         $startTime = $request->input('start_time');
-        $appointmentName = $request->input('appointment_name');
         $status = $request->input('status');
 
         $guests = AppointmentUser::query()
@@ -61,11 +60,6 @@ class AppointmentController extends Controller
             ->when($startDate || $startTime, function ($query) use ($startDate, $startTime) {
                 $query->whereHas('appointment', function ($subQuery) use ($startDate, $startTime) {
                     $subQuery->where('start_time', 'LIKE', '%' . $startDate . ' ' . $startTime . '%');
-                });
-            })
-            ->when($appointmentName, function ($query) use ($appointmentName) {
-                $query->whereHas('appointment', function ($subQuery) use ($appointmentName) {
-                    $subQuery->where('title', 'LIKE', '%' . $appointmentName . '%');
                 });
             })
             ->when($status, function ($query) use ($status) {
@@ -296,7 +290,6 @@ class AppointmentController extends Controller
         // If it's a PUT request, handle the form submission
         // Get the validated data
         $validatedData = $request->validate([
-            'title' => 'required',
             'description' => 'nullable',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
@@ -324,7 +317,6 @@ class AppointmentController extends Controller
         
         // Validate the form data
         $validatedData = $request->validate([
-            'title' => 'required',
             'description' => 'required',
             'start_time' => 'required|date',
             'end_time' => 'required|date',
@@ -333,7 +325,6 @@ class AppointmentController extends Controller
 
         // Create a new appointment instance
         $appointment = new Appointment();
-        $appointment->title = $validatedData['title'];
         $appointment->description = $validatedData['description'];
         $appointment->start_time = $validatedData['start_time'];
         $appointment->end_time = $validatedData['end_time'];
