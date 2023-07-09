@@ -12,7 +12,8 @@ $(function(){
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Yes',
-                cancelButtonText: 'No'
+                cancelButtonText: 'No',
+                confirmButtonColor: "#088708"
             }).then((result) => {
                 // If the user confirms, submit the form
                 if (result.isConfirmed) {
