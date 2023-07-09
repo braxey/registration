@@ -20,7 +20,7 @@
                                 <label for="slots">Slots</label>
                                 <input type="text" name="slots" id="slots" class="form-control">
                             </div>
-                            <button class="red-btn" type="submit">Book</button>
+                            <button class="grn-btn" type="submit">Book</button>
                         </form>
                         <script>
                             var slotsLeft = {{$availableSlots}}

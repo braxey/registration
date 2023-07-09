@@ -44,7 +44,8 @@ $(function(){
                 text: 'You will not be able to recover this appointment!',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Yes, delete it!',
+                confirmButtonColor: "#088708"
             }).then((result) => {
                 if(result.isConfirmed){
                     delete_form.submit()
@@ -166,7 +167,8 @@ function confirmPop(_title, _text){
         title: _title,
         text: _text,
         icon: "success",
-        confirmButtonText: 'OK'
+        confirmButtonText: 'OK',
+        confirmButtonColor: "#088708"
     })
 }
 
@@ -175,6 +177,7 @@ function errorPop(_title, _text){
         title: _title,
         text: _text,
         icon: 'error',
-        confirmButtonText: 'OK'
+        confirmButtonText: 'OK',
+        confirmButtonColor: "#088708"
     })
 }

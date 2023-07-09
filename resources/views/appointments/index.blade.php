@@ -17,7 +17,7 @@
                 <div class="container" >
                 <h1 class="flex justify-center items-center h-screen" style="font-size: larger">Appointments</h1>
                     @if ($user && $user->admin)
-                        <a class="flex justify-left h-screen red-btn text-center" style="max-width: 80px;" href="{{ route('appointment.create_form') }}">Create</a>
+                        <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 80px;" href="{{ route('appointment.create_form') }}">Create</a>
                     @endif
                     <table class="table mx-auto border border-slate-300 appt-pagination">  
                         <thead>
@@ -41,9 +41,9 @@
                                         @if ($appointment->start_time < now())
                                             Closed  
                                         @elseif ($user?->id && AppointmentUser::where('user_id', $user->id)->where('appointment_id', $appointment->id)->exists())
-                                            <a class="red-btn" href="{{ route('appointment.editbooking', $appointment->id) }}">Edit Booking</a>
+                                            <a class="grn-btn" href="{{ route('appointment.editbooking', $appointment->id) }}">Edit Booking</a>
                                         @else
-                                            <a class="red-btn" href="{{ route('appointment.book', $appointment->id) }}">Book</a>
+                                            <a class="grn-btn" href="{{ route('appointment.book', $appointment->id) }}">Book</a>
                                         @endif
                                     </td>
                                 </tr>
