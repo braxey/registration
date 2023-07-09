@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppointmentController;
-use App\Http\Controllers\TwilioSMSController;
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
 use Illuminate\Support\Facades\Auth;
