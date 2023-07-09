@@ -54,8 +54,9 @@ Route::middleware([
         $allAppointments = Appointment::whereIn('id', $allAppointmentIds)
             ->orderByRaw("
                 CASE
-                    WHEN status = 'upcoming' OR status = 'in progress' THEN 1
-                    WHEN status = 'completed' THEN 2
+                    WHEN status = 'in progress' THEN 1
+                    WHEN status = 'upcoming' THEN 2
+                    WHEN status = 'completed' THEN 3
                     ELSE 3
                 END
             ")
@@ -63,7 +64,10 @@ Route::middleware([
                 CASE WHEN status = 'completed' THEN start_time END DESC
             ")
             ->orderByRaw("
-                CASE WHEN status != 'completed' THEN ABS(DATEDIFF(start_time, NOW())) END
+                CASE WHEN status = 'upcoming' THEN start_time END ASC
+            ")
+            ->orderByRaw("
+                CASE WHEN status = 'in progress' THEN start_time END ASC
             ")
             ->get();
         $pastAppointments = Appointment::whereIn('id', $pastAppointmentIds)
