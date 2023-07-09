@@ -17,8 +17,9 @@ class AppointmentController extends Controller
         // Retrieve all appointments
         $appointments = Appointment::orderByRaw("
                 CASE
-                    WHEN status = 'upcoming' OR status = 'in progress' THEN 1
-                    WHEN status = 'completed' THEN 2
+                    WHEN status = 'in progress' THEN 1
+                    WHEN status = 'upcoming' THEN 2
+                    WHEN status = 'completed' THEN 3
                     ELSE 3
                 END
             ")
@@ -26,7 +27,10 @@ class AppointmentController extends Controller
                 CASE WHEN status = 'completed' THEN start_time END DESC
             ")
             ->orderByRaw("
-                CASE WHEN status != 'completed' THEN ABS(DATEDIFF(start_time, NOW())) END
+                CASE WHEN status = 'upcoming' THEN start_time END ASC
+            ")
+            ->orderByRaw("
+                CASE WHEN status = 'in progress' THEN start_time END ASC
             ")
             ->get();
 
@@ -70,16 +74,20 @@ class AppointmentController extends Controller
             ->join('appointments', 'appointments.id', '=', 'appointment_user.appointment_id')
             ->orderByRaw("
                 CASE
-                    WHEN appointments.status = 'upcoming' OR appointments.status = 'in progress' THEN 1
-                    WHEN appointments.status = 'completed' THEN 2
+                    WHEN status = 'in progress' THEN 1
+                    WHEN status = 'upcoming' THEN 2
+                    WHEN status = 'completed' THEN 3
                     ELSE 3
                 END
             ")
             ->orderByRaw("
-                CASE WHEN appointments.status = 'completed' THEN appointments.start_time END DESC
+                CASE WHEN status = 'completed' THEN start_time END DESC
             ")
             ->orderByRaw("
-                CASE WHEN appointments.status != 'completed' THEN ABS(DATEDIFF(appointments.start_time, NOW())) END
+                CASE WHEN status = 'upcoming' THEN start_time END ASC
+            ")
+            ->orderByRaw("
+                CASE WHEN status = 'in progress' THEN start_time END ASC
             ")
             ->get();
 
