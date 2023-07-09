@@ -34,13 +34,9 @@
                                 <div class="form-group">
                                     <label for="start_date_time">Start Date and Time</label>
                                     <div class="flex">
-                                        <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" class="form-control">
+                                        <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" class="form-control mr-2">
                                         <input type="time" name="start_time" id="start_time" value="{{ request('start_time') }}" class="form-control">
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="appointment_name">Appointment Name:</label>
-                                    <input type="text" name="appointment_name" id="appointment_name" value="{{ request('appointment_name') }}" class="form-control">
                                 </div>
                                 <div class="form-group">
                                     <label for="status">Status:</label>
