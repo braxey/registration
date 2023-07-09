@@ -35,7 +35,7 @@
                             <input type="text" name="total_slots" id="total_slots" class="form-control" value="{{ $appointment->total_slots }}">
                         </div>
 
-                        <button type="submit" class="red-btn">Update</button>
+                        <button type="submit" class="grn-btn">Update</button>
                     </form>
                     <script>
                         var slotsTotal = {{$appointment->total_slots}}
