@@ -57,7 +57,7 @@ $(function(){
 function validateInput(){
     //description
     let description = $('#description').val().toString()
-    res = validateText(description)
+    let res = validateText(description)
     if(res[0]==false) {
         callErrorPop("description", res[1])
         return false
@@ -94,7 +94,6 @@ function validateInput(){
 // 3 - changed by decoding
 // 4 - clean
 function validateText(str){
-    if(str.length == 0) return [false, -1]
     if(str.length > 200) return [false, 0]
     if(str.includes("\"")) return [false, 1]
 
