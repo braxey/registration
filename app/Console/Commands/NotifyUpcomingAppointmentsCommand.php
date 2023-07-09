@@ -40,19 +40,28 @@ class NotifyUpcomingAppointmentsCommand extends Command
                             $message = "You have an appointment that begins at ".$formattedStart.".";
                     
                             try {
-                                $client->messages->create($user->phone_number, [
-                                    'from' => $twilio_number, 
-                                    'body' => $message]);
-                    
-                                dump('SMS Sent Successfully.');
-                    
-                            } catch (Exception $e) {
-                                dump("Error: ". $e->getMessage());
-                            }
+                                $response = $client->messages->create(
+                                    $user->phone_number,
+                                    [
+                                        'from' => $twilio_number,
+                                        'body' => $message,
+                                    ]
+                                );
 
-                            // Update notified status
-                            $apptUser->notified = true;
-                            $apptUser->save();
+                                if ($response->sid) {
+                                    // Update notified status
+                                    AppointmentUser::where('user_id', $user->id)
+                                                ->where('appointment_id', $appointment->id)
+                                                ->update(['notified' => true]);
+
+                                    dump('SMS Sent Successfully for User ID: '.$user->id);
+                                } else {
+                                    dump('Failed to send SMS for User ID: '.$user->id);
+                                }
+                            } catch (\Exception $e) {
+                                dump('Error sending SMS for User ID: '.$user->id.', Error: '.$e->getMessage());
+                                dump('Failed to send SMS for User ID: '.$user->id);
+                            }
                         }
                     }
                 }

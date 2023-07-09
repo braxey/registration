@@ -11,7 +11,7 @@
             @csrf
 
             <div class="flex">
-                <div>
+                <div class="mr-2">
                     <x-label for="first_name" value="{{ __('First Name') }}" />
                     <x-input id="first_name" class="block mt-1 w-half" type="text" name="first_name" :value="old('first_name')" required autofocus autocomplete="first_name" />
                 </div>
