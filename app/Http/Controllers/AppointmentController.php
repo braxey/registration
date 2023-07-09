@@ -84,7 +84,13 @@ class AppointmentController extends Controller
             ->get();
 
         $user = Auth::user();
-        $totalSlotsTaken = $guests->sum('slots_taken');
+        $totalSlotsTaken = 0;
+        foreach($guests as $guest){
+            $totalSlotsTaken += AppointmentUser::where('appointment_id', $guest->appointment_id)
+                        ->where('user_id', $guest->user_id)
+                        ->first()
+                        ->slots_taken;
+        }
 
         return ($user->admin)
             ? view('appointments.guestlist', compact('guests', 'totalSlotsTaken'))
