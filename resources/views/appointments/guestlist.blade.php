@@ -60,8 +60,10 @@
                             </div>
                         </div>
                     </form>
-                    <div align="right">
-                        <b>Total Slots in Table: </b> {{$totalSlotsTaken}}
+                    <div class="flex justify-end">
+                        <p class="mr-1"><b>Showed Up / Registered:</b></p>
+                        <p id="totalShowed" class="mr-1">{{ $totalShowedUp }}</p>
+                        <p>/ {{$totalSlotsTaken}}</p>
                     </div>
                     <table class="table mx-auto border border-slate-300 appt-pagination">
                         <thead>
@@ -70,24 +72,31 @@
                                 <th class="border border-slate-300">Status</th>
                                 <th class="border border-slate-300">Guest</th>
                                 <th class="border border-slate-300 slot-col">Slots</th>
+                                <th class="border border-slate-300 slot-col">Showed</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($guests as $guest)
+                                @php $apptUser = AppointmentUser::where('appointment_id', $guest->appointment_id)
+                                                                                        ->where('user_id', $guest->user_id)
+                                                                                        ->first();
+                                @endphp
                                 <tr class="border border-slate-300">
                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($guest->appointment->start_time)->format('F d, Y g:i A') }}</td>
                                     <td class="border border-slate-300"><span class="highlight text-white">{{ $guest->appointment->status }}</span></td>
                                     <td class="border border-slate-300">{{ $guest->user->first_name }} {{ $guest->user->last_name }}</td>
-                                    <td class="border border-slate-300">{{ AppointmentUser::where('appointment_id', $guest->appointment_id)
-                                                                                        ->where('user_id', $guest->user_id)
-                                                                                        ->first()
-                                                                                        ->slots_taken }}</td>
+                                    <td class="border border-slate-300">{{ $apptUser->slots_taken }}</td>
+                                    <td class="border border-slate-300">
+                                        <input type="number" class="showed-up-input" data-guest-id="{{ $apptUser->id }}" 
+                                            value="{{ $apptUser->showed_up }}" min="0" style="max-width: 80px;">
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
+            <script>var csrfToken = "{{ csrf_token() }}";</script>
             <script type="module" src="{{ asset('js/appt/guestlist.js') }}"></script>
             <script type="module" src="{{ asset('js/appt/highlight.js') }}"></script>
         </body>
