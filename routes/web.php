@@ -75,7 +75,10 @@ Route::middleware([
             ->get();
         $upcomingAppointments = Appointment::whereIn('id', $upcomingAppointmentIds)
             ->orderByRaw("
-                CASE WHEN status != 'completed' THEN ABS(DATEDIFF(start_time, NOW())) END
+                CASE WHEN status = 'upcoming' THEN start_time END ASC
+            ")
+            ->orderByRaw("
+                CASE WHEN status = 'in progress' THEN start_time END ASC
             ")
             ->get();
 
@@ -97,6 +100,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/appointments/{id}/edit', [AppointmentController::class, 'edit'])->name('appointment.edit');
     Route::put('/appointments/{id}/edit', [AppointmentController::class, 'edit'])->name('appointment.update');
     Route::get('/guestlist', [AppointmentController::class, 'guestlist'])->name('appointments.guestlist');
+    Route::post('/guestlist/update', [AppointmentController::class, 'update_guestlist'])->name('guestlist.update');
     Route::get('/appointments/create', [AppointmentController::class, 'create'])->name('appointment.create_form');
     Route::post('/appointments/create', [AppointmentController::class, 'create'])->name('appointment.create');
     Route::post('/appointments/{id}/delete', [AppointmentController::class, 'delete'])->name('appointment.delete');
