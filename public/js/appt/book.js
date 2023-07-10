@@ -1,4 +1,3 @@
-const MAX_SLOTS_PER_USER = 6
 const MAX_CHAR_PER_STRING = 4
 
 $(function(){
