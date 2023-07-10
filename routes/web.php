@@ -2,8 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\OrganizationController;
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
+use App\Models\Organization;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -33,6 +35,8 @@ Route::middleware([
     Route::get('/dashboard', function () {
         // Get the authenticated user
         $user = Auth::user();
+        // Get org
+        $max_slots = Organization::findOrFail(1)->first()->max_slots_per_user;
 
         $allAppointmentIds = AppointmentUser::where('user_id', $user->id)
             ->pluck('appointment_id');
@@ -82,7 +86,7 @@ Route::middleware([
             ")
             ->get();
 
-        return view('dashboard', compact('allAppointments', 'pastAppointments', 'upcomingAppointments'));
+        return view('dashboard', compact('allAppointments', 'pastAppointments', 'upcomingAppointments', 'max_slots'));
     })->name('dashboard');
 });
 
@@ -101,6 +105,8 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/appointments/{id}/edit', [AppointmentController::class, 'edit'])->name('appointment.update');
     Route::get('/guestlist', [AppointmentController::class, 'guestlist'])->name('appointments.guestlist');
     Route::post('/guestlist/update', [AppointmentController::class, 'update_guestlist'])->name('guestlist.update');
+    Route::get('/organization/{id}/edit', [OrganizationController::class, 'edit'])->name('organization.edit_form');
+    Route::put('/organization/{id}/edit', [OrganizationController::class, 'edit'])->name('organization.edit');
     Route::get('/appointments/create', [AppointmentController::class, 'create'])->name('appointment.create_form');
     Route::post('/appointments/create', [AppointmentController::class, 'create'])->name('appointment.create');
     Route::post('/appointments/{id}/delete', [AppointmentController::class, 'delete'])->name('appointment.delete');
