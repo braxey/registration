@@ -26,6 +26,7 @@
                             var slotsLeft = {{$availableSlots}}
                             var userSlots = {{$userSlots}}
                             var startTime = new Date("{{$appointment->start_time}}")
+                            var MAX_SLOTS_PER_USER = {{$MAX_SLOTS_PER_USER}}
                         </script>
                         <script type="module" src="{{ asset('js/appt/book.js') }}"></script>
                     </div>
