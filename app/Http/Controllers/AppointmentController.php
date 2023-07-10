@@ -330,6 +330,7 @@ class AppointmentController extends Controller
                 ? view('appointments.edit', compact('appointment'))
                 : redirect()->route('appointments.index');
         }
+        if(!$user->admin) abort(404);
 
         // If it's a PUT request, handle the form submission
         // Get the validated data
