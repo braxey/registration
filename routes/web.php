@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\OrganizationController;
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
 use Illuminate\Support\Facades\Auth;
@@ -101,6 +102,8 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/appointments/{id}/edit', [AppointmentController::class, 'edit'])->name('appointment.update');
     Route::get('/guestlist', [AppointmentController::class, 'guestlist'])->name('appointments.guestlist');
     Route::post('/guestlist/update', [AppointmentController::class, 'update_guestlist'])->name('guestlist.update');
+    Route::get('/organization/{id}/edit', [OrganizationController::class, 'edit'])->name('organization.edit_form');
+    Route::put('/organization/{id}/edit', [OrganizationController::class, 'edit'])->name('organization.edit');
     Route::get('/appointments/create', [AppointmentController::class, 'create'])->name('appointment.create_form');
     Route::post('/appointments/create', [AppointmentController::class, 'create'])->name('appointment.create');
     Route::post('/appointments/{id}/delete', [AppointmentController::class, 'delete'])->name('appointment.delete');

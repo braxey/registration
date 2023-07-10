@@ -5,10 +5,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
+use App\Models\Organization;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-
-const MAX_SLOTS_PER_USER = 6;
 
 class AppointmentController extends Controller
 {
@@ -144,12 +143,15 @@ class AppointmentController extends Controller
         // Retrieve the authenticated user
         $user = Auth::user();
 
+        // Get MAX_SLOTS_PER_USER
+        $MAX_SLOTS_PER_USER = Organization::where('org_name', 'kabc')->first()->max_slots_per_user;
+
         // Get current user slot number
         $userSlots = $user->slots_booked;
         
         // If it's a GET request, return the book view
         if ($request->isMethod('get')) {
-            return view('appointments.book', compact('appointment', 'availableSlots', 'userSlots'));
+            return view('appointments.book', compact('appointment', 'availableSlots', 'userSlots', 'MAX_SLOTS_PER_USER'));
         }
         
         // If it's a POST request, handle the form submission
@@ -162,7 +164,7 @@ class AppointmentController extends Controller
         $slotsRequested = $validatedData['slots'];
         
         // Check if the requested slots are not available
-        if ($slotsRequested > $availableSlots || $slotsRequested == 0 || $slotsRequested+$userSlots > MAX_SLOTS_PER_USER) {
+        if ($slotsRequested > $availableSlots || $slotsRequested == 0 || $slotsRequested+$userSlots > $MAX_SLOTS_PER_USER) {
             // Redirect back with an error message
             return redirect()->back();
         }
@@ -215,6 +217,9 @@ class AppointmentController extends Controller
         // Retrieve the authenticated user
         $user = Auth::user();
 
+        // Get MAX_SLOTS_PER_USER
+        $MAX_SLOTS_PER_USER = Organization::where('org_name', 'kabc')->first()->max_slots_per_user;
+
         // Get current user slot number
         $userSlots = $user->slots_booked;
 
@@ -226,7 +231,7 @@ class AppointmentController extends Controller
         
         // If it's a GET request, return the edit booking view
         if ($request->isMethod('get')) {
-            return view('appointments.edit_booking', compact('appointment', 'availableSlots', 'userSlots', 'apptUserSlots'));
+            return view('appointments.edit_booking', compact('appointment', 'availableSlots', 'userSlots', 'apptUserSlots', 'MAX_SLOTS_PER_USER'));
         }
         // If it's a POST request, handle the form submission
         // Validate the form data
@@ -238,7 +243,7 @@ class AppointmentController extends Controller
         $slotsRequested = $validatedData['slots'];
         
         // Check if the requested slots are not available
-        if ($slotsRequested-$apptUserSlots > $availableSlots || $slotsRequested+$userSlots-$apptUserSlots > MAX_SLOTS_PER_USER) {
+        if ($slotsRequested-$apptUserSlots > $availableSlots || $slotsRequested+$userSlots-$apptUserSlots > $MAX_SLOTS_PER_USER) {
             // Redirect back with an error message
             return redirect()->back();
         // If the user requests to update to 0 slots
