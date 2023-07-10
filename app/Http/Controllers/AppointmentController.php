@@ -43,6 +43,9 @@ class AppointmentController extends Controller
 
     // Show the admin-only guestlist
     public function guestlist(Request $request){
+
+        $user = Auth::user();
+        if(!$user->admin) abort(404);
         
         $firstName = $request->input('first_name');
         $lastName  = $request->input('last_name');
@@ -91,18 +94,40 @@ class AppointmentController extends Controller
             ")
             ->get();
 
-        $user = Auth::user();
         $totalSlotsTaken = 0;
+        $totalShowedUp = 0;
         foreach($guests as $guest){
-            $totalSlotsTaken += AppointmentUser::where('appointment_id', $guest->appointment_id)
-                        ->where('user_id', $guest->user_id)
-                        ->first()
-                        ->slots_taken;
+            $apptUser = AppointmentUser::where('appointment_id', $guest->appointment_id)
+                                    ->where('user_id', $guest->user_id)
+                                    ->first();
+            $totalSlotsTaken += $apptUser->slots_taken;
+            $totalShowedUp += $apptUser->showed_up;
         }
 
         return ($user->admin)
-            ? view('appointments.guestlist', compact('guests', 'totalSlotsTaken'))
+            ? view('appointments.guestlist', compact('guests', 'totalSlotsTaken', 'totalShowedUp'))
             : redirect()->route('appointments.index');
+    }
+
+    // Update the showed_up field for appt_user from the guestlist
+    public function update_guestlist(Request $request){
+        
+        $user = Auth::user();
+        if(!$user->admin) return redirect()->route('appointments.index');
+
+        $request->validate([
+            'guest_id' => 'required|integer',
+            'showed_up' => 'required|integer|min:0',
+        ]);
+
+        $guest = AppointmentUser::findOrFail($request->input('guest_id'));
+        $before = $guest->showed_up;
+        $guest->showed_up = $request->input('showed_up');
+        $guest->save();
+
+        return response()->json([
+            'countChange' => ($request->input('showed_up') - $before)
+        ]);
     }
 
     // Show booking or handle request to set booking
