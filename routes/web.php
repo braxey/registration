@@ -5,6 +5,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\OrganizationController;
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
+use App\Models\Organization;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -34,6 +35,8 @@ Route::middleware([
     Route::get('/dashboard', function () {
         // Get the authenticated user
         $user = Auth::user();
+        // Get org
+        $max_slots = Organization::findOrFail(1)->first()->max_slots_per_user;
 
         $allAppointmentIds = AppointmentUser::where('user_id', $user->id)
             ->pluck('appointment_id');
@@ -83,7 +86,7 @@ Route::middleware([
             ")
             ->get();
 
-        return view('dashboard', compact('allAppointments', 'pastAppointments', 'upcomingAppointments'));
+        return view('dashboard', compact('allAppointments', 'pastAppointments', 'upcomingAppointments', 'max_slots'));
     })->name('dashboard');
 });
 

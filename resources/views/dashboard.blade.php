@@ -135,7 +135,7 @@
                             </div>
                         </div>
                         <div align="right" style="margin-bottom: 200px;">
-                            <b>Current number of slots booked: {{$currCount}}/6</b>
+                            <b>Current number of slots booked: {{$currCount}}/{{$max_slots}}</b>
                         </div>
                     </div>
                 </div>
