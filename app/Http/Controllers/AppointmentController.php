@@ -335,7 +335,7 @@ class AppointmentController extends Controller
         // If it's a PUT request, handle the form submission
         // Get the validated data
         $validatedData = $request->validate([
-            'description' => 'nullable',
+            'description' => 'required',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
             'total_slots' => 'required|integer|min:0',
@@ -364,7 +364,7 @@ class AppointmentController extends Controller
         $validatedData = $request->validate([
             'description' => 'required',
             'start_time' => 'required|date',
-            'end_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
             'total_slots' => 'required|integer|min:1',
         ]);
 
