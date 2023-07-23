@@ -14,5 +14,6 @@ class Organization extends Model
     protected $fillable = [
         'org_name',
         'max_slots_per_user',
+        'registration_open'
     ];
 }
