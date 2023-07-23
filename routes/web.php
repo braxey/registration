@@ -36,7 +36,7 @@ Route::middleware([
         // Get the authenticated user
         $user = Auth::user();
         // Get org
-        $max_slots = Organization::findOrFail(1)->first()->max_slots_per_user;
+        $organization = Organization::findOrFail(1);
 
         $allAppointmentIds = AppointmentUser::where('user_id', $user->id)
             ->pluck('appointment_id');
@@ -86,7 +86,7 @@ Route::middleware([
             ")
             ->get();
 
-        return view('dashboard', compact('allAppointments', 'pastAppointments', 'upcomingAppointments', 'max_slots'));
+        return view('dashboard', compact('allAppointments', 'pastAppointments', 'upcomingAppointments', 'organization'));
     })->name('dashboard');
 });
 
@@ -107,6 +107,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/guestlist/update', [AppointmentController::class, 'update_guestlist'])->name('guestlist.update');
     Route::get('/organization/{id}/edit', [OrganizationController::class, 'edit'])->name('organization.edit_form');
     Route::put('/organization/{id}/edit', [OrganizationController::class, 'edit'])->name('organization.edit');
+    Route::post('/organization/{id}/toggle', [OrganizationController::class, 'toggle_registration'])->name('organization.toggle_registration');
     Route::get('/appointments/create', [AppointmentController::class, 'create'])->name('appointment.create_form');
     Route::post('/appointments/create', [AppointmentController::class, 'create'])->name('appointment.create');
     Route::post('/appointments/{id}/delete', [AppointmentController::class, 'delete'])->name('appointment.delete');

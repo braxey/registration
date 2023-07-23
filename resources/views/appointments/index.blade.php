@@ -38,7 +38,7 @@
                                         @if ($user && $user->admin)
                                             <a class="red-btn" href="{{ route('appointment.edit', $appointment->id) }}">Edit</a>
                                         @endif
-                                        @if ($appointment->start_time < now())
+                                        @if ($appointment->start_time < now() || !$organization->registration_open)
                                             Closed  
                                         @elseif ($user?->id && AppointmentUser::where('user_id', $user->id)->where('appointment_id', $appointment->id)->exists())
                                             <a class="grn-btn" href="{{ route('appointment.editbooking', $appointment->id) }}">Edit Booking</a>

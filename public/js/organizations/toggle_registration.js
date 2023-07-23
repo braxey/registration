@@ -1,5 +1,6 @@
 $(function(){
-    let form = document.getElementById('cancel-form')
+    let form = document.getElementById('toggle-reg-form')
+    let registrationClosed = $('#toggle-btn').text() == "Open"
     try{
         form.addEventListener('submit', function(e){
             e.preventDefault()
@@ -7,7 +8,9 @@ $(function(){
             // sweetalert for confirmation
             Swal.fire({
                 title: 'Confirmation',
-                text: 'Are you sure you want to cancel your appointment?',
+                text: ('Are you sure you want to '
+                    + ((registrationClosed) ? 'open' : 'close')
+                    + ' registration?'),
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Yes',
@@ -21,6 +24,6 @@ $(function(){
             })
         })
     }catch(e){
-        // no appointments to cancel
+        
     }
 })

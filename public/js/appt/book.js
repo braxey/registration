@@ -10,6 +10,11 @@ $(function(){
         let slotsRequested = $('#slots').val().toString()
         e.preventDefault()
 
+        // don't do anything if registration is closed
+        if(!registrationOpen){
+            return false;
+        }
+
         // can't book after appt started
         if(startTime < new Date()){
             errorPop('Error', (book_form != null ? "Can't book slots after the start time." : "Can't change slot amount after the start time."))

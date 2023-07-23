@@ -36,8 +36,11 @@ class AppointmentController extends Controller
         // Retrieve the authenticated user
         $user = Auth::user();
 
+        // Retrieve the organization
+        $organization = Organization::findOrFail(1);
+
         // Show appointments
-        return view('appointments.index', compact('appointments', 'user'));
+        return view('appointments.index', compact('appointments', 'user', 'organization'));
     }
 
     // Show the admin-only guestlist
@@ -131,6 +134,12 @@ class AppointmentController extends Controller
 
     // Show booking or handle request to set booking
     public function book(Request $request, $id){
+        // Find the organization
+        $organization = Organization::findOrFail(1);
+
+        // Redirect to appointments if registration is closed
+        if(!$organization->registration_open) return redirect()->route('appointments.index');
+
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
 
@@ -144,14 +153,14 @@ class AppointmentController extends Controller
         $user = Auth::user();
 
         // Get MAX_SLOTS_PER_USER
-        $MAX_SLOTS_PER_USER = Organization::where('org_name', 'kabc')->first()->max_slots_per_user;
+        $MAX_SLOTS_PER_USER = $organization->max_slots_per_user;
 
         // Get current user slot number
         $userSlots = $user->slots_booked;
         
         // If it's a GET request, return the book view
         if ($request->isMethod('get')) {
-            return view('appointments.book', compact('appointment', 'availableSlots', 'userSlots', 'MAX_SLOTS_PER_USER'));
+            return view('appointments.book', compact('appointment', 'availableSlots', 'userSlots', 'organization'));
         }
         
         // If it's a POST request, handle the form submission
@@ -205,6 +214,12 @@ class AppointmentController extends Controller
 
     // Show booking edit or handle request to update an existing booking
     public function edit_booking(Request $request, $id){
+        // Find the organization
+        $organization = Organization::findOrFail(1);
+
+        // Redirect to appointments if registration is closed
+        if(!$organization->registration_open) return redirect()->route('appointments.index');
+
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
 
@@ -218,7 +233,7 @@ class AppointmentController extends Controller
         $user = Auth::user();
 
         // Get MAX_SLOTS_PER_USER
-        $MAX_SLOTS_PER_USER = Organization::where('org_name', 'kabc')->first()->max_slots_per_user;
+        $MAX_SLOTS_PER_USER = $organization->max_slots_per_user;
 
         // Get current user slot number
         $userSlots = $user->slots_booked;
@@ -231,7 +246,7 @@ class AppointmentController extends Controller
         
         // If it's a GET request, return the edit booking view
         if ($request->isMethod('get')) {
-            return view('appointments.edit_booking', compact('appointment', 'availableSlots', 'userSlots', 'apptUserSlots', 'MAX_SLOTS_PER_USER'));
+            return view('appointments.edit_booking', compact('appointment', 'availableSlots', 'userSlots', 'apptUserSlots', 'organization'));
         }
         // If it's a POST request, handle the form submission
         // Validate the form data
@@ -274,6 +289,12 @@ class AppointmentController extends Controller
 
     // Handle request to cancel a booking
     public function cancel_booking(Request $request, $id){
+    // Find the organization
+    $organization = Organization::findOrFail(1);
+
+    // Abort if registration is closed
+    if(!$organization->registration_open) abort(404);
+
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
 
