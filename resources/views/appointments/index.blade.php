@@ -17,7 +17,7 @@
                 <div class="container" >
                 <h1 class="flex justify-center items-center h-screen" style="font-size: larger">Appointments</h1>
                     @if ($user && $user->admin)
-                        <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 80px;" href="{{ route('appointment.create_form') }}">Create</a>
+                        <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 125px;" href="{{ route('appointment.create_form') }}">Create Appt</a>
                     @endif
                     <table class="table mx-auto border border-slate-300 appt-pagination">  
                         <thead>
@@ -36,7 +36,7 @@
                                     <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
                                     <td class="border border-slate-300">
                                         @if ($user && $user->admin)
-                                            <a class="red-btn" href="{{ route('appointment.edit', $appointment->id) }}">Edit</a>
+                                            <a class="red-btn" href="{{ route('appointment.edit', $appointment->id) }}">Edit Appt</a>
                                         @endif
                                         @if ($appointment->start_time < now() || !$organization->registration_open)
                                             Closed  
