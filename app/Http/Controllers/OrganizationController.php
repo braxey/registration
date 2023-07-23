@@ -41,12 +41,25 @@ class OrganizationController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Display the specified resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request){
-        
+    public function toggle_registration(Request $request, $id){
+        $user = Auth::user();
+        $organization = Organization::findOrFail($id);
+
+        // If it's not a POST request or the user is not an admin, abort
+        if(!$request->isMethod('post') || !$user->admin){
+            abort(404);
+        }
+
+        // Toggle the registration
+        $organization->registration_open = $organization->registration_open ? false : true;
+        $organization->save();
+
+        // Redirect to the same page
+        return redirect()->route('organization.edit', $organization->id);
     }
 
 }

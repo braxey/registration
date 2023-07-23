@@ -45,7 +45,7 @@
                                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                                     <td class="border border-slate-300">{{ AppointmentUser::where('appointment_id', $appointment->id)->where('user_id', $user->id)->sum('slots_taken') }}</td>
                                                     <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
-                                                    @if($appointment->start_time > now())
+                                                    @if($appointment->start_time > now() && $organization->registration_open)
                                                     <td class="border border-slate-300 flex justify-center items-center h-screen text-center">
                                                         <div class="button-container">
                                                             <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="GET" id="edit-form">
@@ -89,7 +89,7 @@
                                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                                     <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->where('user_id', $user->id)->sum('slots_taken') }}</td>
                                                     <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
-                                                    @if($appointment->start_time > now())
+                                                    @if($appointment->start_time > now() && $organization->registration_open)
                                                     <td class="border border-slate-300 flex justify-center items-center h-screen text-center">
                                                         <div class="button-container">
                                                             <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="GET" id="edit-form">
@@ -135,7 +135,7 @@
                             </div>
                         </div>
                         <div align="right" style="margin-bottom: 200px;">
-                            <b>Current number of slots booked: {{$currCount}}/{{$max_slots}}</b>
+                            <b>Current number of slots booked: {{$currCount}}/{{$organization->max_slots_per_user}}</b>
                         </div>
                     </div>
                 </div>
