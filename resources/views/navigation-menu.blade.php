@@ -31,7 +31,7 @@
                         <!-- Navigation Links -->
                         <div class="space-x-8 sm:-my-px sm:ml-10 sm:flex items-center flex justify-end">
                             @auth
-                                @if(Request::url() !== url('/guestlist') && !is_int($user) && $user->admin)
+                                @if(Request::url() !== url('/organization/1/edit') && !is_int($user) && $user->admin)
                                     <form action="{{ route('organization.edit', ['id' => 1]) }}" method="GET">
                                         @csrf
                                         @method('GET')

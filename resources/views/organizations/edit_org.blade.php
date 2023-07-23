@@ -27,9 +27,20 @@
 
                         <button type="submit" class="grn-btn">Update</button>
                     </form>
+                    <form action="{{ route('organization.toggle_registration', ['id' => 1]) }}" method="POST" id="toggle-reg-form">
+                        @csrf
+                        @method('POST')
+                        <div class="form-group flex flex-row justify-end">
+                            <label for="toggle-reg" style="margin: auto 10px auto 0">Registration: </label>
+                            <button id="toggle-btn" type="submit" 
+                                class="<?php echo ($organization->registration_open) ? 'red-btn' : 'grn-btn'; ?>"
+                                ><?php echo ($organization->registration_open) ? 'Close' : 'Open'; ?></button>
+                        </div>
+                    </form>
                 </div>
             </div>
             <script type="module" src="{{ asset('js/organizations/edit_org.js') }}"></script>
+            <script type="module" src="{{ asset('js/organizations/toggle_registration.js') }}"></script>
         </body>
     </html>
 </x-app-layout>
