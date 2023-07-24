@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\TwilioController;
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
 use App\Models\Organization;
@@ -93,6 +94,9 @@ Route::middleware([
 // Route accessible to all users, without any middleware
 Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
 
+Route::middleware(['twilio.webhook'])->group(function () {
+    Route::post('/incoming-sms', [TwilioController::class, 'handleIncomingSMS'])->name('twilio.incoming_sms');
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::match(['GET', 'POST'], '/appointments/{id}/book', [AppointmentController::class, 'book'])->name('appointment.book');
