@@ -53,7 +53,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'phone_verified_at' => 'datetime',
     ];
 
     /**
@@ -64,4 +64,15 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function verifyPhone()
+    {
+        $this->phone_verified_at = now();
+        $this->save();
+    }
+
+    public function phoneVerified()
+    {
+        return $this->phone_verified_at !== null;
+    }
 }
