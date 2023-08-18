@@ -26,9 +26,16 @@ class PasswordResetController extends Controller
         return view('auth.forgot-password');
     }
 
-    public function verifyNumber()
+    public function verifyNumber(Request $request)
     {
-        return response(200);
+        $phone = $request->get('phone_number');
+        if ($this->isValidPhoneNumber($phone)) {
+            if ($this->userWithNumberExists($phone)) {
+                return response(200);
+            }
+            return response(['message' => 'No user found'], 400);
+        }
+        return response(['message' => 'Invalid number'], 400);
     }
 
     public function getNumberVerifyForm(Request $request)
@@ -191,5 +198,10 @@ class PasswordResetController extends Controller
     private function isValidPhoneNumber($number)
     {
         return ctype_digit($number) && strlen($number) == 10;
+    }
+
+    private function userWithNumberExists($phone)
+    {
+        return !empty(User::where('phone_number', $phone)->first());
     }
 }
