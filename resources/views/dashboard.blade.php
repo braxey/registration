@@ -45,8 +45,8 @@
                                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                                     <td class="border border-slate-300">{{ AppointmentUser::where('appointment_id', $appointment->id)->where('user_id', $user->id)->sum('slots_taken') }}</td>
                                                     <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
-                                                    @if($appointment->start_time > now() && $organization->registration_open)
                                                     <td class="border border-slate-300 flex justify-center items-center h-screen text-center">
+                                                    @if($appointment->start_time > now() && $organization->registration_open)
                                                         <div class="button-container">
                                                             <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="GET" id="edit-form">
                                                                 @csrf
@@ -54,8 +54,10 @@
                                                                 <button class="grn-btn" type="submit">Edit Booking</button>
                                                             </form>
                                                         </div>
-                                                    </td>
+                                                    @else
+                                                        <div>N/A</div>
                                                     @endif
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -89,8 +91,8 @@
                                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                                     <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->where('user_id', $user->id)->sum('slots_taken') }}</td>
                                                     <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
-                                                    @if($appointment->start_time > now() && $organization->registration_open)
                                                     <td class="border border-slate-300 flex justify-center items-center h-screen text-center">
+                                                    @if($appointment->start_time > now() && $organization->registration_open)
                                                         <div class="button-container">
                                                             <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="GET" id="edit-form">
                                                                 @csrf
@@ -98,8 +100,10 @@
                                                                 <button class="grn-btn" type="submit">Edit Booking</button>
                                                             </form>
                                                         </div>
-                                                    </td>
+                                                    @else
+                                                        <div>N/A</div>
                                                     @endif
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
