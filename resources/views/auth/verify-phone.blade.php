@@ -12,7 +12,9 @@
                 <div class="container form-container">
                     <div class="row">
                         <div class="col-md-8 offset-md-2">
-                            <h2>Verify Phone</h2>
+                            <h2><b>Verify Phone</b></h2>
+                            <br>
+                            <p>Phone number: {{$masked_phone}}</p>
 
                             <form action="{{ route('verify-phone-token') }}" method="POST" id="verify-form">
                                 @csrf
