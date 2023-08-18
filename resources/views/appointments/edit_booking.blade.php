@@ -1,3 +1,6 @@
+@php
+    use Carbon\Carbon;
+@endphp
 <x-app-layout>
 
 <html>
@@ -12,7 +15,9 @@
             <div class="container form-container">
                 <div class="row">
                     <div class="col-md-8 offset-md-2">
-                        <h2>Edit Booking Slots</h2>
+                        <h2><b>Edit Booking Slots</b></h2>
+                        <br>
+                        <p><b>Appointment:</b> {{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</p>
 
                         <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="POST" id="edit-book-form">
                             @csrf
