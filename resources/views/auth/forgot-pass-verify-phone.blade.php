@@ -4,9 +4,6 @@
             <title>Verify Phone</title>
             <script src="{{asset('js/dist/jquery.min.js')}}"></script>
             <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
-            <script>
-                var redirect = '{{ $redirect }}'
-            </script>
             <script type="module" src="{{ asset('js/auth/forgot-pass-verify-phone.js') }}"></script>
             <link rel="stylesheet" href="{{asset('css/main.css')}}">
         </head>
@@ -15,7 +12,9 @@
                 <div class="container form-container">
                     <div class="row">
                         <div class="col-md-8 offset-md-2">
-                            <h2>Verify Phone</h2>
+                            <h2><b>Verify Phone</b></h2>
+                            <br>
+                            <p>Phone number: {{$masked_phone}}</p>
 
                             <form action="{{ route('forgot-password.verify-phone-token') }}" method="POST" id="verify-form">
                                 @csrf

@@ -55,7 +55,7 @@ class PasswordResetController extends Controller
         $this->sendNewToken($phone);
         return view('auth.forgot-pass-verify-phone',
             [
-                'redirect' => '/appointments'
+                'masked_phone' => $this->maskPhone($phone)
             ]
         );
     }
@@ -71,11 +71,10 @@ class PasswordResetController extends Controller
             if ($this->isValidPhoneNumber($phone) && $this->isValidToken($token)) {
                 $user = User::where('phone_number', $phone)->first();
                 if (PhoneVerification::getMostRecentToken($user->id) === $token) {
-                    $user->verifyPhone();
                     // Delete phone_verifications rows with the user_id
                     PhoneVerification::where('user_id', $user->id)->delete();
                     session(['reset_verified' => 1]);
-                    return redirect(route('appointments.index'));
+                    return response(200);
                 } else {
                     return response(['message' => 'Wrong token'], 400);
                 }
@@ -102,9 +101,10 @@ class PasswordResetController extends Controller
 
                 // Send and log token
                 $this->sendToken($user, $token);
-                return view('auth.forgot-pass-verify-phone',
+                return view(
+                    'auth.forgot-pass-verify-phone',
                     [
-                        'redirect' => '/appointments'
+                        'masked_phone' => $this->maskPhone($phone)
                     ]
                 );
             } else {
@@ -203,5 +203,10 @@ class PasswordResetController extends Controller
     private function userWithNumberExists($phone)
     {
         return !empty(User::where('phone_number', $phone)->first());
+    }
+
+    private function maskPhone($phone)
+    {
+        return '(***) *** - **' . substr($phone, strlen($phone) - 2);
     }
 }
