@@ -24,7 +24,8 @@ class PhoneVerificationController extends Controller
     public function getVerifyForm()
     {
         $this->sendNewToken();
-        return view('auth.verify-phone');
+        $user = Auth::user();
+        return view('auth.verify-phone', ['masked_phone' => $this->maskPhone($user->phone_number)]);
     }
 
     public function verify(Request $request)
@@ -61,7 +62,7 @@ class PhoneVerificationController extends Controller
 
             // Send and log token
             $this->sendToken($user, $token);
-            return view('auth.verify-phone');
+            return view('auth.verify-phone', ['masked_phone' => $this->maskPhone($user->phone_number)]);
         } catch (Exception $e) {
             return response(['message' => 'Invalid token'], 400);
         }
@@ -104,5 +105,10 @@ class PhoneVerificationController extends Controller
     private function cleanToken($token)
     {
         return preg_replace('/\s+/', '', $token);
+    }
+
+    private function maskPhone($phone)
+    {
+        return '(***) *** - **' . substr($phone, strlen($phone) - 2);
     }
 }
