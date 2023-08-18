@@ -5,12 +5,13 @@ $(function(){
         let phone = $('#phone_number').val().toString().replace(/[^0-9]/g, '')
 
         // make sure the phone number is valid
-        if (phone.length == 11 && phone[1] == '1') {
+        if (phone.length == 11 && phone[0] == '1') {
             phone = phone.substring(1)
-        } else if (phone.length != 10) {
-            showInvalidPhone()
-            hidePhoneDoesNotExist()
-            return false
+        }
+        if (phone.length != 10) {
+            // showInvalidPhone()
+            // hidePhoneDoesNotExist()
+            // return false
         }
 
         // Serialize the form data
@@ -24,9 +25,20 @@ $(function(){
             success: function() {
                 window.location.href = '/reset-verify-number?phone_number=' + encodeURIComponent(phone)
             },
-            error: function() {
-                hideInvalidPhone()
-                showPhoneDoesNotExist()
+            error: function(xhr, status, error) {
+                if (xhr.status === 400) {
+                    var errorResponse = JSON.parse(xhr.responseText);
+                    var errorMessage = errorResponse.message;
+                    if (errorMessage === 'No user found') {
+                        hideInvalidPhone()
+                        showPhoneDoesNotExist()
+                    } else {
+                        showInvalidPhone()
+                        hidePhoneDoesNotExist()
+                    }
+                } else {
+                console.log('An error occurred:', error);
+                }
             }
         })
     })
