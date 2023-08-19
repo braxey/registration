@@ -88,6 +88,25 @@ class PhoneVerificationController extends Controller
             ]
         );
 
+        $maxSendAttempts     = getenv('MAX_SEND_ATTEMPTS');
+        $secondsBetweenSends = getenv('SECONDS_BETWEEN_SENDS');
+        for ($attempt = 1; $attempt <= $maxSendAttempts; $attempt++) {
+            $message = $this->client->messages->create(
+                $user->phone_number,
+                [
+                    'from' => getenv('TWILIO_PHONE_NUMBER'),
+                    'body' => 'Your verification token is: ' . $token,
+                ]
+            );
+
+            // Check if the message was successfully sent
+            if ($message->sid) {
+                break; // Exit the loop if the message was sent successfully
+            } else {
+                sleep($secondsBetweenSends);
+            }
+        }
+
         // Log token
         $phoneVerification = PhoneVerification::create([
             'token' => $token,
