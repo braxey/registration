@@ -5,6 +5,7 @@ use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\WalkinWaitlistController;
 use App\Http\Controllers\TwilioController;
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
@@ -133,6 +134,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/resend-verify-token', [PhoneVerificationController::class, 'resend'])->name('resend-verify-token');
         // Route::get('/change-phone', [PhoneVerificationController::class, 'getChangePhoneForm'])->name('get-change-phone');
         // Route::post('/change-phone', [PhoneVerificationController::class, 'changePhone'])->name('change-phone');
+    });
+
+    Route::prefix('walkin-waitlist')->group(function () {
+        Route::get('/', [WalkinWaitlistController::class, 'guestlist'])->name('walk-in-waitlist.show');
     });
 });
     
