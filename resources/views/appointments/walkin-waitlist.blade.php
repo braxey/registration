@@ -17,6 +17,8 @@
                 <div class="container">
                     <h1 class="flex justify-center items-center h-screen" style="font-size: larger">Walk-In Waitlist</h1>
 
+                    <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 125px;" href="{{ route('walk-in.create-form') }}">New Walk-In</a>
+
                     <table class="table mx-auto border border-slate-300 appt-pagination">
                         <thead>
                             <tr class="border border-slate-300">
@@ -24,19 +26,20 @@
                                 <th class="border border-slate-300">Phone Number</th>
                                 <th class="border border-slate-300">Name</th>
                                 <th class="border border-slate-300 slot-col">Slots</th>
+                                <th class="border border-slate-300 slot-col">Desired Time</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($guests as $guest)
-                                @php $apptUser = AppointmentUser::where('appointment_id', $guest->appointment_id)
-                                                                                        ->where('user_id', $guest->user_id)
-                                                                                        ->first();
+                            @foreach ($walkIns as $walkIn)
+                                @php
+                                    $desiredTime = $walkIn->desired_time < now() ? "Now" : \Carbon\Carbon::parse($walkIn->desired_time)->format('g:i A');
                                 @endphp
                                 <tr class="border border-slate-300">
-                                    <td class="border border-slate-300">{{ \Carbon\Carbon::parse($guest->appointment->start_time)->format('F d, Y g:i A') }}</td>
-                                    <td class="border border-slate-300">{{ $guest->user->phone_number }}</td>
-                                    <td class="border border-slate-300">{{ $guest->user->first_name }} {{ $guest->user->last_name }}</td>
-                                    <td class="border border-slate-300">{{ $apptUser->slots_taken }}</td>
+                                    <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('g:i A') }}</td>
+                                    <td class="border border-slate-300">{{ $walkIn->phone_number }}</td>
+                                    <td class="border border-slate-300">{{ $walkIn->name }}</td>
+                                    <td class="border border-slate-300">{{ $walkIn->slots }}</td>
+                                    <td class="border border-slate-300">{{ $desiredTime }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

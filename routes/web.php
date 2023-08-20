@@ -135,9 +135,12 @@ Route::middleware(['auth'])->group(function () {
         // Route::get('/change-phone', [PhoneVerificationController::class, 'getChangePhoneForm'])->name('get-change-phone');
         // Route::post('/change-phone', [PhoneVerificationController::class, 'changePhone'])->name('change-phone');
     });
-
+});
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::prefix('walkin-waitlist')->group(function () {
-        Route::get('/', [WalkinWaitlistController::class, 'guestlist'])->name('walk-in-waitlist.show');
+        Route::get('/', [WalkinWaitlistController::class, 'getWaitlist'])->name('walk-in.show-waitlist');
+        Route::get('/create-walkin', [WalkinWaitlistController::class, 'getCreateWalkinForm'])->name('walk-in.create-form');
+        Route::post('/create-walkin', [WalkinWaitlistController::class, 'createWalkin'])->name('walk-in.create');
     });
 });
     
