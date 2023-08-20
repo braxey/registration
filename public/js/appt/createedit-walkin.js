@@ -29,6 +29,7 @@ $(function(){
                 },
                 error: function(xhr, status, error) {
                     // Handle error response
+                    console.log(status)
                     errorPop("Error", "Form submission failed");
                 }
             }):
