@@ -5,6 +5,7 @@ use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\WalkinWaitlistController;
 use App\Http\Controllers\TwilioController;
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
@@ -133,6 +134,16 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/resend-verify-token', [PhoneVerificationController::class, 'resend'])->name('resend-verify-token');
         // Route::get('/change-phone', [PhoneVerificationController::class, 'getChangePhoneForm'])->name('get-change-phone');
         // Route::post('/change-phone', [PhoneVerificationController::class, 'changePhone'])->name('change-phone');
+    });
+});
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::prefix('walkin-waitlist')->group(function () {
+        Route::get('/', [WalkinWaitlistController::class, 'getWaitlist'])->name('walk-in.show-waitlist');
+        Route::get('/create-walkin', [WalkinWaitlistController::class, 'getCreateWalkinForm'])->name('walk-in.create-form');
+        Route::post('/create-walkin', [WalkinWaitlistController::class, 'createWalkin'])->name('walk-in.create');
+        Route::get('/{id}/edit-walkin', [WalkinWaitlistController::class, 'getEditWalkinForm'])->name('walk-in.edit-form');
+        Route::put('/{id}/edit-walkin', [WalkinWaitlistController::class, 'editWalkin'])->name('walk-in.edit');
+        Route::post('/{id}/delete', [WalkinWaitlistController::class, 'deleteWalkin'])->name('walk-in.delete');
     });
 });
     
