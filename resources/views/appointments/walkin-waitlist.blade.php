@@ -27,6 +27,8 @@
                                 <th class="border border-slate-300">Name</th>
                                 <th class="border border-slate-300 slot-col">Slots</th>
                                 <th class="border border-slate-300 slot-col">Desired Time</th>
+                                <th class="border border-slate-300 slot-col">Appointment</th>
+                                <th class="border border-slate-300 slot-col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -40,6 +42,10 @@
                                     <td class="border border-slate-300">{{ $walkIn->name }}</td>
                                     <td class="border border-slate-300">{{ $walkIn->slots }}</td>
                                     <td class="border border-slate-300">{{ $desiredTime }}</td>
+                                    <td class="border border-slate-300">TBD</td>
+                                    <td class="border border-slate-300">
+                                    <a class="red-btn text-center" href="{{ route('walk-in.edit-form', $walkIn->id) }}">Edit</a>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

@@ -141,6 +141,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/', [WalkinWaitlistController::class, 'getWaitlist'])->name('walk-in.show-waitlist');
         Route::get('/create-walkin', [WalkinWaitlistController::class, 'getCreateWalkinForm'])->name('walk-in.create-form');
         Route::post('/create-walkin', [WalkinWaitlistController::class, 'createWalkin'])->name('walk-in.create');
+        Route::get('/{id}/edit-walkin', [WalkinWaitlistController::class, 'getEditWalkinForm'])->name('walk-in.edit-form');
+        Route::put('/{id}/edit-walkin', [WalkinWaitlistController::class, 'editWalkin'])->name('walk-in.edit');
+        Route::post('/{id}/delete', [WalkinWaitlistController::class, 'deleteWalkin'])->name('walk-in.delete');
     });
 });
     
