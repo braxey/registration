@@ -1,7 +1,7 @@
 @php
     use Carbon\Carbon;
     use Illuminate\Support\Facades\Auth;
-    use App\Models\AppointmentUser;
+    use App\Models\Appointment;
 @endphp
 <x-app-layout>
     <html>
@@ -35,6 +35,12 @@
                             @foreach ($walkIns as $walkIn)
                                 @php
                                     $desiredTime = $walkIn->desired_time < now() ? "Now" : \Carbon\Carbon::parse($walkIn->desired_time)->format('g:i A');
+                                    if ($walkIn->appoitment_id === null) {
+                                        $linkedAppt = "Unassigned";
+                                    } else {
+                                        $appt = Appointment::find($walkIn->appoitment_id);
+                                        $linkedAppt = \Carbon\Carbon::parse($appt->start_time)->format('g:i A');
+                                    }
                                 @endphp
                                 <tr class="border border-slate-300">
                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('g:i A') }}</td>
@@ -42,9 +48,11 @@
                                     <td class="border border-slate-300">{{ $walkIn->name }}</td>
                                     <td class="border border-slate-300">{{ $walkIn->slots }}</td>
                                     <td class="border border-slate-300">{{ $desiredTime }}</td>
-                                    <td class="border border-slate-300">TBD</td>
                                     <td class="border border-slate-300">
-                                    <a class="red-btn text-center" href="{{ route('walk-in.edit-form', $walkIn->id) }}">Edit</a>
+                                        <a class="red-btn text-center" href="{{ route('walk-in.link-appt', $walkIn->id) }}">{{$linkedAppt}}</a>
+                                    </td>
+                                    <td class="border border-slate-300">
+                                        <a class="red-btn text-center" href="{{ route('walk-in.edit-form', $walkIn->id) }}">Edit</a>
                                     </td>
                                 </tr>
                             @endforeach
