@@ -81,22 +81,40 @@ class WalkinWaitlistController extends Controller
             'slots' => 'required|integer|min:0',
         ])->validate();
 
-        // Create a new walk-in instance
+        if (
+            $walkIn->slots !== $validatedData['slots']
+            && $walkIn->appointment_id !== null
+        ) {
+            $appt = Appointment::find($walkIn->appointment_id);
+            $updatedSlotsTaken = $appt->slots_taken - $walkIn->slots + $validatedData['slots'];
+            if ($updatedSlotsTaken > $appt->total_slots) {
+                $appt->total_slots = $updatedSlotsTaken;
+            }
+            $appt->slots_taken = $updatedSlotsTaken;
+            $appt->save();
+        }
+
+        // Update walk-in instance
         $walkIn->name = $validatedData['name'];
         $walkIn->phone_number = $validatedData['phone_number'];
         $walkIn->desired_time = $validatedData['desired_time'];
         $walkIn->slots = $validatedData['slots'];
         
-        // Save the walk-in to the database
+        // Save the walk-in
         $walkIn->save();
 
-        // Redirect to a different page, such as the walk-in waitlist page
+        // Redirect to the walk-in waitlist page
         return redirect()->route('walk-in.edit-form', $walkIn->id);
     }
 
     public function deleteWalkin(Request $request, $id)
     {
         $walkIn = WalkIn::findOrFail($id);
+
+        if ($walkIn->appointment_id !== null) {
+            $appt = Appointment::find($walkIn->appointment_id);
+            $appt->removeWalkIn($walkIn);
+        }
 
         // Delete the walk-in
         $walkIn->delete();
@@ -132,7 +150,7 @@ class WalkinWaitlistController extends Controller
         if (is_null($walkIn->appointment_id)) {
             $appt->addWalkIn($walkIn);
         } else if ($apptId == $walkIn->appointment_id) {
-            return redirect(route('walk-in.show-waitlist')); 
+            return redirect(route('walk-in.show-waitlist'));
         } else {
             $currAppt = Appointment::find($walkIn->appointment_id);
             $currAppt->removeWalkIn($walkIn);
