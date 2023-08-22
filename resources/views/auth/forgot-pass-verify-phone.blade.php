@@ -14,7 +14,7 @@
                         <div class="col-md-8 offset-md-2">
                             <h2><b>Verify Phone</b></h2>
                             <br>
-                            <p>Phone number: {{$masked_phone}}</p>
+                            <p>A verification code has been sent to: {{$masked_phone}}</p>
 
                             <form action="{{ route('forgot-password.verify-phone-token') }}" method="POST" id="verify-form">
                                 @csrf
