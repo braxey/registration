@@ -1,6 +1,6 @@
 @php
     use Carbon\Carbon;
-    use App\Models\AppointmentUser;
+    use App\Models\WalkIn;
 @endphp
 <x-app-layout>
     <html>
@@ -16,9 +16,6 @@
                 
                 <div class="container" >
                 <h1 class="flex justify-center items-center h-screen" style="font-size: larger">Appointments</h1>
-                    @if ($user && $user->admin)
-                        <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 125px;" href="{{ route('appointment.create_form') }}">Create Appt</a>
-                    @endif
                     <table class="table mx-auto border border-slate-300 appt-pagination">  
                         <thead>
                             <tr class="border border-slate-300">
@@ -29,22 +26,25 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($appointments as $appointment)
+                            @php
+                                $walkIn = WalkIn::find($id);
+                            @endphp
+                            @foreach ($nonCompletedAppointments as $appointment)
                                 <tr class="border border-slate-300">
                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                     <td class="border border-slate-300">{{ $appointment->slots_taken }} / {{ $appointment->total_slots }}</td>
                                     <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
                                     <td class="border border-slate-300">
-                                        @if ($user && $user->admin)
-                                            <a class="red-btn" href="{{ route('appointment.edit', $appointment->id) }}">Edit Appt</a>
-                                        @endif
-                                        @if ($appointment->start_time < now() || !$organization->registration_open || $appointment->slots_taken >= $appointment->total_slots)
-                                            Closed  
-                                        @elseif ($user?->id && AppointmentUser::where('user_id', $user->id)->where('appointment_id', $appointment->id)->exists())
-                                            <a class="grn-btn" href="{{ route('appointment.editbooking', $appointment->id) }}">Edit Booking</a>
-                                        @else
-                                            <a class="grn-btn" href="{{ route('appointment.book', $appointment->id) }}">Book</a>
-                                        @endif
+                                    <form action="{{ route('walk-in.link-appt-post', ['walkInId' => $id, 'apptId' => $appointment->id]) }}" method="POST" id="link-form">
+                                        @csrf
+                                        <div class="form-group">
+                                            @if ($appointment->id == $walkIn->appointment_id)
+                                                <p class="justify-center flex">Linked</p>
+                                            @else
+                                                <button type="submit" class="grn-btn flex" style="margin: auto !important">Link</button>
+                                            @endif
+                                        </div>
+                                    </form>
                                     </td>
                                 </tr>
                             @endforeach
