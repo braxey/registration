@@ -104,4 +104,42 @@ class WalkinWaitlistController extends Controller
         // Redirect to appointments
         return redirect()->route('walk-in.show-waitlist');
     }
+
+    public function getApptLinkPage(Request $request, $id)
+    {
+        $nonCompletedAppointments = Appointment::where('status', '<>', 'completed')
+            ->orderByRaw("
+                CASE
+                    WHEN status = 'in progress' THEN 1
+                    WHEN status = 'upcoming' THEN 2
+                    ELSE 3
+                END
+            ")
+            ->orderByRaw("
+                CASE WHEN status = 'upcoming' THEN start_time END ASC
+            ")
+            ->orderByRaw("
+                CASE WHEN status = 'in progress' THEN start_time END ASC
+            ")
+            ->get();
+        return view('appointments.appt-walk-in-link', compact('id', 'nonCompletedAppointments'));
+    }
+
+    public function linkAppointment(Request $request, $walkInId, $apptId)
+    {
+        $walkIn = WalkIn::find($walkInId);
+        $appt   = Appointment::find($apptId);
+        if (is_null($walkIn->appointment_id)) {
+            $appt->addWalkIn($walkIn);
+        } else if ($apptId == $walkIn->appointment_id) {
+            return redirect(route('walk-in.show-waitlist')); 
+        } else {
+            $currAppt = Appointment::find($walkIn->appointment_id);
+            $currAppt->removeWalkIn($walkIn);
+            $appt->addWalkIn($walkIn);
+        }
+        $walkIn->appointment_id = $apptId;
+        $walkIn->save();
+        return redirect(route('walk-in.show-waitlist'));
+    }
 }
