@@ -24,12 +24,7 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/', function () {
-    $eventName = "Walk Thru Bethlehem";
-    $eventDescription = "Description";
-
-    return view('welcome', 
-        ['eventName' => $eventName,
-        'eventDescription' => $eventDescription]);
+    return redirect(route('appointments.index'));
 })->name('welcome');
 
 Route::middleware([
