@@ -5,9 +5,12 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
+use App\Models\WalkIn;
 use App\Models\Organization;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
+
 
 class AppointmentController extends Controller
 {
@@ -56,55 +59,89 @@ class AppointmentController extends Controller
         $status = $request->input('status');
 
         $guests = AppointmentUser::query()
-            ->when($firstName, function ($query) use ($firstName) {
-                $query->whereHas('user', function ($subQuery) use ($firstName) {
-                    $subQuery->where('first_name', 'LIKE', '%' . $firstName . '%');
-                });
-            })
-            ->when($lastName, function ($query) use ($lastName) {
-                $query->whereHas('user', function ($subQuery) use ($lastName) {
-                    $subQuery->where('last_name', 'LIKE', '%' . $lastName . '%');
+            ->join('appointments', 'appointments.id', '=', 'appointment_user.appointment_id')
+            ->join('users', 'users.id', '=', 'appointment_user.user_id');
+
+        $walkIns = WalkIn::query()
+            ->leftJoin('appointments', 'walk_ins.appointment_id', '=', 'appointments.id');
+
+        // Get data from the $guests and $walkIns collections
+        $guestsData = $guests->get(['appointments.start_time', 'appointments.status', 'users.first_name', 'users.last_name', 'appointment_user.slots_taken', 'appointment_user.showed_up', 'appointment_user.id']);
+        $walkInsData = $walkIns->get(['start_time', 'status', 'name', 'slots', 'slots AS showed_up', 'walk_ins.id']); // For walk-ins, showed_up equals slots
+
+        // Add an additional 'is_walk_in' field to walk-in data
+        $walkInsDataWithFlag = $walkInsData->map(function ($item) {
+            $item['is_walk_in'] = true;
+            return $item;
+        });
+
+        // Add an additional 'is_walk_in' field to guests data
+        $guestsDataWithFlag = $guestsData->map(function ($item) {
+            $item['is_walk_in'] = false;
+            return $item;
+        });
+
+        // Merge the data into a single collection
+        $combinedData = new Collection([...$walkInsDataWithFlag, ...$guestsDataWithFlag]);
+
+        $filteredData = $combinedData
+            ->when($firstName || $lastName, function ($query) use ($firstName, $lastName) {
+                return $query->filter(function ($item) use ($firstName, $lastName) {
+                    if (!empty($item['name'])) {
+                        $name = strtolower($item['name']);
+                        $needle = rtrim(strtolower($firstName . ' ' . $lastName));
+                        return strpos($name, $needle) !== false;
+                    } else {
+                        $first = strtolower($item['first_name']);
+                        $last = strtolower($item['last_name']);
+                        return $first == strtolower($firstName) || $last == strtolower($lastName);
+                    }
                 });
             })
             ->when($startDate || $startTime, function ($query) use ($startDate, $startTime) {
-                $query->whereHas('appointment', function ($subQuery) use ($startDate, $startTime) {
-                    $subQuery->where('start_time', 'LIKE', '%' . $startDate . ' ' . $startTime . '%');
+                return $query->filter(function ($item) use ($startDate, $startTime) {
+                    $date = explode(' ', $item['start_time'])[0];
+                    $time = explode(' ', $item['start_time'])[1];
+                    if (!$startDate) {
+                        return strpos($time, $startTime) !== false;
+                    } else if (!$startTime) {
+                        return $date == $startDate;
+                    } else {
+                        return strpos($time, $startTime) !== false && $date == $startDate;
+                    }
                 });
             })
             ->when($status, function ($query) use ($status) {
-                $query->whereHas('appointment', function ($subQuery) use ($status) {
-                    $subQuery->where('status', $status);
+                return $query->filter(function ($item) use ($status) {
+                    return $item['status'] === $status;
                 });
-            })
-            ->join('appointments', 'appointments.id', '=', 'appointment_user.appointment_id')
-            ->orderByRaw("
-                CASE
-                    WHEN status = 'in progress' THEN 1
-                    WHEN status = 'upcoming' THEN 2
-                    WHEN status = 'completed' THEN 3
-                    ELSE 3
-                END
-            ")
-            ->orderByRaw("
-                CASE WHEN status = 'completed' THEN start_time END DESC
-            ")
-            ->orderByRaw("
-                CASE WHEN status = 'upcoming' THEN start_time END ASC
-            ")
-            ->orderByRaw("
-                CASE WHEN status = 'in progress' THEN start_time END ASC
-            ")
-            ->get();
+            });
 
-        $totalSlotsTaken = 0;
-        $totalShowedUp = 0;
-        foreach($guests as $guest){
-            $apptUser = AppointmentUser::where('appointment_id', $guest->appointment_id)
-                                    ->where('user_id', $guest->user_id)
-                                    ->first();
-            $totalSlotsTaken += $apptUser->slots_taken;
-            $totalShowedUp += $apptUser->showed_up;
-        }
+        // Combine results using UNION
+        $guests = $filteredData->sortBy(function ($item) {
+            $statusOrder = [
+                'in progress' => 1,
+                'upcoming' => 2,
+                'completed' => 3,
+            ];
+            
+            $status = $item['status'];
+            $startTime = $item['start_time'];
+        
+            return [
+                'status_order' => $statusOrder[$status],
+                'completed_order' => $status === 'completed' ? -strtotime($startTime) : PHP_INT_MAX,
+                'upcoming_order' => $status === 'upcoming' ? strtotime($startTime) : PHP_INT_MAX,
+                'in_progress_order' => $status === 'in progress' ? strtotime($startTime) : PHP_INT_MAX,
+            ];
+        });
+
+        // dump($guests);
+        // exit;
+
+        $totalSlotsTaken = $guests->sum('slots') + $guests->sum('slots_taken');
+        $totalShowedUp = $guests->sum('showed_up');
+
 
         return ($user->admin)
             ? view('appointments.guestlist', compact('guests', 'totalSlotsTaken', 'totalShowedUp'))
