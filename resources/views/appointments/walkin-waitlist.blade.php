@@ -56,7 +56,7 @@
                                                 @endphp
                                                 <tr class="border border-slate-300">
                                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('g:i A') }}</td>
-                                                    <td class="border border-slate-300">{{ $walkIn->phone_number }}</td>
+                                                    <td class="border border-slate-300">{{ formatPhoneBrackets($walkIn->phone_number) }}</td>
                                                     <td class="border border-slate-300">{{ $walkIn->name }}</td>
                                                     <td class="border border-slate-300">{{ $walkIn->slots }}</td>
                                                     <td class="border border-slate-300">{{ $desiredTime }}</td>
@@ -105,7 +105,7 @@
                                                     @endphp
                                                     <tr class="border border-slate-300">
                                                         <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('g:i A') }}</td>
-                                                        <td class="border border-slate-300">{{ $walkIn->phone_number }}</td>
+                                                        <td class="border border-slate-300">{{ formatPhoneBrackets($walkIn->phone_number) }}</td>
                                                         <td class="border border-slate-300">{{ $walkIn->name }}</td>
                                                         <td class="border border-slate-300">{{ $walkIn->slots }}</td>
                                                         <td class="border border-slate-300">{{ $desiredTime }}</td>
@@ -154,7 +154,7 @@
                                                     @endphp
                                                     <tr class="border border-slate-300">
                                                         <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('g:i A') }}</td>
-                                                        <td class="border border-slate-300">{{ $walkIn->phone_number }}</td>
+                                                        <td class="border border-slate-300">{{ formatPhoneBrackets($walkIn->phone_number) }}</td>
                                                         <td class="border border-slate-300">{{ $walkIn->name }}</td>
                                                         <td class="border border-slate-300">{{ $walkIn->slots }}</td>
                                                         <td class="border border-slate-300">{{ $desiredTime }}</td>
