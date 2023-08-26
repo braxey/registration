@@ -77,19 +77,21 @@
                         </thead>
                         <tbody>
                             @foreach ($guests as $guest)
-                                @php $apptUser = AppointmentUser::where('appointment_id', $guest->appointment_id)
-                                                                                        ->where('user_id', $guest->user_id)
-                                                                                        ->first();
-                                @endphp
                                 <tr class="border border-slate-300">
-                                    <td class="border border-slate-300">{{ \Carbon\Carbon::parse($guest->appointment->start_time)->format('F d, Y g:i A') }}</td>
-                                    <td class="border border-slate-300"><span class="highlight text-white">{{ $guest->appointment->status }}</span></td>
-                                    <td class="border border-slate-300">{{ $guest->user->first_name }} {{ $guest->user->last_name }}</td>
-                                    <td class="border border-slate-300">{{ $apptUser->slots_taken }}</td>
+                                    <td class="border border-slate-300">{{ \Carbon\Carbon::parse($guest->start_time)->format('F d, Y g:i A') }}</td>
+                                    <td class="border border-slate-300"><span class="highlight text-white">{{ $guest->status }}</span></td>
+                                    @if ($guest->is_walk_in)
+                                    <td class="border border-slate-300">{{ $guest->name }}</td>
+                                    <td class="border border-slate-300">{{ $guest->slots }}</td>
+                                    <td class="border border-slate-300">{{ $guest->showed_up }}</td>
+                                    @else
+                                    <td class="border border-slate-300">{{ $guest->first_name }} {{ $guest->last_name }}</td>
+                                    <td class="border border-slate-300">{{ $guest->slots_taken }}</td>
                                     <td class="border border-slate-300">
-                                        <input type="number" class="showed-up-input" data-guest-id="{{ $apptUser->id }}" 
-                                            value="{{ $apptUser->showed_up }}" min="0" style="max-width: 80px;">
+                                        <input type="number" class="showed-up-input" data-guest-id="{{ $guest->id }}" 
+                                            value="{{ $guest->showed_up }}" min="0" style="max-width: 80px;">
                                     </td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>
