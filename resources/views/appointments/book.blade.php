@@ -20,9 +20,10 @@
 
                         <form action="{{ route('appointment.book', $appointment) }}" method="POST" id="book-form">
                             @csrf
+                            </br>
 
                             <div class="form-group">
-                                <label for="slots">Slots</label>
+                                <label for="slots">Number of Guests</label>
                                 <input type="text" name="slots" id="slots" class="form-control">
                             </div>
                             <button class="grn-btn" type="submit">Book</button>
