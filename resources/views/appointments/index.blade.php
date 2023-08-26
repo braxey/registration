@@ -5,7 +5,7 @@
 <x-app-layout>
     <html>
         <head>
-            <title>Appointments</title>
+            <title>Appointments - WTB Registration</title>
             <link rel="stylesheet" href="{{asset('css/main.css')}}">
             <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -15,7 +15,7 @@
             <div class="flex justify-center items-center h-screen">
                 
                 <div class="container" >
-                <h1 class="flex justify-center items-center h-screen" style="font-size: larger">Appointments</h1>
+                <h1 class="flex justify-center items-center h-screen" style="font-size: larger">Walk Thru Bethlehem Appointments</h1>
                     @if ($user && $user->admin)
                         <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 125px;" href="{{ route('appointment.create_form') }}">Create Appt</a>
                     @endif

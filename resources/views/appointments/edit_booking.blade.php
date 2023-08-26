@@ -22,9 +22,10 @@
                         <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="POST" id="edit-book-form">
                             @csrf
                             @method('PUT')
+                            </br>
 
                             <div class="form-group">
-                                <label for="slots">Slots</label>
+                                <label for="slots">Number of Guests</label>
                                 <input type="text" name="slots" id="slots" value="{{ $apptUserSlots }}" class="form-control">
                             </div>
 

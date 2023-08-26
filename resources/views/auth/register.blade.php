@@ -65,7 +65,7 @@
                         <x-checkbox name="sms-consent" id="sms-consent" required />
 
                         <div class="ml-2">
-                            {!! __('I agree to recieve SMS notifications') !!}
+                            {!! __('I agree to recieve SMS messages') !!}
                         </div>
                     </div>
                 </x-label>
