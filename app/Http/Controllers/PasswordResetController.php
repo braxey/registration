@@ -175,7 +175,7 @@ class PasswordResetController extends Controller
                 $user->phone_number,
                 [
                     'from' => getenv('TWILIO_PHONE_NUMBER'),
-                    'body' => 'Your verification token is: ' . $token,
+                    'body' => 'Your WTB Registration verification code is: ' . $token,
                 ]
             );
 

@@ -35,7 +35,7 @@ class NotifyUpcomingAppointmentsCommand extends Command
                         // Send notification to user via text
                         $user = User::find($apptUser->user_id);
                         if ($user) {
-                            $message = "You have an appointment that begins at ".$formattedStart.".";
+                            $message = "You have a Walk Thru Bethlehem appointment that begins at " . $formattedStart . ".";
                     
                             try {
                                 $response = $client->messages->create(
