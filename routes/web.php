@@ -127,8 +127,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/verify', [PhoneVerificationController::class, 'getVerifyForm'])->name('get-verify');
         Route::post('/verify', [PhoneVerificationController::class, 'verify'])->name('verify-phone-token');
         Route::post('/resend-verify-token', [PhoneVerificationController::class, 'resend'])->name('resend-verify-token');
-        // Route::get('/change-phone', [PhoneVerificationController::class, 'getChangePhoneForm'])->name('get-change-phone');
-        // Route::post('/change-phone', [PhoneVerificationController::class, 'changePhone'])->name('change-phone');
+        Route::get('/change-phone', [PhoneVerificationController::class, 'getChangePhoneForm'])->name('get-change-phone');
+        Route::post('/change-phone', [PhoneVerificationController::class, 'changePhone'])->name('change-phone');
     });
 });
 Route::middleware(['auth', 'admin'])->group(function () {

@@ -1,5 +1,5 @@
 $(function(){
-    let form = document.getElementById('forgot-password-form')
+    let form = document.getElementById('change-phone-form')
     form.addEventListener('submit', function(e){
         e.preventDefault()
         let phone = $('#phone_number').val().toString().replace(/[^0-9]/g, '')
@@ -10,7 +10,7 @@ $(function(){
         }
         if (phone.length != 10) {
             showInvalidPhone()
-            hidePhoneDoesNotExist()
+            hidePhoneExists()
             return false
         }
 
@@ -23,18 +23,18 @@ $(function(){
             type: 'POST',
             data: formData,
             success: function() {
-                window.location.href = '/reset-verify-number?phone_number=' + encodeURIComponent(phone)
+                window.location.href = '/verify-phone/verify'
             },
             error: function(xhr, status, error) {
                 if (xhr.status === 400) {
                     var errorResponse = JSON.parse(xhr.responseText);
                     var errorMessage = errorResponse.message;
-                    if (errorMessage === 'No user found') {
+                    if (errorMessage === 'User exists') {
                         hideInvalidPhone()
-                        showPhoneDoesNotExist()
+                        showPhoneExists()
                     } else {
                         showInvalidPhone()
-                        hidePhoneDoesNotExist()
+                        hidePhoneExists()
                     }
                 } else {
                 console.log('An error occurred:', error);
@@ -51,11 +51,11 @@ $(function(){
         $('#invalid-number').hide()
     }
 
-    function showPhoneDoesNotExist() {
-        $('#no-account').show()
+    function showPhoneExists() {
+        $('#existing-account').show()
     }
 
-    function hidePhoneDoesNotExist() {
-        $('#no-account').hide()
+    function hidePhoneExists() {
+        $('#existing-account').hide()
     }
 })

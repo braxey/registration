@@ -16,6 +16,10 @@
                             <br>
                             <p>A verification code has been sent to: <b>{{$masked_phone}}</b></p>
 
+                            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('get-change-phone') }}">
+                                {{ __('Click here to use a different phone number') }}
+                            </a>
+
                             <form action="{{ route('verify-phone-token') }}" method="POST" id="verify-form">
                                 @csrf
 
