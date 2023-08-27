@@ -19,7 +19,7 @@
                     @if ($user && $user->admin)
                         <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 125px; margin-left: 5px;" href="{{ route('appointment.create_form') }}">Create Appt</a>
                     @endif
-                    <div class="tab-container">
+                    <div class="tab-container tab-content appointment-table">
                         <table class="table mx-auto border border-slate-300 appt-pagination">  
                             <thead>
                                 <tr class="border border-slate-300">
