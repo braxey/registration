@@ -19,7 +19,6 @@ $(function(){
             type: 'POST',
             data: formData,
             success: function(response) {
-                console.log(response);
                 if (response.ref !== undefined) {
                     var ref = response.ref;
                     if (ref) {
