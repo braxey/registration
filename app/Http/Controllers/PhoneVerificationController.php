@@ -41,7 +41,12 @@ class PhoneVerificationController extends Controller
                     $user->verifyPhone();
                     // Delete phone_verifications rows with the user_id
                     PhoneVerification::where('user_id', $user->id)->delete();
-                    return response(200);
+                    if (session('ref')) {
+                        $ref = session('ref');
+                        session(['ref' => null]);
+                        return response(['ref' => $ref], 200);
+                    }
+                    return response(['ref' => null], 200);
                 } else {
                     return response(['message' => 'Wrong token'], 400);
                 }
@@ -84,7 +89,7 @@ class PhoneVerificationController extends Controller
             $user->phone_number,
             [
                 'from' => getenv("TWILIO_PHONE_NUMBER"),
-                'body' => "Your verification token is: " . $token,
+                'body' => "Your WTB Registration verification code is: " . $token,
             ]
         );
 

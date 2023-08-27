@@ -16,6 +16,8 @@ class EnsurePhoneIsVerified
      */
     public function handle(Request $request, Closure $next): Response
     {
+        session(['ref' => $request->path()]);
+        
         $user = Auth::user();
         if (!$user->phoneVerified()) {
             return redirect(route('get-verify'));
