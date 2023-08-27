@@ -162,7 +162,17 @@
     padding: 2px 5px;
   }
 
-.table-buttons-cell {
-white-space: normal; /* Allow text to wrap */
-overflow: hidden; /* Hide any overflow */
+  .table-buttons-cell {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px; /* Adjust the spacing between buttons */
+}
+
+.table-buttons-cell a {
+    margin: auto;
+    width: 90%;
+    /* display: inline-block; */
+    white-space: normal; /* Allow text to wrap */
+    text-decoration: none;
 }
