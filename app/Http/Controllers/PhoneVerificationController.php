@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Twilio\Rest\Client;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use App\Models\PhoneVerification;
 
 class PhoneVerificationController extends Controller
@@ -73,6 +74,26 @@ class PhoneVerificationController extends Controller
         }
     }
 
+    public function getChangePhoneForm()
+    {
+        return view('auth.change-phone');
+    }
+
+    public function changePhone(Request $request)
+    {
+        $phone = $request->get('phone_number');
+        if ($this->isValidPhoneNumber($phone)) {
+            if (!$this->userWithNumberExists($phone)) {
+                $user = Auth::user();
+                $user->phone_number = $phone;
+                $user->save();
+                return response(200);
+            }
+            return response(['message' => 'User exists'], 400);
+        }
+        return response(['message' => 'Invalid number'], 400);
+    }
+
     private function sendNewToken()
     {
         // Generate token
@@ -125,6 +146,16 @@ class PhoneVerificationController extends Controller
         return ctype_digit($token) && strlen($token) == 7;
     }
     
+    private function isValidPhoneNumber($number)
+    {
+        return ctype_digit($number) && strlen($number) == 10;
+    }
+
+    private function userWithNumberExists($phone)
+    {
+        $currPhone = Auth::user()->phone_number;
+        return !empty(User::where('phone_number', $phone)->first()) && !($phone == $currPhone);
+    }
 
     private function cleanToken($token)
     {
