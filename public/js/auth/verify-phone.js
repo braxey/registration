@@ -18,8 +18,21 @@ $(function(){
             url: form.action,
             type: 'POST',
             data: formData,
-            success: function() {
-                window.location.href = '/appointments'
+            success: function(response) {
+                console.log(response);
+                if (response.ref !== undefined) {
+                    var ref = response.ref;
+                    if (ref) {
+                        // Redirect the user to the URL
+                        console.log(ref);
+                        window.location.href = '/' + ref;
+                    } else {
+                        // Handle the case where the response does not contain a valid URL
+                        // window.location.href = '/appointments';
+                    }
+                } else {
+                    // window.location.href = '/appointments';
+                }
             },
             error: function() {
                 showWrongTokenMessage()
