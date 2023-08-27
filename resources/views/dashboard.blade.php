@@ -138,7 +138,7 @@
                                 @endif
                             </div>
                         </div>
-                        <div align="right" style="margin-bottom: 200px;">
+                        <div align="left" style="margin-bottom: 200px;">
                             <b>Current number of slots booked: {{$currCount}}/{{$organization->max_slots_per_user}}</b>
                         </div>
                     </div>
