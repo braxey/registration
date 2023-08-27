@@ -24,14 +24,13 @@ $(function(){
                     var ref = response.ref;
                     if (ref) {
                         // Redirect the user to the URL
-                        console.log(ref);
                         window.location.href = '/' + ref;
                     } else {
                         // Handle the case where the response does not contain a valid URL
-                        // window.location.href = '/appointments';
+                        window.location.href = '/appointments';
                     }
                 } else {
-                    // window.location.href = '/appointments';
+                    window.location.href = '/appointments';
                 }
             },
             error: function() {

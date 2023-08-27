@@ -25,7 +25,7 @@ $(function(){
             success: function() {
                 window.location.href = '/reset-verify-number?phone_number=' + encodeURIComponent(phone)
             },
-            error: function(xhr, status, error) {a
+            error: function(xhr, status, error) {
                 if (xhr.status === 400) {
                     var errorResponse = JSON.parse(xhr.responseText);
                     var errorMessage = errorResponse.message;
