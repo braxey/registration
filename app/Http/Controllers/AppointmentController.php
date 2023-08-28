@@ -63,7 +63,8 @@ class AppointmentController extends Controller
             ->join('users', 'users.id', '=', 'appointment_user.user_id');
 
         $walkIns = WalkIn::query()
-            ->leftJoin('appointments', 'walk_ins.appointment_id', '=', 'appointments.id');
+            ->leftJoin('appointments', 'walk_ins.appointment_id', '=', 'appointments.id')
+            ->whereNotNull('walk_ins.appointment_id');
 
         // Get data from the $guests and $walkIns collections
         $guestsData = $guests->get(['appointments.start_time', 'appointments.status', 'users.first_name', 'users.last_name', 'appointment_user.slots_taken', 'appointment_user.showed_up', 'appointment_user.id']);

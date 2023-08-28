@@ -141,6 +141,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::post('/{id}/delete', [WalkinWaitlistController::class, 'deleteWalkin'])->name('walk-in.delete');
         Route::get('/{id}/link-appt', [WalkinWaitlistController::class, 'getApptLinkPage'])->name('walk-in.link-appt');
         Route::post('/{walkInId}/{apptId}/link-appt', [WalkinWaitlistController::class, 'linkAppointment'])->name('walk-in.link-appt-post');
+        Route::post('/{walkInId}/{apptId}/unlink-appt', [WalkinWaitlistController::class, 'unlinkAppointment'])->name('walk-in.unlink-appt-post');
     });
 });
     
