@@ -47,7 +47,7 @@ $(function(){
     }
 
     function showInvalidPhone() {
-        $('#wront-token').hide()
+        $('#wrong-token').hide()
         $('#invalid-phone').show()
     }
 })
