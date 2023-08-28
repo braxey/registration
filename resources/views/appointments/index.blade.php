@@ -38,7 +38,7 @@
                                         <td class="border border-slate-300">
                                             <div class="table-buttons-cell">
                                             @if ($user && $user->admin)
-                                                <a class="red-btn" href="{{ route('appointment.edit', $appointment->id) }}">Edit Appt</a></br>
+                                                <a class="red-btn" href="{{ route('appointment.edit', $appointment->id) }}">Edit Appt</a>
                                             @endif
                                             @if ($appointment->start_time < now() || !$organization->registration_open || $appointment->slots_taken >= $appointment->total_slots)
                                                 <a>Closed</a>  

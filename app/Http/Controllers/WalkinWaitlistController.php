@@ -17,7 +17,7 @@ class WalkinWaitlistController extends Controller
     // edit
     // Show the admin-only guestlist
     public function getWaitlist(Request $request){
-        $walkIns = WalkIn::all();
+        $walkIns = WalkIn::orderBy('created_at', 'desc')->get();
         return view('appointments.walkin-waitlist', compact('walkIns'));
     }
 
