@@ -17,7 +17,7 @@
                 <div class="container">
                     <h1 class="flex justify-center items-center h-screen" style="font-size: larger">Walk-In Waitlist</h1>
 
-                    <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 125px;" href="{{ route('walk-in.create-form') }}">New Walk-In</a>
+                    <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 125px; margin-left: 5px;" href="{{ route('walk-in.create-form') }}">New Walk-In</a>
 
                     <div class="tab-container">
                         <div class="tabs">
@@ -55,7 +55,7 @@
                                                     $color = $linkedAppt === "Unassigned" ? "red" : "grn";
                                                 @endphp
                                                 <tr class="border border-slate-300">
-                                                    <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('g:i A') }}</td>
+                                                    <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('F d, Y g:i A') }}</td>
                                                     <td class="border border-slate-300">{{ formatPhoneBrackets($walkIn->phone_number) }}</td>
                                                     <td class="border border-slate-300">{{ $walkIn->name }}</td>
                                                     <td class="border border-slate-300">{{ $walkIn->slots }}</td>
@@ -104,7 +104,7 @@
                                                         $color = $linkedAppt === "Unassigned" ? "red" : "grn";
                                                     @endphp
                                                     <tr class="border border-slate-300">
-                                                        <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('g:i A') }}</td>
+                                                        <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('F d, Y g:i A') }}</td>
                                                         <td class="border border-slate-300">{{ formatPhoneBrackets($walkIn->phone_number) }}</td>
                                                         <td class="border border-slate-300">{{ $walkIn->name }}</td>
                                                         <td class="border border-slate-300">{{ $walkIn->slots }}</td>
@@ -153,7 +153,7 @@
                                                         $color = $linkedAppt === "Unassigned" ? "red" : "grn";
                                                     @endphp
                                                     <tr class="border border-slate-300">
-                                                        <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('g:i A') }}</td>
+                                                        <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('F d, Y g:i A') }}</td>
                                                         <td class="border border-slate-300">{{ formatPhoneBrackets($walkIn->phone_number) }}</td>
                                                         <td class="border border-slate-300">{{ $walkIn->name }}</td>
                                                         <td class="border border-slate-300">{{ $walkIn->slots }}</td>
