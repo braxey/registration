@@ -160,4 +160,18 @@ class WalkinWaitlistController extends Controller
         $walkIn->save();
         return redirect(route('walk-in.show-waitlist'));
     }
+
+    public function unlinkAppointment(Request $request, $walkInId, $apptId)
+    {
+        $walkIn = WalkIn::find($walkInId);
+        $appt   = Appointment::find($apptId);
+        if (is_null($walkIn->appointment_id) || $walkIn->appointment_id != $apptId) {
+            return redirect(route('walk-in.show-waitlist'));
+        }
+
+        $appt->removeWalkIn($walkIn);
+        $walkIn->appointment_id = null;
+        $walkIn->save();
+        return redirect(route('walk-in.show-waitlist'));
+    }
 }
