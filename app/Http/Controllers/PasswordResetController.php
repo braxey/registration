@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\PhoneVerification;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use libphonenumber\PhoneNumberUtil;
 
 class PasswordResetController extends Controller
 {
@@ -52,10 +53,11 @@ class PasswordResetController extends Controller
             ]
         );
 
-        $this->sendNewToken($phone);
+        $validPhone = $this->sendNewToken($phone);
         return view('auth.forgot-pass-verify-phone',
             [
-                'masked_phone' => $this->maskPhone($phone)
+                'masked_phone' => $this->maskPhone($phone),
+                'valid_phone'  => $validPhone
             ]
         );
     }
@@ -65,6 +67,11 @@ class PasswordResetController extends Controller
         try {
             // Get the cleaned token
             $token = $this->cleanToken($request->get('token')); 
+            $valid = $request->get('valid');
+
+            if(!$valid) {
+                return response(['message' => 'Invalid phone'], 400);
+            }
             $phone = session('phone_number');
             
             // Check if the token is valid
@@ -100,11 +107,12 @@ class PasswordResetController extends Controller
                 $token = PhoneVerification::getMostRecentToken($user->id);
 
                 // Send and log token
-                $this->sendToken($user, $token);
+                $validPhone = $this->sendToken($user, $token);
                 return view(
                     'auth.forgot-pass-verify-phone',
                     [
-                        'masked_phone' => $this->maskPhone($phone)
+                        'masked_phone' => $this->maskPhone($phone),
+                        'valid_phone'  => $validPhone
                     ]
                 );
             } else {
@@ -163,36 +171,50 @@ class PasswordResetController extends Controller
 
         // Send token
         $user = User::where('phone_number', $phone)->first();
-        $this->sendToken($user, $token);
+        return $this->sendToken($user, $token);
     }
 
     private function sendToken($user, $token)
     {
-        $maxSendAttempts     = getenv('MAX_SEND_ATTEMPTS');
-        $secondsBetweenSends = getenv('SECONDS_BETWEEN_SENDS');
-        for ($attempt = 1; $attempt <= $maxSendAttempts; $attempt++) {
-            $message = $this->client->messages->create(
-                $user->phone_number,
-                [
-                    'from' => getenv('TWILIO_PHONE_NUMBER'),
-                    'body' => 'Your WTB Registration verification code is: ' . $token,
-                ]
-            );
+        // Validate phone number using libphonenumber
+        $phoneNumberUtil = PhoneNumberUtil::getInstance();
 
-            // Check if the message was successfully sent
-            if ($message->sid) {
-                break; // Exit the loop if the message was sent successfully
-            } else {
-                sleep($secondsBetweenSends);
+        try {
+            $parsedPhoneNumber = $phoneNumberUtil->parse($user->phone_number, 'US');
+            if (!$phoneNumberUtil->isValidNumber($parsedPhoneNumber)) {
+                throw new \Exception('Invalid phone number');
             }
-        }
 
-        // Log token
-        $phoneVerification = PhoneVerification::create([
-            'token' => $token,
-            'time_sent' => now(),
-            'user_id' => $user->id,
-        ]);
+            $maxSendAttempts     = getenv('MAX_SEND_ATTEMPTS');
+            $secondsBetweenSends = getenv('SECONDS_BETWEEN_SENDS');
+            for ($attempt = 1; $attempt <= $maxSendAttempts; $attempt++) {
+                $message = $this->client->messages->create(
+                    $user->phone_number,
+                    [
+                        'from' => getenv('TWILIO_PHONE_NUMBER'),
+                        'body' => 'Your WTB Registration verification code is: ' . $token,
+                    ]
+                );
+
+                // Check if the message was successfully sent
+                if ($message->sid) {
+                    break; // Exit the loop if the message was sent successfully
+                } else {
+                    sleep($secondsBetweenSends);
+                }
+            }
+
+            // Log token
+            $phoneVerification = PhoneVerification::create([
+                'token' => $token,
+                'time_sent' => now(),
+                'user_id' => $user->id,
+            ]);
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     private function isValidToken($token)

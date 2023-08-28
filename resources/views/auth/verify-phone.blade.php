@@ -28,7 +28,11 @@
                                     <input type="text" name="token" id="token" class="form-control">
                                 </div>
 
+                                <input type="hidden" name="valid" id="valid" value="{{ $valid_phone }}"/>
+
                                 <p style="color:red; display:none" id="wrong-token">The entered token is incorrect.</p>
+
+                                <p style="color:red; {{$valid_phone ? 'display:none' : ''}}" id="invalid-phone">Your phone number is invalid. Please change it.</p>
 
                                 <button class="grn-btn" type="submit">Verify</button>
                             </form>
