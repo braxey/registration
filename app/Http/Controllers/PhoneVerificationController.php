@@ -7,6 +7,7 @@ use Twilio\Rest\Client;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\PhoneVerification;
+use libphonenumber\PhoneNumberUtil;
 
 class PhoneVerificationController extends Controller
 {
@@ -24,9 +25,12 @@ class PhoneVerificationController extends Controller
 
     public function getVerifyForm()
     {
-        $this->sendNewToken();
+        $validPhone = $this->sendNewToken();
         $user = Auth::user();
-        return view('auth.verify-phone', ['masked_phone' => $this->maskPhone($user->phone_number)]);
+        return view('auth.verify-phone', [
+            'masked_phone' => $this->maskPhone($user->phone_number),
+            'valid_phone'  => $validPhone
+        ]);
     }
 
     public function verify(Request $request)
@@ -34,6 +38,11 @@ class PhoneVerificationController extends Controller
         try {
             // Get the cleaned token
             $token = $this->cleanToken($request->get('token'));
+            $valid = $request->get('valid');
+
+            if(!$valid) {
+                return response(['message' => 'Invalid phone'], 400);
+            }
             
             // Check if the token is valid
             if ($this->validToken($token)) {
@@ -67,11 +76,18 @@ class PhoneVerificationController extends Controller
             $token = PhoneVerification::getMostRecentToken($user->id);
 
             // Send and log token
-            $this->sendToken($user, $token);
-            return view('auth.verify-phone', ['masked_phone' => $this->maskPhone($user->phone_number)]);
+            if (!$this->sendToken($user, $token)) {
+                $validPhone = false;
+            } else {
+                $validPhone = true;
+            }
         } catch (Exception $e) {
-            return response(['message' => 'Invalid token'], 400);
+            $validPhone = false;
         }
+        return view('auth.verify-phone', [
+            'masked_phone' => $this->maskPhone($user->phone_number),
+            'valid_phone'  => $validPhone
+        ]);
     }
 
     public function getChangePhoneForm()
@@ -101,44 +117,58 @@ class PhoneVerificationController extends Controller
 
         // Send token
         $user = Auth::user();
-        $this->sendToken($user, $token);
+        return $this->sendToken($user, $token);
     }
 
     private function sendToken($user, $token)
     {
-        $this->client->messages->create(
-            $user->phone_number,
-            [
-                'from' => getenv("TWILIO_PHONE_NUMBER"),
-                'body' => "Your WTB Registration verification code is: " . $token,
-            ]
-        );
+        // Validate phone number using libphonenumber
+        $phoneNumberUtil = PhoneNumberUtil::getInstance();
 
-        $maxSendAttempts     = getenv('MAX_SEND_ATTEMPTS');
-        $secondsBetweenSends = getenv('SECONDS_BETWEEN_SENDS');
-        for ($attempt = 1; $attempt <= $maxSendAttempts; $attempt++) {
-            $message = $this->client->messages->create(
+        try {
+            $parsedPhoneNumber = $phoneNumberUtil->parse($user->phone_number, 'US');
+            if (!$phoneNumberUtil->isValidNumber($parsedPhoneNumber)) {
+                throw new \Exception('Invalid phone number');
+            }
+
+            $this->client->messages->create(
                 $user->phone_number,
                 [
-                    'from' => getenv('TWILIO_PHONE_NUMBER'),
-                    'body' => 'Your WTB Registration verification code is: ' . $token,
+                    'from' => getenv("TWILIO_PHONE_NUMBER"),
+                    'body' => "Your WTB Registration verification code is: " . $token,
                 ]
             );
-
-            // Check if the message was successfully sent
-            if ($message->sid) {
-                break; // Exit the loop if the message was sent successfully
-            } else {
-                sleep($secondsBetweenSends);
+    
+            $maxSendAttempts     = getenv('MAX_SEND_ATTEMPTS');
+            $secondsBetweenSends = getenv('SECONDS_BETWEEN_SENDS');
+            for ($attempt = 1; $attempt <= $maxSendAttempts; $attempt++) {
+                $message = $this->client->messages->create(
+                    $user->phone_number,
+                    [
+                        'from' => getenv('TWILIO_PHONE_NUMBER'),
+                        'body' => 'Your WTB Registration verification code is: ' . $token,
+                    ]
+                );
+    
+                // Check if the message was successfully sent
+                if ($message->sid) {
+                    break; // Exit the loop if the message was sent successfully
+                } else {
+                    sleep($secondsBetweenSends);
+                }
             }
-        }
+    
+            // Log token
+            $phoneVerification = PhoneVerification::create([
+                'token' => $token,
+                'time_sent' => now(),
+                'user_id' => $user->id,
+            ]);
 
-        // Log token
-        $phoneVerification = PhoneVerification::create([
-            'token' => $token,
-            'time_sent' => now(),
-            'user_id' => $user->id,
-        ]);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     private function validToken($token)
