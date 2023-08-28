@@ -1,14 +1,7 @@
 $(function(){
     let form = document.getElementById('verify-form')
     form.addEventListener('submit', function(e){
-        let token = $('#token').val().toString()
         e.preventDefault()
-
-        // make sure the input a string of 7 digits
-        if (!isSevenDigits(token)){
-            showWrongTokenMessage()
-            return false
-        }
 
         // Serialize the form data
         var formData = $(form).serialize();
@@ -21,18 +14,29 @@ $(function(){
             success: function() {
                 window.location.href = '/forgot-password-reset'
             },
-            error: function() {
-                showWrongTokenMessage()
+            error: function(xhr, status, error) {
+                if (xhr.status === 400) {
+                    var errorResponse = JSON.parse(xhr.responseText);
+                    var errorMessage = errorResponse.message;
+                    if (errorMessage === 'Invalid phone') {
+                        showInvalidPhone()
+                    } else {
+                        showWrongTokenMessage()
+                    }
+                } else {
+                console.log('An error occurred:', error);
+                }
             }
         })
     })
 
-    function isSevenDigits(str) {
-        // Check if the trimmed string is 7 digits long
-        return (str.trim()).length === 7;
+    function showWrongTokenMessage() {
+        $('#invalid-phone').hide()
+        $('#wrong-token').show()
     }
 
-    function showWrongTokenMessage() {
-        $('#wrong-token').show()
+    function showInvalidPhone() {
+        $('#wrong-token').hide()
+        $('#invalid-phone').show()
     }
 })
