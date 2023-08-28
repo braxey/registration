@@ -35,16 +35,21 @@
                                     <td class="border border-slate-300">{{ $appointment->slots_taken }} / {{ $appointment->total_slots }}</td>
                                     <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
                                     <td class="border border-slate-300">
+                                    @if ($appointment->id == $walkIn->appointment_id)
+                                    <form action="{{ route('walk-in.unlink-appt-post', ['walkInId' => $id, 'apptId' => $appointment->id]) }}" method="POST" id="link-form">
+                                        @csrf
+                                        <div class="form-group">
+                                            <button type="submit" class="red-btn flex" style="margin: auto !important">Unlink</button>
+                                        </div>
+                                    </form>
+                                    @else
                                     <form action="{{ route('walk-in.link-appt-post', ['walkInId' => $id, 'apptId' => $appointment->id]) }}" method="POST" id="link-form">
                                         @csrf
                                         <div class="form-group">
-                                            @if ($appointment->id == $walkIn->appointment_id)
-                                                <p class="justify-center flex">Linked</p>
-                                            @else
-                                                <button type="submit" class="grn-btn flex" style="margin: auto !important">Link</button>
-                                            @endif
+                                            <button type="submit" class="grn-btn flex" style="margin: auto !important">Link</button>
                                         </div>
                                     </form>
+                                    @endif
                                     </td>
                                 </tr>
                             @endforeach
