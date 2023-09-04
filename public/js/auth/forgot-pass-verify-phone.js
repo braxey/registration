@@ -19,7 +19,7 @@ $(function(){
                     var errorResponse = JSON.parse(xhr.responseText);
                     var errorMessage = errorResponse.message;
                     if (errorMessage === 'Invalid phone') {
-                        showInvalidPhone()
+                        // showInvalidPhone()
                     } else {
                         showWrongTokenMessage()
                     }

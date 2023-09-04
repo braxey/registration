@@ -14,9 +14,9 @@
                         <div class="col-md-8 offset-md-2">
                             <h2><b>Verify Phone</b></h2>
                             <br>
-                            <p>A verification code has been sent to: <b>{{$masked_phone}}</b></p>
+                            <p>A verification code has been sent to: <b>{{$email}}</b></p>
 
-                            <form action="{{ route('forgot-password.verify-phone-token') }}" method="POST" id="verify-form">
+                            <form action="{{ route('forgot-password.verify-token') }}" method="POST" id="verify-form">
                                 @csrf
 
                                 <div class="form-group">
@@ -24,11 +24,7 @@
                                     <input type="text" name="token" id="token" class="form-control">
                                 </div>
 
-                                <input type="hidden" name="valid" id="valid" value="{{ $valid_phone }}"/>
-
                                 <p style="color:red; display:none" id="wrong-token">The entered token is incorrect.</p>
-
-                                <p style="color:red; {{$valid_phone ? 'display:none' : ''}}" id="invalid-phone">Your phone number is invalid, so you will not be able to receive a code.</p>
 
                                 <button class="grn-btn" type="submit">Verify</button>
                             </form>
