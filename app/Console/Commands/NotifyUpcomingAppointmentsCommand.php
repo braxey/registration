@@ -9,6 +9,9 @@ use Twilio\Rest\Client;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Mail;
+
+use App\Mail\NotifyEmail;
 
 class NotifyUpcomingAppointmentsCommand extends Command
 {
@@ -19,47 +22,51 @@ class NotifyUpcomingAppointmentsCommand extends Command
     public function handle(){
         $upcomingAppointments = Appointment::where('status', 'upcoming')->get();
 
-        $account_sid = getenv("TWILIO_SID");
-        $auth_token = getenv("TWILIO_AUTH_TOKEN");
-        $twilio_number = getenv("TWILIO_PHONE_NUMBER");
+        // $account_sid = getenv("TWILIO_SID");
+        // $auth_token = getenv("TWILIO_AUTH_TOKEN");
+        // $twilio_number = getenv("TWILIO_PHONE_NUMBER");
 
-        $client = new Client($account_sid, $auth_token);
+        // $client = new Client($account_sid, $auth_token);
         
         foreach ($upcomingAppointments as $appointment) {
             if (now()->gt(Carbon::parse($appointment->start_time)->subMinutes(60))) {
                 $apptUsers = AppointmentUser::where('appointment_id', $appointment->id)->get();
-                $formattedStart = Carbon::parse($appointment->start_time, 'EST')->format('g:i A');
+                $formattedStart = Carbon::parse($appointment->start_time, 'EST');
 
                 foreach ($apptUsers as $apptUser) {
                     if ($apptUser->notified == false) {
-                        // Send notification to user via text
+                        // Send notification to user via email
                         $user = User::find($apptUser->user_id);
-                        if ($user) {
-                            $message = "You have a Walk Thru Bethlehem appointment that begins at " . $formattedStart . ".";
+                        if ($user && !is_null($user->email_verified_at)) {
+                            // $message = "You have a Walk Thru Bethlehem appointment that begins at " . $formattedStart . ".";
                     
-                            try {
-                                $response = $client->messages->create(
-                                    $user->phone_number,
-                                    [
-                                        'from' => $twilio_number,
-                                        'body' => $message,
-                                    ]
-                                );
+                            // try {
+                            //     $response = $client->messages->create(
+                            //         $user->phone_number,
+                            //         [
+                            //             'from' => $twilio_number,
+                            //             'body' => $message,
+                            //         ]
+                            //     );
 
-                                if ($response->sid) {
-                                    // Update notified status
-                                    AppointmentUser::where('user_id', $user->id)
+                            //     if ($response->sid) {
+                            //         // Update notified status
+                            //         AppointmentUser::where('user_id', $user->id)
+                            //                     ->where('appointment_id', $appointment->id)
+                            //                     ->update(['notified' => true]);
+
+                            //         dump('SMS Sent Successfully for User ID: '.$user->id);
+                            //     } else {
+                            //         dump('Failed to send SMS for User ID: '.$user->id);
+                            //     }
+                            // } catch (\Exception $e) {
+                            //     dump('Error sending SMS for User ID: '.$user->id.', Error: '.$e->getMessage());
+                            //     dump('Failed to send SMS for User ID: '.$user->id);
+                            // }
+                            Mail::to($user->email)->send(new NotifyEmail($formattedStart, $apptUser->slots_taken));
+                            AppointmentUser::where('user_id', $user->id)
                                                 ->where('appointment_id', $appointment->id)
                                                 ->update(['notified' => true]);
-
-                                    dump('SMS Sent Successfully for User ID: '.$user->id);
-                                } else {
-                                    dump('Failed to send SMS for User ID: '.$user->id);
-                                }
-                            } catch (\Exception $e) {
-                                dump('Error sending SMS for User ID: '.$user->id.', Error: '.$e->getMessage());
-                                dump('Failed to send SMS for User ID: '.$user->id);
-                            }
                         }
                     }
                 }

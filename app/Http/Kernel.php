@@ -64,8 +64,8 @@ class Kernel extends HttpKernel
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        // 'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'phone.verified' => \App\Http\Middleware\EnsurePhoneIsVerified::class,
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        // 'phone.verified' => \App\Http\Middleware\EnsurePhoneIsVerified::class,
         'twilio.webhook' => RequestValidator::class,
     ];
 }
