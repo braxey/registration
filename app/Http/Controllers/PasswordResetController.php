@@ -9,6 +9,8 @@ use App\Models\PhoneVerification;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use libphonenumber\PhoneNumberUtil;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\VerificationEmail;
 
 class PasswordResetController extends Controller
 {
@@ -16,10 +18,10 @@ class PasswordResetController extends Controller
 
     public function __construct()
     {
-        $account_sid = getenv("TWILIO_SID");
-        $auth_token = getenv("TWILIO_AUTH_TOKEN");
+        // $account_sid = getenv("TWILIO_SID");
+        // $auth_token = getenv("TWILIO_AUTH_TOKEN");
 
-        $this->client = new Client($account_sid, $auth_token);
+        // $this->client = new Client($account_sid, $auth_token);
     }
 
     public function getForgotPasswordPage()
@@ -37,6 +39,15 @@ class PasswordResetController extends Controller
             return response(['message' => 'No user found'], 400);
         }
         return response(['message' => 'Invalid number'], 400);
+    }
+
+    public function verifyEmail(Request $request)
+    {
+        $email = $request->get('email');
+        if ($this->userWithEmailExists($email)) {
+            return response(200);
+        }
+        return response(['message' => 'No user found'], 400);
     }
 
     public function getNumberVerifyForm(Request $request)
@@ -62,21 +73,41 @@ class PasswordResetController extends Controller
         );
     }
 
+    public function getEmailVerifyForm(Request $request)
+    {
+        $email = $request->get('email');
+        session(
+            [
+                'email'          => $email,
+                'reset_verified' => 0
+            ]
+        );
+
+        $this->emailNewToken($email);
+        return view('auth.forgot-pass-verify-phone',
+            [
+                // 'masked_phone' => $this->maskPhone($phone),
+                'email'        => $email
+            ]
+        );
+    }
+
     public function verify(Request $request)
     {
         try {
             // Get the cleaned token
             $token = $this->cleanToken($request->get('token')); 
-            $valid = $request->get('valid');
+            // $valid = $request->get('valid');
 
-            if(!$valid) {
-                return response(['message' => 'Invalid phone'], 400);
-            }
-            $phone = session('phone_number');
+            // if(!$valid) {
+            //     return response(['message' => 'Invalid phone'], 400);
+            // }
+            // $phone = session('phone_number');
+            $email = session('email');
             
             // Check if the token is valid
-            if ($this->isValidPhoneNumber($phone) && $this->isValidToken($token)) {
-                $user = User::where('phone_number', $phone)->first();
+            if ($this->isValidToken($token)) {
+                $user = User::where('email', $email)->first();
                 if (PhoneVerification::getMostRecentToken($user->id) === $token) {
                     // Delete phone_verifications rows with the user_id
                     PhoneVerification::where('user_id', $user->id)->delete();
@@ -86,9 +117,9 @@ class PasswordResetController extends Controller
                     return response(['message' => 'Wrong token'], 400);
                 }
             } else {
-                if (!$this->isValidPhoneNumber($phone)) {
-                    return response(['message' => 'Invalid phone number'], 400);
-                }
+                // if (!$this->isValidPhoneNumber($phone)) {
+                //     return response(['message' => 'Invalid phone number'], 400);
+                // }
                 return response(['message' => 'Invalid token'], 400);
             }
         } catch (Exception $e) {
@@ -100,24 +131,26 @@ class PasswordResetController extends Controller
     {
         try {
             // Get token to resend
-            $phone = session('phone_number');
+            // $phone = session('phone_number');
+            $email = session('email');
             
-            if ($this->isValidPhoneNumber($phone)) {
-                $user = User::where('phone_number', $phone)->first();
+            // if ($this->isValidPhoneNumber($phone)) {
+                $user = User::where('email', $email)->first();
                 $token = PhoneVerification::getMostRecentToken($user->id);
 
                 // Send and log token
-                $validPhone = $this->sendToken($user, $token);
+                $this->emailToken($user, $token);
                 return view(
                     'auth.forgot-pass-verify-phone',
                     [
-                        'masked_phone' => $this->maskPhone($phone),
-                        'valid_phone'  => $validPhone
+                        // 'masked_phone' => $this->maskPhone($phone),
+                        // 'valid_phone'  => $validPhone
+                        'email' => $email
                     ]
                 );
-            } else {
-                return response(['message' => 'Invalid phone number'], 400);
-            }
+            // } else {
+            //     return response(['message' => 'Invalid phone number'], 400);
+            // }
         } catch (Exception $e) {
             return response(['message' => 'Something went wrong'], 500);
         }
@@ -125,7 +158,7 @@ class PasswordResetController extends Controller
 
     public function getResetPasswordForm()
     {
-        if ($this->isValidPhoneNumber(session('phone_number')) && session('reset_verified')) {
+        if (session('reset_verified')) {
             return view('auth.reset-password');
         }
         abort(404);
@@ -133,7 +166,7 @@ class PasswordResetController extends Controller
 
     public function updatePassword(Request $request)
     {
-        if ($this->isValidPhoneNumber(session('phone_number')) && session('reset_verified')) {
+        if (session('reset_verified')) {
             $password = $request->get('password');
             $password_confirmation = $request->get('password_confirmation');
 
@@ -141,19 +174,19 @@ class PasswordResetController extends Controller
                 'password' => $password,
             ];
             $validator = Validator::make($input, [
-                'password' => 'min:6'
+                'password' => 'min:8'
             ]);
 
             if ($validator->passes()) {
                 if ($password !== $password_confirmation) {
                     return response(['message' => 'The password does not match the confirmation'], 400);
                 } else {
-                    $user = User::where('phone_number', session('phone_number'))->first();
+                    $user = User::where('email', session('email'))->first();
                     $user->forceFill([
                         'password' => Hash::make($input['password']),
                     ])->save();
                     session([
-                        'phone_number' => '',
+                        'email' => '',
                         'reset_verified' => 0
                     ]);
                     return response(200);
@@ -217,6 +250,34 @@ class PasswordResetController extends Controller
         }
     }
 
+    private function emailNewToken($email)
+    {
+        // Generate token
+        $token = (string) mt_rand(1000000, 9999999);
+
+        // Send token
+        $user = User::where('email', $email)->first();
+        return $this->emailToken($user, $token);
+    }
+
+    private function emailToken($user, $token)
+    {
+        try {
+            Mail::to($user->email)->send(new VerificationEmail($token));
+
+            // Log token
+            $phoneVerification = PhoneVerification::create([
+                'token' => $token,
+                'time_sent' => now(),
+                'user_id' => $user->id,
+            ]);
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
     private function isValidToken($token)
     {
         return ctype_digit($token) && strlen($token) == 7;
@@ -236,6 +297,11 @@ class PasswordResetController extends Controller
     private function userWithNumberExists($phone)
     {
         return !empty(User::where('phone_number', $phone)->first());
+    }
+
+    private function userWithEmailExists($email)
+    {
+        return !empty(User::where('email', $email)->first());
     }
 
     private function maskPhone($phone)

@@ -1,16 +1,21 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\WalkinWaitlistController;
-use App\Http\Controllers\TwilioController;
+// use App\Http\Controllers\TwilioController;
+
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
 use App\Models\Organization;
-use Illuminate\Support\Facades\Auth;
+
+use App\Mail\VerificationEmail;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,18 +99,20 @@ Route::get('/appointments', [AppointmentController::class, 'index'])->name('appo
 
 // Forgot password
 Route::get('/forgot-password', [PasswordResetController::class, 'getForgotPasswordPage'])->name('forgot-password');
-Route::post('/forgot-password-number', [PasswordResetController::class, 'verifyNumber'])->name('forgot-password.check');
-Route::get('/reset-verify-number', [PasswordResetController::class, 'getNumberVerifyForm'])->name('forgot-password.verify-form');
-Route::post('/reset-verify', [PasswordResetController::class, 'verify'])->name('forgot-password.verify-phone-token');
+// Route::post('/forgot-password-number', [PasswordResetController::class, 'verifyNumber'])->name('forgot-password.check');
+Route::post('/forgot-password-email', [PasswordResetController::class, 'verifyEmail'])->name('forgot-password.check');
+// Route::get('/reset-verify-number', [PasswordResetController::class, 'getNumberVerifyForm'])->name('forgot-password.verify-form');
+Route::get('/reset-verify-email', [PasswordResetController::class, 'getEmailVerifyForm'])->name('forgot-password.verify-form');
+Route::post('/reset-verify', [PasswordResetController::class, 'verify'])->name('forgot-password.verify-token');
 Route::post('/reset-resend-verify-token', [PasswordResetController::class, 'resend'])->name('forgot-password.resend-verify-token');
 Route::get('/forgot-password-reset', [PasswordResetController::class, 'getResetPasswordForm'])->name('forgot-password.reset-form');
 Route::post('/forgot-password-update', [PasswordResetController::class, 'updatePassword'])->name('forgot-password.update');
 
-Route::middleware(['twilio.webhook'])->group(function () {
-    Route::post('/incoming-sms', [TwilioController::class, 'handleIncomingSMS'])->name('twilio.incoming_sms');
-});
+// Route::middleware(['twilio.webhook'])->group(function () {
+//     Route::post('/incoming-sms', [TwilioController::class, 'handleIncomingSMS'])->name('twilio.incoming_sms');
+// });
 
-Route::middleware(['auth', 'phone.verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::match(['GET', 'POST'], '/appointments/{id}/book', [AppointmentController::class, 'book'])->name('appointment.book');
     Route::match(['GET', 'PUT'], '/appointments/{id}/editbooking', [AppointmentController::class, 'edit_booking'])->name('appointment.editbooking');
     Route::post('/appointments/{id}/cancelbooking', [AppointmentController::class, 'cancel_booking'])->name('appointment.cancelbooking');
@@ -123,13 +130,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/appointments/create', [AppointmentController::class, 'create'])->name('appointment.create');
     Route::post('/appointments/{id}/delete', [AppointmentController::class, 'delete'])->name('appointment.delete');
 
-    Route::prefix('verify-phone')->group(function () {
-        Route::get('/verify', [PhoneVerificationController::class, 'getVerifyForm'])->name('get-verify');
-        Route::post('/verify', [PhoneVerificationController::class, 'verify'])->name('verify-phone-token');
-        Route::post('/resend-verify-token', [PhoneVerificationController::class, 'resend'])->name('resend-verify-token');
-        Route::get('/change-phone', [PhoneVerificationController::class, 'getChangePhoneForm'])->name('get-change-phone');
-        Route::post('/change-phone', [PhoneVerificationController::class, 'changePhone'])->name('change-phone');
-    });
+    // Route::prefix('verify-phone')->group(function () {
+    //     Route::get('/verify', [PhoneVerificationController::class, 'getVerifyForm'])->name('get-verify');
+    //     Route::post('/verify', [PhoneVerificationController::class, 'verify'])->name('verify-phone-token');
+    //     Route::post('/resend-verify-token', [PhoneVerificationController::class, 'resend'])->name('resend-verify-token');
+    //     Route::get('/change-phone', [PhoneVerificationController::class, 'getChangePhoneForm'])->name('get-change-phone');
+    //     Route::post('/change-phone', [PhoneVerificationController::class, 'changePhone'])->name('change-phone');
+    // });
 });
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::prefix('walkin-waitlist')->group(function () {
@@ -144,4 +151,3 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::post('/{walkInId}/{apptId}/unlink-appt', [WalkinWaitlistController::class, 'unlinkAppointment'])->name('walk-in.unlink-appt-post');
     });
 });
-    

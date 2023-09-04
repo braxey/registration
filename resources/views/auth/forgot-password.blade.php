@@ -8,7 +8,7 @@
         </x-slot>
 
         <div class="mb-4 text-sm text-gray-600">
-            {{ __('Forgot your password? No problem. Just let us know your phone number and we will let you choose a new one.') }}
+            {{ __('Forgot your password? No problem. Just let us know your email address and we will let you choose a new one.') }}
         </div>
 
         @if (session('status'))
@@ -23,16 +23,16 @@
             @csrf
 
             <div class="block">
-                <x-label for="phone_number" value="{{ __('Phone Number') }}" />
-                <x-input id="phone_number" class="block mt-1 w-full" type="text" name="phone_number" required autofocus />
+                <x-label for="email" value="{{ __('Email') }}" />
+                <x-input id="email" class="block mt-1 w-full" type="email" name="email" required autofocus />
             </div>
 
             <p style="color:red; display:none" id="invalid-number">The given phone number is invalid.</p>
-            <p style="color:red; display:none" id="no-account">No account exists with the given number.</p>
+            <p style="color:red; display:none" id="no-account">No account exists with the given email.</p>
 
             <div class="flex items-center justify-end mt-4">
                 <x-button>
-                    {{ __('Verify Phone Number for Reset Link') }}
+                    {{ __('Email Me A Verification Code') }}
                 </x-button>
             </div>
         </form>
