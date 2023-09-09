@@ -31,13 +31,10 @@ class WalkinWaitlistController extends Controller
         // Get the input data from the request
         $data = $request->all();
 
-        // Strip away non-digit characters from the phone number
-        $data['phone_number'] = preg_replace('/\D/', '', $data['phone_number']);
-
         // Validate the modified input
         $validatedData = Validator::make($data, [
             'name' => 'required',
-            'phone_number' => 'required|digits:10',
+            'email' => 'required|email',
             'desired_time' => 'required|date',
             'slots' => 'required|integer|min:0',
         ])->validate();
@@ -45,7 +42,7 @@ class WalkinWaitlistController extends Controller
         // Create a new walk-in instance
         $walkIn = new WalkIn();
         $walkIn->name = $validatedData['name'];
-        $walkIn->phone_number = $validatedData['phone_number'];
+        $walkIn->email = $validatedData['email'];
         $walkIn->desired_time = $validatedData['desired_time'];
         $walkIn->slots = $validatedData['slots'];
         
@@ -70,13 +67,10 @@ class WalkinWaitlistController extends Controller
         // Get the input data from the request
         $data = $request->all();
 
-        // Strip away non-digit characters from the phone number
-        $data['phone_number'] = preg_replace('/\D/', '', $data['phone_number']);
-
         // Validate the modified input
         $validatedData = Validator::make($data, [
             'name' => 'required',
-            'phone_number' => 'required|digits:10',
+            'email' => 'required|email',
             'desired_time' => 'required|date',
             'slots' => 'required|integer|min:0',
         ])->validate();
@@ -96,7 +90,7 @@ class WalkinWaitlistController extends Controller
 
         // Update walk-in instance
         $walkIn->name = $validatedData['name'];
-        $walkIn->phone_number = $validatedData['phone_number'];
+        $walkIn->email = $validatedData['email'];
         $walkIn->desired_time = $validatedData['desired_time'];
         $walkIn->slots = $validatedData['slots'];
         
