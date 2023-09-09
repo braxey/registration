@@ -20,8 +20,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="phone_number">Phone Number</label>
-                            <input type="text" name="phone_number" id="phone_number" class="form-control">
+                            <label for="email">Email</label>
+                            <input type="email" name="email" id="email" class="form-control">
                         </div>
 
                         <div class="form-group">

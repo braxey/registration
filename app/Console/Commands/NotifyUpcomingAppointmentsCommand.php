@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\User;
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
+use App\Models\WalkIn;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -23,6 +24,7 @@ class NotifyUpcomingAppointmentsCommand extends Command
         foreach ($upcomingAppointments as $appointment) {
             if (now()->gt(Carbon::parse($appointment->start_time)->subMinutes(60))) {
                 $apptUsers = AppointmentUser::where('appointment_id', $appointment->id)->get();
+                $walkIns   = WalkIn::where('appointment_id', $appointment->id)->get();
                 $formattedStart = Carbon::parse($appointment->start_time, 'EST');
 
                 foreach ($apptUsers as $apptUser) {
@@ -39,6 +41,18 @@ class NotifyUpcomingAppointmentsCommand extends Command
                         } catch (\Exception $e) {
                             \Log::error($e);
                         }
+                    }
+                }
+                foreach ($walkIns as $walkIn) {
+                    if ($walkIn->notified == false) {
+                        // Send notification to walkin via email
+                        try {
+                            Mail::to($walkIn->email)->send(new NotifyEmail($formattedStart, $walkIn->slots));
+                        } catch (\Exception $e) {
+                            \Log::error($e);
+                        }
+                        $walkIn->notified = true;
+                        $walkIn->save();
                     }
                 }
             }

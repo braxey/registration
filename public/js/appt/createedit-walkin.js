@@ -57,10 +57,6 @@ $(function(){
 })
 
 function validateInput(){
-    //phone number
-    let phoneNumber = $('#phone_number').val().toString()
-    if(!isValidPhoneNumber(phoneNumber)) return false
-
     //name
     let name = $('#name').val().toString()
     let res = validateText(name)
