@@ -8,7 +8,7 @@
     <p>Hello,</p>
     <p>You have a Walk Thru Bethlehem appointment for the following details:</p>
     <ul>
-        <li>Date and Time: {{ $dateTime }}</li>
+        <li>Date and Time: {{ $dateTime }} EST</li>
         <li>Number of Slots: {{ $slots }}</li>
     </ul>
     <p>We hope you enjoy Walk Thru Bethlehem!</p>
