@@ -15,11 +15,12 @@ return new class extends Migration
             $table->id();
             $table->timestamps(); // Created at and Updated at columns
 
-            $table->string('phone_number');
+            $table->string('email');
             $table->string('name');
             $table->integer('slots');
             $table->dateTime('desired_time');
             $table->unsignedBigInteger('appointment_id')->nullable();
+            $table->boolean('notified')->default(false);
 
             // Foreign key constraint for appointment_id referencing the appointments table
             $table->foreign('appointment_id')->references('id')->on('appointments')->onDelete('set null');

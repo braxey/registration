@@ -34,7 +34,7 @@
                                         <thead>
                                             <tr class="border border-slate-300">
                                                 <th class="border border-slate-300">Time Entered</th>
-                                                <th class="border border-slate-300">Phone Number</th>
+                                                <th class="border border-slate-300">Email</th>
                                                 <th class="border border-slate-300">Name</th>
                                                 <th class="border border-slate-300 slot-col">Slots</th>
                                                 <th class="border border-slate-300 slot-col">Desired Time</th>
@@ -56,7 +56,7 @@
                                                 @endphp
                                                 <tr class="border border-slate-300">
                                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('F d, Y g:i A') }}</td>
-                                                    <td class="border border-slate-300">{{ formatPhoneBrackets($walkIn->phone_number) }}</td>
+                                                    <td class="border border-slate-300">{{ $walkIn->email }}</td>
                                                     <td class="border border-slate-300">{{ $walkIn->name }}</td>
                                                     <td class="border border-slate-300">{{ $walkIn->slots }}</td>
                                                     <td class="border border-slate-300">{{ $desiredTime }}</td>
@@ -82,7 +82,7 @@
                                         <thead>
                                             <tr class="border border-slate-300">
                                                 <th class="border border-slate-300">Time Entered</th>
-                                                <th class="border border-slate-300">Phone Number</th>
+                                                <th class="border border-slate-300">Email</th>
                                                 <th class="border border-slate-300">Name</th>
                                                 <th class="border border-slate-300 slot-col">Slots</th>
                                                 <th class="border border-slate-300 slot-col">Desired Time</th>
@@ -105,7 +105,7 @@
                                                     @endphp
                                                     <tr class="border border-slate-300">
                                                         <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('F d, Y g:i A') }}</td>
-                                                        <td class="border border-slate-300">{{ formatPhoneBrackets($walkIn->phone_number) }}</td>
+                                                        <td class="border border-slate-300">{{ $walkIn->email }}</td>
                                                         <td class="border border-slate-300">{{ $walkIn->name }}</td>
                                                         <td class="border border-slate-300">{{ $walkIn->slots }}</td>
                                                         <td class="border border-slate-300">{{ $desiredTime }}</td>
@@ -131,7 +131,7 @@
                                         <thead>
                                             <tr class="border border-slate-300">
                                                 <th class="border border-slate-300">Time Entered</th>
-                                                <th class="border border-slate-300">Phone Number</th>
+                                                <th class="border border-slate-300">Email</th>
                                                 <th class="border border-slate-300">Name</th>
                                                 <th class="border border-slate-300 slot-col">Slots</th>
                                                 <th class="border border-slate-300 slot-col">Desired Time</th>
@@ -154,7 +154,7 @@
                                                     @endphp
                                                     <tr class="border border-slate-300">
                                                         <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('F d, Y g:i A') }}</td>
-                                                        <td class="border border-slate-300">{{ formatPhoneBrackets($walkIn->phone_number) }}</td>
+                                                        <td class="border border-slate-300">{{ $walkIn->email }}</td>
                                                         <td class="border border-slate-300">{{ $walkIn->name }}</td>
                                                         <td class="border border-slate-300">{{ $walkIn->slots }}</td>
                                                         <td class="border border-slate-300">{{ $desiredTime }}</td>

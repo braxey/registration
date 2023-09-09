@@ -15,5 +15,6 @@ class WalkIn extends Model
         'slots',
         'desired_time',
         'appointment_id',
+        'notified'
     ];
 }
