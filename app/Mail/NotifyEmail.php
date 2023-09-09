@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class VerificationEmail extends Mailable
+class NotifyEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -19,13 +19,13 @@ class VerificationEmail extends Mailable
 
     public function __construct($dateTime, $slots)
     {
-        $this->dateTime = Carbon::parse($dateTime)->format('F j, Y g:i A');
+        $this->dateTime = $dateTime->format('F j, Y g:i A');
         $this->slots = $slots;
     }
 
     public function build()
     {
         return $this->subject('Walk Thru Bethlehem Appointment Notification')
-            ->view('emails.notify-appt-email');
+            ->view('emails.notify-appt-email', ['dateTime' => $this->dateTime, 'slots' => $this->slots]);
     }
 }
