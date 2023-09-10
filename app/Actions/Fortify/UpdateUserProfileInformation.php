@@ -30,7 +30,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $user->updateProfilePhoto($input['photo']);
         }
 
-        if ($input['phone_number'] !== $user->phone_number) {
+        if ($input['email'] !== $user->email &&
+            $user instanceof MustVerifyEmail) {
             $this->updateVerifiedUser($user, $input);
         } else {
             $user->forceFill([
@@ -54,7 +55,9 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'last_name' => $input['last_name'],
             'email' => $input['email'],
             'phone_number' => $input['phone_number'],
-            'phone_verified_at' => null,
+            'email_verified_at' => null,
         ])->save();
+
+        $user->sendEmailVerificationNotification();
     }
 }
