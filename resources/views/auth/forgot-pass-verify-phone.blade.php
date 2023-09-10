@@ -12,9 +12,9 @@
                 <div class="container form-container">
                     <div class="row">
                         <div class="col-md-8 offset-md-2">
-                            <h2><b>Verify Phone</b></h2>
+                            <h2><b>Verify Email</b></h2>
                             <br>
-                            <p>A verification code has been sent to: <b>{{$email}}</b></p>
+                            <p>A verification code has been sent to:</p><b>{{$email}}</b>
 
                             <form action="{{ route('forgot-password.verify-token') }}" method="POST" id="verify-form">
                                 @csrf

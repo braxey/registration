@@ -33,7 +33,7 @@ class NotifyUpcomingAppointmentsCommand extends Command
                         try {
                             $user = User::find($apptUser->user_id);
                             if ($user && !is_null($user->email_verified_at)) {
-                                Mail::to($user->email)->send(new NotifyEmail($formattedStart, $apptUser->slots_taken));
+                                Mail::to($user->email)->send(new NotifyEmail($formattedStart, $apptUser->slots_taken, $user->first_name));
                                 AppointmentUser::where('user_id', $user->id)
                                                     ->where('appointment_id', $appointment->id)
                                                     ->update(['notified' => true]);
@@ -47,7 +47,7 @@ class NotifyUpcomingAppointmentsCommand extends Command
                     if ($walkIn->notified == false) {
                         // Send notification to walkin via email
                         try {
-                            Mail::to($walkIn->email)->send(new NotifyEmail($formattedStart, $walkIn->slots));
+                            Mail::to($walkIn->email)->send(new NotifyEmail($formattedStart, $walkIn->slots, $walkIn->name));
                         } catch (\Exception $e) {
                             \Log::error($e);
                         }

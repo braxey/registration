@@ -16,16 +16,23 @@ class NotifyEmail extends Mailable
 
     private $dateTime;
     private $slots;
+    private $name;
 
-    public function __construct($dateTime, $slots)
+    public function __construct($dateTime, $slots, $name)
     {
         $this->dateTime = $dateTime->format('F j, Y g:i A');
         $this->slots = $slots;
+        $this->name = $name;
     }
 
     public function build()
     {
         return $this->subject('Walk Thru Bethlehem Appointment Notification')
-            ->view('emails.notify-appt-email', ['dateTime' => $this->dateTime, 'slots' => $this->slots]);
+            ->view('emails.notify-appt-email',
+            [
+                'dateTime' => $this->dateTime,
+                'slots'    => $this->slots,
+                'name'     => $this->name,
+            ]);
     }
 }
