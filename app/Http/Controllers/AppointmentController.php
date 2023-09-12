@@ -396,12 +396,19 @@ class AppointmentController extends Controller
         $validatedData = $request->validate([
             'description' => 'required',
             'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
             'total_slots' => 'required|integer|min:0',
         ]);
 
         // Update the appointment with the validated data
-        $appointment->update($validatedData);
+
+        $appointment->description = $validatedData['description'];
+        $appointment->start_time = $validatedData['start_time'];
+        $appointment->end_time = Carbon::parse($validatedData['start_time'])->addHours(1)->format('Y-m-d\TH:i');
+        $appointment->total_slots = $validatedData['total_slots'];
+        
+        // Save the appointment to the database
+        $appointment->save();
+
         // Redirect to the same page
         return redirect()->route('appointment.edit', $appointment->id);
     }
@@ -423,7 +430,6 @@ class AppointmentController extends Controller
         $validatedData = $request->validate([
             'description' => 'required',
             'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
             'total_slots' => 'required|integer|min:1',
         ]);
 
@@ -431,7 +437,7 @@ class AppointmentController extends Controller
         $appointment = new Appointment();
         $appointment->description = $validatedData['description'];
         $appointment->start_time = $validatedData['start_time'];
-        $appointment->end_time = $validatedData['end_time'];
+        $appointment->end_time = Carbon::parse($validatedData['start_time'])->addHours(1)->format('Y-m-d\TH:i');
         $appointment->total_slots = $validatedData['total_slots'];
         
         // Save the appointment to the database
