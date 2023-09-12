@@ -26,12 +26,6 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="end_time">End Time</label>
-                            <?php $endTime = date('Y-m-d\TH:i', strtotime(now()->addHours(1))); ?>
-                            <input type="datetime-local" name="end_time" id="end_time" class="form-control" value="{{ $endTime }}">
-                        </div>
-
-                        <div class="form-group">
                             <label for="total_slots">Total Slots</label>
                             <input type="text" name="total_slots" id="total_slots" class="form-control" value="{{ 1 }}">
                         </div>

@@ -66,11 +66,6 @@ function validateInput(){
 
     // times
     let start_time = new Date($('#start_time').val())
-    let end_time = new Date($('#end_time').val())
-    if(start_time >= end_time){
-        errorPop("Error", "The start time must be before the end time.")
-        return false
-    }
 
     // number of slots
     let slots = $('#total_slots').val().toString()
