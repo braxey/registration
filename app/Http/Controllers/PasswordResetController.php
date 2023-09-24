@@ -137,7 +137,6 @@ class PasswordResetController extends Controller
             // if ($this->isValidPhoneNumber($phone)) {
                 $user = User::where('email', $email)->first();
                 $token = PhoneVerification::getMostRecentToken($user->id);
-                dump($token);
 
                 // Send and log token
                 $this->emailToken($user, $token);
@@ -275,7 +274,6 @@ class PasswordResetController extends Controller
 
             return true;
         } catch (\Exception $e) {
-            dump($e);
             return false;
         }
     }
