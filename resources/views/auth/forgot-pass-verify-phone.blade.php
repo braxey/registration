@@ -1,7 +1,7 @@
 <x-app-layout>
     <html>
         <head>
-            <title>Verify Phone</title>
+            <title>Verify Email</title>
             <script src="{{asset('js/dist/jquery.min.js')}}"></script>
             <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
             <script type="module" src="{{ asset('js/auth/forgot-pass-verify-phone.js') }}"></script>
