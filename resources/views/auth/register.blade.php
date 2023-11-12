@@ -65,7 +65,7 @@
                         <x-checkbox name="sms-consent" id="sms-consent" required />
 
                         <div class="ml-2">
-                            {!! __('I agree to recieve emails and SMS messages') !!}
+                            {!! __('I agree to recieve emails and SMS messages. Only Jesus and KABC will see your information.') !!}
                         </div>
                     </div>
                 </x-label>
