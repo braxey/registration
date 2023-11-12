@@ -29,7 +29,7 @@ use App\Mail\VerificationEmail;
 */
 
 Route::get('/', function () {
-    return redirect(route('appointments.index'));
+    return redirect('/register');
 })->name('welcome');
 
 Route::middleware([
