@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\WalkIn;
+use Carbon\Carbon;
 
 class Appointment extends Model{
     use HasFactory;
@@ -29,5 +30,22 @@ class Appointment extends Model{
     {
         $this->slots_taken -= $walkIn->slots;
         $this->save();
+    }
+
+    public function isOpen(): bool
+    {
+        return (
+            $this->status == "upcoming"
+            && $this->total_slots > $this->slots_taken
+            && now() < Carbon::parse($this->start_time)->setTime(12, 0, 0)
+        );
+    }
+
+    public function canEdit(): bool
+    {
+        return (
+            $this->status == "upcoming"
+            && now() < Carbon::parse($this->start_time)->setTime(12, 0, 0)
+        );
     }
 }
