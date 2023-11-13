@@ -41,7 +41,7 @@ class AppointmentController extends Controller
                 if ($user) {
                     return $appointment->isOpen() || $user->admin;
                 } else {
-                    return $appointment->isOpen();
+                    return $appointment->isOpen() && !$appointment->isWalkInOnly();
                 }
             });
 
@@ -404,11 +404,11 @@ class AppointmentController extends Controller
         ]);
 
         // Update the appointment with the validated data
-
         $appointment->description = $validatedData['description'];
         $appointment->start_time = $validatedData['start_time'];
         $appointment->end_time = Carbon::parse($validatedData['start_time'])->addHours(1)->format('Y-m-d\TH:i');
         $appointment->total_slots = $validatedData['total_slots'];
+        $appointment->walk_in_only = $request->input('walk-in-only') === "on";
         
         // Save the appointment to the database
         $appointment->save();
@@ -443,6 +443,7 @@ class AppointmentController extends Controller
         $appointment->start_time = $validatedData['start_time'];
         $appointment->end_time = Carbon::parse($validatedData['start_time'])->addHours(1)->format('Y-m-d\TH:i');
         $appointment->total_slots = $validatedData['total_slots'];
+        $appointment->walk_in_only = $request->input('walk-in-only') === "on";
         
         // Save the appointment to the database
         $appointment->save();

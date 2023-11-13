@@ -33,7 +33,10 @@
                                 <tr class="border border-slate-300">
                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                     <td class="border border-slate-300">{{ $appointment->slots_taken }} / {{ $appointment->total_slots }}</td>
-                                    <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
+                                    <td class="border border-slate-300">
+                                        <span class="highlight text-white">{{ $appointment->status }}</span>
+                                        {{ $appointment->isWalkInOnly() ? "W-I" : ""}}
+                                    </td>
                                     <td class="border border-slate-300">
                                     @if ($appointment->id == $walkIn->appointment_id)
                                     <form action="{{ route('walk-in.unlink-appt-post', ['walkInId' => $id, 'apptId' => $appointment->id]) }}" method="POST" id="link-form">
