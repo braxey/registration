@@ -16,7 +16,7 @@
                 
                 <div class="container" >
                 <h1 class="flex justify-center items-center h-screen" style="font-size: larger">Walk Thru Bethlehem Appointments</h1>
-                <h3 class="flex justify-center items-center h-screen mt-2">An appointment slot is needed for each person, including children.</h3>
+                <h3 class="flex justify-center items-center h-screen py-2">An appointment slot is needed for each person, including children.</h3>
                     @if ($user && $user->admin)
                         <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 125px; margin-left: 5px;" href="{{ route('appointment.create_form') }}">Create Appt</a>
                     @endif

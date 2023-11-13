@@ -3,7 +3,7 @@
     <x-authentication-card>
         <x-slot name="logo">
             <img class="mx-auto" src="{{ asset('images/kabc-logo.png') }}" alt="Custom Logo">
-            <p class="mx-auto mt-4">You must have an account to register for WTB.</p>
+            <p class="mx-auto pt-2">You must have an account to register for WTB.</p>
         </x-slot>
 
         <x-validation-errors class="mb-4" />
