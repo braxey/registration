@@ -35,7 +35,10 @@
                                     <tr class="border border-slate-300">
                                         <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                         <td class="border border-slate-300">{{ $appointment->slots_taken }} / {{ $appointment->total_slots }}</td>
-                                        <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
+                                        <td class="border border-slate-300">
+                                            <span class="highlight text-white">{{ $appointment->status }}</span>
+                                            {{ $appointment->isWalkInOnly() ? "W-I" : ""}}
+                                        </td>
                                         <td class="border border-slate-300">
                                             <div class="table-buttons-cell">
                                             @if ($user && $user->admin)

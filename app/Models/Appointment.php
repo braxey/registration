@@ -14,7 +14,13 @@ class Appointment extends Model{
         'start_time',
         'end_time',
         'total_slots',
+        'walk_in_only',
     ];
+
+    public function isWalkInOnly(): bool
+    {
+        return (int) $this->walk_in_only === 1;
+    }
 
     public function addWalkIn(WalkIn $walkIn)
     {
