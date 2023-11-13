@@ -16,6 +16,9 @@ class AppointmentController extends Controller
 {
     // Show all available appointments
     public function index(){
+        // Retrieve the authenticated user
+        $user = Auth::user();
+
         // Retrieve all appointments
         $appointments = Appointment::orderByRaw("
                 CASE
@@ -34,10 +37,13 @@ class AppointmentController extends Controller
             ->orderByRaw("
                 CASE WHEN status = 'in progress' THEN start_time END ASC
             ")
-            ->get();
-
-        // Retrieve the authenticated user
-        $user = Auth::user();
+            ->get()->filter(function (Appointment $appointment) use ($user) {
+                if ($user) {
+                    return $appointment->isOpen() || $user->admin;
+                } else {
+                    return $appointment->isOpen();
+                }
+            });
 
         // Retrieve the organization
         $organization = Organization::findOrFail(1);
@@ -137,8 +143,6 @@ class AppointmentController extends Controller
             ];
         });
 
-        // dump($guests);
-        // exit;
 
         $totalSlotsTaken = $guests->sum('slots') + $guests->sum('slots_taken');
         $totalShowedUp = $guests->sum('showed_up');
@@ -181,8 +185,8 @@ class AppointmentController extends Controller
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
 
-        // Throw 404 if appointment already started
-        if($appointment->start_time < now()) abort(404);
+        // Throw 404 if passed noon on day of appointment
+        if(now() > Carbon::parse($appointment->start_time)->setTime(12, 0, 0)) abort(404);
         
         // Get the available slots
         $availableSlots = $appointment->total_slots - $appointment->slots_taken;
@@ -261,8 +265,8 @@ class AppointmentController extends Controller
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
 
-        // Throw 404 if appointment already started
-        if($appointment->start_time < now()) abort(404);
+        // Throw 404 if passed noon on day of appointment
+        if(now() > Carbon::parse($appointment->start_time)->setTime(12, 0, 0)) abort(404);
         
         // Get the available slots
         $availableSlots = $appointment->total_slots - $appointment->slots_taken;
@@ -336,8 +340,8 @@ class AppointmentController extends Controller
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
 
-        // Throw 404 if appointment already started
-        if($appointment->start_time < now()) abort(404);
+        // Throw 404 if passed noon on day of appointment
+        if(now() > Carbon::parse($appointment->start_time)->setTime(12, 0, 0)) abort(404);
         
         // Get the available slots
         $availableSlots = $appointment->total_slots - $appointment->slots_taken;
