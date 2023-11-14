@@ -16,17 +16,17 @@
 
                         <div class="form-group">
                             <label for="name">Name</label>
-                            <input type="text" name="name" id="name" class="form-control">
+                            <input type="text" name="name" id="name" class="form-control" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="email">Email</label>
+                            <label for="email">Email (optional)</label>
                             <input type="email" name="email" id="email" class="form-control">
                         </div>
 
                         <div class="form-group">
                             <label for="slots">Slots</label>
-                            <input type="text" name="slots" id="slots" class="form-control" value="1">
+                            <input type="text" name="slots" id="slots" class="form-control" value="1" required>
                         </div>
 
                         <div class="form-group">

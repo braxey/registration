@@ -47,12 +47,14 @@ class NotifyUpcomingAppointmentsCommand extends Command
                     if ($walkIn->notified == false) {
                         // Send notification to walkin via email
                         try {
-                            Mail::to($walkIn->email)->send(new NotifyEmail($formattedStart, $walkIn->slots, $walkIn->name));
+                            if ($walkIn->email !== "") {
+                                Mail::to($walkIn->email)->send(new NotifyEmail($formattedStart, $walkIn->slots, $walkIn->name));
+                            }
+                            $walkIn->notified = true;
+                            $walkIn->save();
                         } catch (\Exception $e) {
                             \Log::error($e);
                         }
-                        $walkIn->notified = true;
-                        $walkIn->save();
                     }
                 }
             }

@@ -17,7 +17,7 @@
 
                         <div class="form-group">
                             <label for="name">Name</label>
-                            <input type="text" name="name" id="name" class="form-control" value="{{ $walkIn->name }}">
+                            <input type="text" name="name" id="name" class="form-control" value="{{ $walkIn->name }}" required>
                         </div>
 
                         <div class="form-group">
@@ -27,7 +27,7 @@
 
                         <div class="form-group">
                             <label for="slots">Slots</label>
-                            <input type="text" name="slots" id="slots" class="form-control" value="{{ $walkIn->slots }}">
+                            <input type="text" name="slots" id="slots" class="form-control" value="{{ $walkIn->slots }}" required>
                         </div>
 
                         <div class="form-group">
