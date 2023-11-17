@@ -12,6 +12,7 @@
             <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+            <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
         </head>
         <body>
             <div class="flex justify-center items-center h-screen">
@@ -81,7 +82,22 @@
                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($guest->start_time)->format('F d, Y g:i A') }}</td>
                                     <td class="border border-slate-300"><span class="highlight text-white">{{ $guest->status }}</span></td>
                                     @if ($guest->is_walk_in)
-                                    <td class="border border-slate-300">{{ $guest->name }}</td>
+                                    <td class="border border-slate-300 flex justify-center">
+                                        @if ($guest->notes)
+                                            <img src="{{ asset('images/notes.png') }}" alt="Notes" style="width: 30px; cursor: pointer;" id="note-{{$guest->id}}"/>
+                                            <script>
+                                                $(('#note-'+'{{ $guest->id }}')).on('click', function () {
+                                                    Swal.fire({
+                                                        title: 'Notes for {{ $guest->name }}',
+                                                        html: '<b>{{ $guest->notes }}</b>',
+                                                        icon: 'info',
+                                                        confirmButtonText: 'Close',
+                                                    });
+                                                });
+                                            </script>
+                                        @endif
+                                        {{ $guest->name }}
+                                    </td>
                                     <td class="border border-slate-300">{{ $guest->slots }}</td>
                                     <td class="border border-slate-300">{{ $guest->showed_up }}</td>
                                     @else
