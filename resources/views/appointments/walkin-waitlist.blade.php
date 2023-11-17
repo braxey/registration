@@ -53,10 +53,11 @@
                                                         $linkedAppt = \Carbon\Carbon::parse($appt->start_time)->format('g:i A');
                                                     }
                                                     $color = $linkedAppt === "Unassigned" ? "red" : "grn";
+                                                    $emailNotProvided = $walkIn->email === "" ? "color: red;" : "";
                                                 @endphp
                                                 <tr class="border border-slate-300">
                                                     <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('F d, Y g:i A') }}</td>
-                                                    <td class="border border-slate-300">{{ $walkIn->email }}</td>
+                                                    <td class="border border-slate-300" style="{{$emailNotProvided}}">{{ $walkIn->email ?: "Not Provided" }}</td>
                                                     <td class="border border-slate-300">{{ $walkIn->name }}</td>
                                                     <td class="border border-slate-300">{{ $walkIn->slots }}</td>
                                                     <td class="border border-slate-300">{{ $desiredTime }}</td>
@@ -102,10 +103,11 @@
                                                             $linkedAppt = \Carbon\Carbon::parse($appt->start_time)->format('g:i A');
                                                         }
                                                         $color = $linkedAppt === "Unassigned" ? "red" : "grn";
+                                                        $emailNotProvided = $walkIn->email === "" ? "color: red;" : "";
                                                     @endphp
                                                     <tr class="border border-slate-300">
                                                         <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('F d, Y g:i A') }}</td>
-                                                        <td class="border border-slate-300">{{ $walkIn->email }}</td>
+                                                        <td class="border border-slate-300" style="{{$emailNotProvided}}">{{ $walkIn->email ?: "Not Provided" }}</td>
                                                         <td class="border border-slate-300">{{ $walkIn->name }}</td>
                                                         <td class="border border-slate-300">{{ $walkIn->slots }}</td>
                                                         <td class="border border-slate-300">{{ $desiredTime }}</td>
@@ -151,10 +153,11 @@
                                                             $linkedAppt = \Carbon\Carbon::parse($appt->start_time)->format('g:i A');
                                                         }
                                                         $color = $linkedAppt === "Unassigned" ? "red" : "grn";
+                                                        $emailNotProvided = $walkIn->email === "" ? "color: red;" : "";
                                                     @endphp
                                                     <tr class="border border-slate-300">
                                                         <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('F d, Y g:i A') }}</td>
-                                                        <td class="border border-slate-300">{{ $walkIn->email }}</td>
+                                                        <td class="border border-slate-300" style="{{$emailNotProvided}}">{{ $walkIn->email ?: "Not Provided" }}</td>
                                                         <td class="border border-slate-300">{{ $walkIn->name }}</td>
                                                         <td class="border border-slate-300">{{ $walkIn->slots }}</td>
                                                         <td class="border border-slate-300">{{ $desiredTime }}</td>

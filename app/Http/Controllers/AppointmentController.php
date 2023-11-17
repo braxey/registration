@@ -15,9 +15,17 @@ use Illuminate\Support\Collection;
 class AppointmentController extends Controller
 {
     // Show all available appointments
-    public function index(){
+    public function index(Request $request){
         // Retrieve the authenticated user
         $user = Auth::user();
+
+        // Get time between
+        $between = $this->getBetween([
+            'start_date' => $request->input('start_date'),
+            'start_time' => $request->input('start_time'),
+            'end_date'   => $request->input('end_date'),
+            'end_time'   => $request->input('end_time'),
+        ]);
 
         // Retrieve all appointments
         $appointments = Appointment::orderByRaw("
@@ -37,12 +45,22 @@ class AppointmentController extends Controller
             ->orderByRaw("
                 CASE WHEN status = 'in progress' THEN start_time END ASC
             ")
-            ->get()->filter(function (Appointment $appointment) use ($user) {
+            ->get()->filter(function (Appointment $appointment) use ($user, $between) {
+                $apptTime = Carbon::parse($appointment->start_time);
                 if ($user) {
-                    return $appointment->isOpen() || $user->admin;
+                    $allowed = ($appointment->isOpen() && !$appointment->isWalkInOnly()) || $user->admin;
                 } else {
-                    return $appointment->isOpen();
+                    $allowed = $appointment->isOpen() && !$appointment->isWalkInOnly();
                 }
+
+                if (isset($between['start'])) {
+                    $allowed = $allowed && $apptTime->gte($between['start']);
+                }
+                if (isset($between['end'])) {
+                    $allowed = $allowed && $between['end']->gte($apptTime);
+                }
+
+                return $allowed;
             });
 
         // Retrieve the organization
@@ -185,8 +203,13 @@ class AppointmentController extends Controller
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
 
-        // Throw 404 if passed noon on day of appointment
-        if(now() > Carbon::parse($appointment->start_time)->setTime(12, 0, 0)) abort(404);
+        // Throw 404 if passed noon on day of appointment or appt is not meant to be booked
+        if(
+            now() > Carbon::parse($appointment->start_time)->setTime(12, 0, 0)
+            || $appointment->isWalkInOnly()
+        ) {
+            abort(404);
+        }
         
         // Get the available slots
         $availableSlots = $appointment->total_slots - $appointment->slots_taken;
@@ -265,8 +288,13 @@ class AppointmentController extends Controller
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
 
-        // Throw 404 if passed noon on day of appointment
-        if(now() > Carbon::parse($appointment->start_time)->setTime(12, 0, 0)) abort(404);
+        // Throw 404 if passed noon on day of appointment or appt is not meant to be booked
+        if(
+            now() > Carbon::parse($appointment->start_time)->setTime(12, 0, 0)
+            || $appointment->isWalkInOnly()
+        ) {
+            abort(404);
+        }
         
         // Get the available slots
         $availableSlots = $appointment->total_slots - $appointment->slots_taken;
@@ -331,17 +359,22 @@ class AppointmentController extends Controller
 
     // Handle request to cancel a booking
     public function cancel_booking(Request $request, $id){
-    // Find the organization
-    $organization = Organization::findOrFail(1);
+        // Find the organization
+        $organization = Organization::findOrFail(1);
 
-    // Abort if registration is closed
-    if(!$organization->registration_open) abort(404);
+        // Abort if registration is closed
+        if(!$organization->registration_open) abort(404);
 
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
 
-        // Throw 404 if passed noon on day of appointment
-        if(now() > Carbon::parse($appointment->start_time)->setTime(12, 0, 0)) abort(404);
+        // Throw 404 if passed noon on day of appointment or appt is not meant to be booked
+        if(
+            now() > Carbon::parse($appointment->start_time)->setTime(12, 0, 0)
+            || $appointment->isWalkInOnly()
+        ) {
+            abort(404);
+        }
         
         // Get the available slots
         $availableSlots = $appointment->total_slots - $appointment->slots_taken;
@@ -404,11 +437,11 @@ class AppointmentController extends Controller
         ]);
 
         // Update the appointment with the validated data
-
         $appointment->description = $validatedData['description'];
         $appointment->start_time = $validatedData['start_time'];
         $appointment->end_time = Carbon::parse($validatedData['start_time'])->addHours(1)->format('Y-m-d\TH:i');
         $appointment->total_slots = $validatedData['total_slots'];
+        $appointment->walk_in_only = $request->input('walk-in-only') === "on";
         
         // Save the appointment to the database
         $appointment->save();
@@ -443,6 +476,7 @@ class AppointmentController extends Controller
         $appointment->start_time = $validatedData['start_time'];
         $appointment->end_time = Carbon::parse($validatedData['start_time'])->addHours(1)->format('Y-m-d\TH:i');
         $appointment->total_slots = $validatedData['total_slots'];
+        $appointment->walk_in_only = $request->input('walk-in-only') === "on";
         
         // Save the appointment to the database
         $appointment->save();
@@ -516,5 +550,40 @@ class AppointmentController extends Controller
                    ->where('user_id', $user->id)
                    ->delete();
         }
+    }
+
+    private function getBetween(array $arr): array
+    {
+        $container = [];
+
+        try {
+            if (isset($arr['start_date'])) {
+                if (isset($arr['start_time'])) {
+                    $dateTimeString = $arr['start_date'] . ' ' . $arr['start_time'];
+                } else {
+                    $dateTimeString = $arr['start_date'] . ' 00:00';
+                }
+    
+                $container['start'] = Carbon::parse($dateTimeString);
+            }
+        } catch (Exception $e) {
+            unset($container['start']);
+        }
+
+        try {
+            if (isset($arr['end_date'])) {
+                if (isset($arr['end_time'])) {
+                    $dateTimeString = $arr['end_date'] . ' ' . $arr['end_time'];
+                } else {
+                    $dateTimeString = $arr['end_date'] . ' 23:59';
+                }
+    
+                $container['end'] = Carbon::parse($dateTimeString);
+            }
+        } catch (Exception $e) {
+            unset($container['end']);
+        }
+        
+        return $container;
     }
 }

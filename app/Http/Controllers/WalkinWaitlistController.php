@@ -30,19 +30,29 @@ class WalkinWaitlistController extends Controller
     {
         // Get the input data from the request
         $data = $request->all();
+        $providedEmail = $request->get('email') !== null;
 
         // Validate the modified input
-        $validatedData = Validator::make($data, [
-            'name' => 'required',
-            'email' => 'required|email',
-            'desired_time' => 'required|date',
-            'slots' => 'required|integer|min:0',
-        ])->validate();
+
+        if ($providedEmail) {
+            $validatedData = Validator::make($data, [
+                'name' => 'required',
+                'email' => 'required|email',
+                'desired_time' => 'required|date',
+                'slots' => 'required|integer|min:0',
+            ])->validate();
+        } else {
+            $validatedData = Validator::make($data, [
+                'name' => 'required',
+                'desired_time' => 'required|date',
+                'slots' => 'required|integer|min:0',
+            ])->validate();
+        }
 
         // Create a new walk-in instance
         $walkIn = new WalkIn();
         $walkIn->name = $validatedData['name'];
-        $walkIn->email = $validatedData['email'];
+        $walkIn->email = $providedEmail ? $validatedData['email'] : '';
         $walkIn->desired_time = $validatedData['desired_time'];
         $walkIn->slots = $validatedData['slots'];
         
@@ -66,14 +76,24 @@ class WalkinWaitlistController extends Controller
 
         // Get the input data from the request
         $data = $request->all();
+        $providedEmail = $request->get('email') !== null;
 
         // Validate the modified input
-        $validatedData = Validator::make($data, [
-            'name' => 'required',
-            'email' => 'required|email',
-            'desired_time' => 'required|date',
-            'slots' => 'required|integer|min:0',
-        ])->validate();
+
+        if ($providedEmail) {
+            $validatedData = Validator::make($data, [
+                'name' => 'required',
+                'email' => 'required|email',
+                'desired_time' => 'required|date',
+                'slots' => 'required|integer|min:0',
+            ])->validate();
+        } else {
+            $validatedData = Validator::make($data, [
+                'name' => 'required',
+                'desired_time' => 'required|date',
+                'slots' => 'required|integer|min:0',
+            ])->validate();
+        }
 
         if (
             $walkIn->slots !== $validatedData['slots']
@@ -90,7 +110,7 @@ class WalkinWaitlistController extends Controller
 
         // Update walk-in instance
         $walkIn->name = $validatedData['name'];
-        $walkIn->email = $validatedData['email'];
+        $walkIn->email = $providedEmail ? $validatedData['email'] : "";
         $walkIn->desired_time = $validatedData['desired_time'];
         $walkIn->slots = $validatedData['slots'];
         
@@ -119,6 +139,15 @@ class WalkinWaitlistController extends Controller
 
     public function getApptLinkPage(Request $request, $id)
     {
+        // Get time between
+        $between = $this->getBetween([
+            'start_date' => $request->input('start_date'),
+            'start_time' => $request->input('start_time'),
+            'end_date'   => $request->input('end_date'),
+            'end_time'   => $request->input('end_time'),
+        ]);
+
+
         $nonCompletedAppointments = Appointment::where('status', '<>', 'completed')
             ->orderByRaw("
                 CASE
@@ -133,7 +162,19 @@ class WalkinWaitlistController extends Controller
             ->orderByRaw("
                 CASE WHEN status = 'in progress' THEN start_time END ASC
             ")
-            ->get();
+            ->get()->filter(function (Appointment $appointment) use ($between) {
+                $apptTime = Carbon::parse($appointment->start_time);
+                $allowed = true;
+
+                if (isset($between['start'])) {
+                    $allowed = $allowed && $apptTime->gte($between['start']);
+                }
+                if (isset($between['end'])) {
+                    $allowed = $allowed && $between['end']->gte($apptTime);
+                }
+
+                return $allowed;
+            });
         return view('appointments.appt-walk-in-link', compact('id', 'nonCompletedAppointments'));
     }
 
@@ -167,5 +208,40 @@ class WalkinWaitlistController extends Controller
         $walkIn->appointment_id = null;
         $walkIn->save();
         return redirect(route('walk-in.show-waitlist'));
+    }
+
+    private function getBetween(array $arr): array
+    {
+        $container = [];
+
+        try {
+            if (isset($arr['start_date'])) {
+                if (isset($arr['start_time'])) {
+                    $dateTimeString = $arr['start_date'] . ' ' . $arr['start_time'];
+                } else {
+                    $dateTimeString = $arr['start_date'] . ' 00:00';
+                }
+    
+                $container['start'] = Carbon::parse($dateTimeString);
+            }
+        } catch (Exception $e) {
+            unset($container['start']);
+        }
+
+        try {
+            if (isset($arr['end_date'])) {
+                if (isset($arr['end_time'])) {
+                    $dateTimeString = $arr['end_date'] . ' ' . $arr['end_time'];
+                } else {
+                    $dateTimeString = $arr['end_date'] . ' 23:59';
+                }
+    
+                $container['end'] = Carbon::parse($dateTimeString);
+            }
+        } catch (Exception $e) {
+            unset($container['end']);
+        }
+        
+        return $container;
     }
 }
