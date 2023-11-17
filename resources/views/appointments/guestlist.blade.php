@@ -10,6 +10,7 @@
             <title>Guestlist</title>
             <link rel="stylesheet" href="{{asset('css/main.css')}}">
             <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
             <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
@@ -84,7 +85,7 @@
                                     @if ($guest->is_walk_in)
                                     <td class="border border-slate-300 flex justify-center">
                                         @if ($guest->notes)
-                                            <img src="{{ asset('images/notes.png') }}" alt="Notes" style="width: 30px; cursor: pointer;" id="note-{{$guest->id}}"/>
+                                            <i class="fa fa-info-circle" style="width: 30px; cursor: pointer;" id="note-{{$guest->id}}"></i>
                                             <script>
                                                 $(('#note-'+'{{ $guest->id }}')).on('click', function () {
                                                     Swal.fire({
