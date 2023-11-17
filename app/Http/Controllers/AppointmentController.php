@@ -15,9 +15,17 @@ use Illuminate\Support\Collection;
 class AppointmentController extends Controller
 {
     // Show all available appointments
-    public function index(){
+    public function index(Request $request){
         // Retrieve the authenticated user
         $user = Auth::user();
+
+        // Get time between
+        $between = $this->getBetween([
+            'start_date' => $request->input('start_date'),
+            'start_time' => $request->input('start_time'),
+            'end_date'   => $request->input('end_date'),
+            'end_time'   => $request->input('end_time'),
+        ]);
 
         // Retrieve all appointments
         $appointments = Appointment::orderByRaw("
@@ -37,12 +45,22 @@ class AppointmentController extends Controller
             ->orderByRaw("
                 CASE WHEN status = 'in progress' THEN start_time END ASC
             ")
-            ->get()->filter(function (Appointment $appointment) use ($user) {
+            ->get()->filter(function (Appointment $appointment) use ($user, $between) {
+                $apptTime = Carbon::parse($appointment->start_time);
                 if ($user) {
-                    return $appointment->isOpen() || $user->admin;
+                    $allowed = $appointment->isOpen() || $user->admin;
                 } else {
-                    return $appointment->isOpen();
+                    $allowed = $appointment->isOpen();
                 }
+
+                if (isset($between['start'])) {
+                    $allowed = $allowed && $apptTime->gte($between['start']);
+                }
+                if (isset($between['end'])) {
+                    $allowed = $allowed && $between['end']->gte($apptTime);
+                }
+
+                return $allowed;
             });
 
         // Retrieve the organization
@@ -516,5 +534,40 @@ class AppointmentController extends Controller
                    ->where('user_id', $user->id)
                    ->delete();
         }
+    }
+
+    private function getBetween(array $arr): array
+    {
+        $container = [];
+
+        try {
+            if (isset($arr['start_date'])) {
+                if (isset($arr['start_time'])) {
+                    $dateTimeString = $arr['start_date'] . ' ' . $arr['start_time'];
+                } else {
+                    $dateTimeString = $arr['start_date'] . ' 00:00';
+                }
+    
+                $container['start'] = Carbon::parse($dateTimeString);
+            }
+        } catch (Exception $e) {
+            unset($container['start']);
+        }
+
+        try {
+            if (isset($arr['end_date'])) {
+                if (isset($arr['end_time'])) {
+                    $dateTimeString = $arr['end_date'] . ' ' . $arr['end_time'];
+                } else {
+                    $dateTimeString = $arr['end_date'] . ' 23:59';
+                }
+    
+                $container['end'] = Carbon::parse($dateTimeString);
+            }
+        } catch (Exception $e) {
+            unset($container['end']);
+        }
+        
+        return $container;
     }
 }
