@@ -66,13 +66,16 @@
                                     <tr class="border border-slate-300">
                                         <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
                                         <td class="border border-slate-300">{{ $appointment->slots_taken }} / {{ $appointment->total_slots }}</td>
-                                        <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
+                                        <td class="border border-slate-300">
+                                            <span class="highlight text-white">{{ $appointment->status }}</span>
+                                            {{ $appointment->isWalkInOnly() ? "W-I" : ""}}
+                                        </td>
                                         <td class="border border-slate-300">
                                             <div class="table-buttons-cell">
                                             @if ($user && $user->admin)
                                                 <a class="red-btn" href="{{ route('appointment.edit', $appointment->id) }}">Edit Appt</a>
                                             @endif
-                                            @if (!$appointment->isOpen() || !$organization->registration_open)
+                                            @if (!$appointment->isOpen() || !$organization->registration_open || $appointment->isWalkInOnly())
                                                 <a>Closed</a>  
                                             @elseif ($user?->id && AppointmentUser::where('user_id', $user->id)->where('appointment_id', $appointment->id)->exists())
                                                 <a class="grn-btn" href="{{ route('appointment.editbooking', $appointment->id) }}">Edit Booking</a>

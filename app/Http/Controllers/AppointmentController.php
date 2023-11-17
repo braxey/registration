@@ -50,7 +50,7 @@ class AppointmentController extends Controller
                 if ($user) {
                     $allowed = $appointment->isOpen() || $user->admin;
                 } else {
-                    $allowed = $appointment->isOpen();
+                    $allowed = $appointment->isOpen() && !$appointment->isWalkInOnly();
                 }
 
                 if (isset($between['start'])) {
@@ -203,8 +203,13 @@ class AppointmentController extends Controller
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
 
-        // Throw 404 if passed noon on day of appointment
-        if(now() > Carbon::parse($appointment->start_time)->setTime(12, 0, 0)) abort(404);
+        // Throw 404 if passed noon on day of appointment or appt is not meant to be booked
+        if(
+            now() > Carbon::parse($appointment->start_time)->setTime(12, 0, 0)
+            || $appointment->isWalkInOnly()
+        ) {
+            abort(404);
+        }
         
         // Get the available slots
         $availableSlots = $appointment->total_slots - $appointment->slots_taken;
@@ -283,8 +288,13 @@ class AppointmentController extends Controller
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
 
-        // Throw 404 if passed noon on day of appointment
-        if(now() > Carbon::parse($appointment->start_time)->setTime(12, 0, 0)) abort(404);
+        // Throw 404 if passed noon on day of appointment or appt is not meant to be booked
+        if(
+            now() > Carbon::parse($appointment->start_time)->setTime(12, 0, 0)
+            || $appointment->isWalkInOnly()
+        ) {
+            abort(404);
+        }
         
         // Get the available slots
         $availableSlots = $appointment->total_slots - $appointment->slots_taken;
@@ -349,17 +359,22 @@ class AppointmentController extends Controller
 
     // Handle request to cancel a booking
     public function cancel_booking(Request $request, $id){
-    // Find the organization
-    $organization = Organization::findOrFail(1);
+        // Find the organization
+        $organization = Organization::findOrFail(1);
 
-    // Abort if registration is closed
-    if(!$organization->registration_open) abort(404);
+        // Abort if registration is closed
+        if(!$organization->registration_open) abort(404);
 
         // Find the appointment
         $appointment = Appointment::findOrFail($id);
 
-        // Throw 404 if passed noon on day of appointment
-        if(now() > Carbon::parse($appointment->start_time)->setTime(12, 0, 0)) abort(404);
+        // Throw 404 if passed noon on day of appointment or appt is not meant to be booked
+        if(
+            now() > Carbon::parse($appointment->start_time)->setTime(12, 0, 0)
+            || $appointment->isWalkInOnly()
+        ) {
+            abort(404);
+        }
         
         // Get the available slots
         $availableSlots = $appointment->total_slots - $appointment->slots_taken;
@@ -422,11 +437,11 @@ class AppointmentController extends Controller
         ]);
 
         // Update the appointment with the validated data
-
         $appointment->description = $validatedData['description'];
         $appointment->start_time = $validatedData['start_time'];
         $appointment->end_time = Carbon::parse($validatedData['start_time'])->addHours(1)->format('Y-m-d\TH:i');
         $appointment->total_slots = $validatedData['total_slots'];
+        $appointment->walk_in_only = $request->input('walk-in-only') === "on";
         
         // Save the appointment to the database
         $appointment->save();
@@ -461,6 +476,7 @@ class AppointmentController extends Controller
         $appointment->start_time = $validatedData['start_time'];
         $appointment->end_time = Carbon::parse($validatedData['start_time'])->addHours(1)->format('Y-m-d\TH:i');
         $appointment->total_slots = $validatedData['total_slots'];
+        $appointment->walk_in_only = $request->input('walk-in-only') === "on";
         
         // Save the appointment to the database
         $appointment->save();

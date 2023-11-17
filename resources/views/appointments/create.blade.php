@@ -30,6 +30,11 @@
                             <input type="text" name="total_slots" id="total_slots" class="form-control" value="{{ 1 }}">
                         </div>
 
+                        <div class="form-group py-4">
+                            <label for="walk-in-only">Walk-in Only:</label>
+                            <input type="checkbox" name="walk-in-only" id="walk-in-only">
+                        </div>
+
                         <button type="submit" class="grn-btn">Create</button>
                     </form>
                     <script type="module" src="{{ asset('js/appt/createedit.js') }}"></script>

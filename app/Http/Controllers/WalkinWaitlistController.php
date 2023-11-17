@@ -30,19 +30,29 @@ class WalkinWaitlistController extends Controller
     {
         // Get the input data from the request
         $data = $request->all();
+        $providedEmail = $request->get('email') !== null;
 
         // Validate the modified input
-        $validatedData = Validator::make($data, [
-            'name' => 'required',
-            'email' => 'required|email',
-            'desired_time' => 'required|date',
-            'slots' => 'required|integer|min:0',
-        ])->validate();
+
+        if ($providedEmail) {
+            $validatedData = Validator::make($data, [
+                'name' => 'required',
+                'email' => 'required|email',
+                'desired_time' => 'required|date',
+                'slots' => 'required|integer|min:0',
+            ])->validate();
+        } else {
+            $validatedData = Validator::make($data, [
+                'name' => 'required',
+                'desired_time' => 'required|date',
+                'slots' => 'required|integer|min:0',
+            ])->validate();
+        }
 
         // Create a new walk-in instance
         $walkIn = new WalkIn();
         $walkIn->name = $validatedData['name'];
-        $walkIn->email = $validatedData['email'];
+        $walkIn->email = $providedEmail ? $validatedData['email'] : '';
         $walkIn->desired_time = $validatedData['desired_time'];
         $walkIn->slots = $validatedData['slots'];
         
@@ -66,14 +76,24 @@ class WalkinWaitlistController extends Controller
 
         // Get the input data from the request
         $data = $request->all();
+        $providedEmail = $request->get('email') !== null;
 
         // Validate the modified input
-        $validatedData = Validator::make($data, [
-            'name' => 'required',
-            'email' => 'required|email',
-            'desired_time' => 'required|date',
-            'slots' => 'required|integer|min:0',
-        ])->validate();
+
+        if ($providedEmail) {
+            $validatedData = Validator::make($data, [
+                'name' => 'required',
+                'email' => 'required|email',
+                'desired_time' => 'required|date',
+                'slots' => 'required|integer|min:0',
+            ])->validate();
+        } else {
+            $validatedData = Validator::make($data, [
+                'name' => 'required',
+                'desired_time' => 'required|date',
+                'slots' => 'required|integer|min:0',
+            ])->validate();
+        }
 
         if (
             $walkIn->slots !== $validatedData['slots']
@@ -90,7 +110,7 @@ class WalkinWaitlistController extends Controller
 
         // Update walk-in instance
         $walkIn->name = $validatedData['name'];
-        $walkIn->email = $validatedData['email'];
+        $walkIn->email = $providedEmail ? $validatedData['email'] : "";
         $walkIn->desired_time = $validatedData['desired_time'];
         $walkIn->slots = $validatedData['slots'];
         
