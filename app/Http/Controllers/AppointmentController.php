@@ -92,7 +92,7 @@ class AppointmentController extends Controller
 
         // Get data from the $guests and $walkIns collections
         $guestsData = $guests->get(['appointments.start_time', 'appointments.status', 'users.first_name', 'users.last_name', 'appointment_user.slots_taken', 'appointment_user.showed_up', 'appointment_user.id']);
-        $walkInsData = $walkIns->get(['start_time', 'status', 'name', 'slots', 'slots AS showed_up', 'walk_ins.id']); // For walk-ins, showed_up equals slots
+        $walkInsData = $walkIns->get(['start_time', 'status', 'name', 'slots', 'slots AS showed_up', 'walk_ins.id', 'walk_ins.notes']); // For walk-ins, showed_up equals slots
 
         // Add an additional 'is_walk_in' field to walk-in data
         $walkInsDataWithFlag = $walkInsData->map(function ($item) {

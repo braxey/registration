@@ -35,6 +35,11 @@
                             <input type="datetime-local" name="desired_time" id="desired_time" class="form-control" value="{{ $walkIn->desired_time }}">
                         </div>
 
+                        <div class="form-group">
+                            <label for="notes">Notes (optional)</label>
+                            <input type="text" name="notes" id="notes" class="form-control" value="{{ $walkIn->notes }}">
+                        </div>
+
                         <button type="submit" class="grn-btn">Update</button>
                     </form>
                     <script type="module" src="{{ asset('js/appt/createedit-walkin.js') }}"></script>
