@@ -48,7 +48,7 @@ class AppointmentController extends Controller
             ->get()->filter(function (Appointment $appointment) use ($user, $between) {
                 $apptTime = Carbon::parse($appointment->start_time);
                 if ($user) {
-                    $allowed = $appointment->isOpen() || $user->admin;
+                    $allowed = ($appointment->isOpen() && !$appointment->isWalkInOnly()) || $user->admin;
                 } else {
                     $allowed = $appointment->isOpen() && !$appointment->isWalkInOnly();
                 }
