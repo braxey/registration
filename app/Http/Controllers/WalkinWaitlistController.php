@@ -55,6 +55,7 @@ class WalkinWaitlistController extends Controller
         $walkIn->email = $providedEmail ? $validatedData['email'] : '';
         $walkIn->desired_time = $validatedData['desired_time'];
         $walkIn->slots = $validatedData['slots'];
+        $walkIn->notes = $request->get('notes');
         
         // Save the walk-in to the database
         $walkIn->save();
@@ -113,6 +114,7 @@ class WalkinWaitlistController extends Controller
         $walkIn->email = $providedEmail ? $validatedData['email'] : "";
         $walkIn->desired_time = $validatedData['desired_time'];
         $walkIn->slots = $validatedData['slots'];
+        $walkIn->notes = $request->get('notes');
         
         // Save the walk-in
         $walkIn->save();
