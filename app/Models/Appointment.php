@@ -54,4 +54,14 @@ class Appointment extends Model{
             && now() < Carbon::parse($this->start_time)->setTime(12, 0, 0)
         );
     }
+
+    public function getStartDate(): string
+    {
+        return explode(' ', $this->start_time)[0];
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
 }
