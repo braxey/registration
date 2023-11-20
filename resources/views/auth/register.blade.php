@@ -29,11 +29,6 @@
             </div>
 
             <div class="mt-4">
-                <x-label for="phone_number" :value="__('Phone Number')" />
-                <x-input id="phone_number" type="text" class="mt-1 block w-full" name="phone_number" :value="old('phone_number')" required />
-            </div>
-
-            <div class="mt-4">
                 <x-label for="password" value="{{ __('Password') }}" />
                 <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
             </div>
