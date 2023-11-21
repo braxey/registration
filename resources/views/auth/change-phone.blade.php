@@ -4,7 +4,7 @@
 <x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">
-            <img src="{{ asset('images/kabc-logo.png') }}" alt="Custom Logo">
+            <img class="mx-auto" src="{{ asset('images/kabc-logo.png') }}" alt="Custom Logo" style="width: 150px;">
         </x-slot>
 
         <div class="mb-4 text-sm text-gray-600">

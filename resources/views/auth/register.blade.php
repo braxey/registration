@@ -2,7 +2,7 @@
 <x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">
-            <img class="mx-auto" src="{{ asset('images/kabc-logo.png') }}" alt="Custom Logo">
+            <img class="mx-auto" src="{{ asset('images/kabc-logo.png') }}" alt="Custom Logo" style="width: 150px;">
             <p class="mx-auto pt-2">You must have an account to register for WTB.</p>
         </x-slot>
 
