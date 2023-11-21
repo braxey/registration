@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\WalkIn;
 use Carbon\Carbon;
+use App\Models\AppointmentUser;
+
 
 class Appointment extends Model{
     use HasFactory;
@@ -53,5 +55,20 @@ class Appointment extends Model{
             $this->status == "upcoming"
             && now() < Carbon::parse($this->start_time)->setTime(12, 0, 0)
         );
+    }
+
+    public function getStartDate(): string
+    {
+        return explode(' ', $this->start_time)[0];
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function userSlots(int $userId): int
+    {
+        return AppointmentUser::where('user_id', $userId)->where('appointment_id', $this->id)->first()->slots_taken;
     }
 }

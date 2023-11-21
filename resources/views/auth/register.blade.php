@@ -2,7 +2,7 @@
 <x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">
-            <img class="mx-auto" src="{{ asset('images/kabc-logo.png') }}" alt="Custom Logo">
+            <img class="mx-auto" src="{{ asset('images/kabc-logo.png') }}" alt="Custom Logo" style="width: 150px;">
             <p class="mx-auto pt-2">You must have an account to register for WTB.</p>
         </x-slot>
 
@@ -61,7 +61,7 @@
                         <x-checkbox name="sms-consent" id="sms-consent" required />
 
                         <div class="ml-2">
-                            {!! __('I agree to recieve emails and SMS messages. Only Jesus and KABC will see your information.') !!}
+                            {!! __('I agree to recieve emails. The emails will only be about WTB registration, and your information will not be shared.') !!}
                         </div>
                     </div>
                 </x-label>

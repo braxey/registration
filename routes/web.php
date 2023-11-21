@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Mail;
 
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PhoneVerificationController;
+use App\Http\Controllers\AdminBookingController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\WalkinWaitlistController;
@@ -149,5 +150,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/{id}/link-appt', [WalkinWaitlistController::class, 'getApptLinkPage'])->name('walk-in.link-appt');
         Route::post('/{walkInId}/{apptId}/link-appt', [WalkinWaitlistController::class, 'linkAppointment'])->name('walk-in.link-appt-post');
         Route::post('/{walkInId}/{apptId}/unlink-appt', [WalkinWaitlistController::class, 'unlinkAppointment'])->name('walk-in.unlink-appt-post');
+    });
+
+    Route::prefix('admin-user')->group(function () {
+        Route::get('/', [AdminBookingController::class, 'getAdminUserLookupPage'])->name('admin-booking.lookup');
+        Route::get('/{userId}', [AdminBookingController::class, 'getUsersUpcomingBookings'])->name('admin-booking.user');
+        Route::get('/{userId}/{appointmentId}', [AdminBookingController::class, 'getBookingForUser'])->name('admin-booking.user-booking');
+        Route::put('/{userId}/{appointmentId}/edit', [AdminBookingController::class, 'editBookingForUser'])->name('admin-booking.edit-booking');
+        Route::post('/{userId}/{appointmentId}/cancel', [AdminBookingController::class, 'cancelBookingForUser'])->name('admin-booking.cancel-booking');
     });
 });

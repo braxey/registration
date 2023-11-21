@@ -63,11 +63,24 @@ class AppointmentController extends Controller
                 return $allowed;
             });
 
+        // Get calendar min/max
+        $upcoming = Appointment::where('status', 'upcoming')
+                            ->orderBy('start_time', 'asc')
+                            ->get();
+
+        $min = "";
+        $max = "";
+        if ($upcoming) {
+            $min = $upcoming->first()->getStartDate();
+            $max = $upcoming->last()->getStartDate();
+        }
+
+
         // Retrieve the organization
         $organization = Organization::findOrFail(1);
 
         // Show appointments
-        return view('appointments.index', compact('appointments', 'user', 'organization'));
+        return view('appointments.index', compact('appointments', 'user', 'organization', 'min', 'max'));
     }
 
     // Show the admin-only guestlist

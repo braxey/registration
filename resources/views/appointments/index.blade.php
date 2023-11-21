@@ -28,14 +28,14 @@
                                 <div class="form-group">
                                     <label for="start_date_time">Start Date and Time</label>
                                     <div class="flex">
-                                        <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" class="form-control mr-2">
+                                        <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" class="form-control mr-2" min="{{$min}}" max="{{$max}}">
                                         <input type="time" name="start_time" id="start_time" value="{{ request('start_time') }}" class="form-control">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="end_date_time">End Date and Time</label>
                                     <div class="flex">
-                                        <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}" class="form-control mr-2">
+                                        <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}" class="form-control mr-2" min="{{$min}}" max="{{$max}}">
                                         <input type="time" name="end_time" id="end_time" value="{{ request('end_time') }}" class="form-control">
                                     </div>
                                 </div>
@@ -48,7 +48,10 @@
                     </form>
 
                     @if ($user && $user->admin)
-                        <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 125px; margin-left: 5px;" href="{{ route('appointment.create_form') }}">Create Appt</a>
+                        <div class="flex">
+                            <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 125px; margin-left: 5px;" href="{{ route('appointment.create_form') }}">Create Appt</a>
+                            <a class="flex justify-left h-screen red-btn text-center" style="max-width: 140px; margin-left: 5px;" href="{{ route('admin-booking.lookup') }}">User Bookings</a>
+                        </div>
                     @endif
 
                     <div class="tab-container appointment-table">
