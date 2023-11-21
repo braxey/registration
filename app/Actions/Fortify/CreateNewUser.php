@@ -19,13 +19,11 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
-        $input['phone_number'] = preg_replace('/[^0-9]/', '', $input['phone_number']);
         Validator::make($input, [
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => $this->passwordRules(),
-            'phone_number' => ['required', 'string', 'regex:/^[0-9]{10}$/', 'unique:users'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
 
@@ -33,7 +31,6 @@ class CreateNewUser implements CreatesNewUsers
             'first_name' => $input['first_name'],
             'last_name' => $input['last_name'],
             'email' => $input['email'],
-            'phone_number' => $input['phone_number'],
             'password' => Hash::make($input['password']),
         ]);
     }
