@@ -66,7 +66,7 @@
                         <x-checkbox name="sms-consent" id="sms-consent" required />
 
                         <div class="ml-2">
-                            {!! __('I agree to recieve emails and SMS messages. Only Jesus and KABC will see your information.') !!}
+                            {!! __('I agree to recieve emails. The emails will only be about WTB registration, and your information will not be shared.') !!}
                         </div>
                     </div>
                 </x-label>
