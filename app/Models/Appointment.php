@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\WalkIn;
 use Carbon\Carbon;
+use App\Models\AppointmentUser;
+
 
 class Appointment extends Model{
     use HasFactory;
@@ -63,5 +65,10 @@ class Appointment extends Model{
     public function getStatus(): string
     {
         return $this->status;
+    }
+
+    public function userSlots(int $userId): int
+    {
+        return AppointmentUser::where('user_id', $userId)->where('appointment_id', $this->id)->first()->slots_taken;
     }
 }
