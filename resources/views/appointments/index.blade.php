@@ -28,14 +28,14 @@
                                 <div class="form-group">
                                     <label for="start_date_time">Start Date and Time</label>
                                     <div class="flex">
-                                        <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" class="form-control mr-2">
+                                        <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" class="form-control mr-2" min="{{$min}}" max="{{$max}}">
                                         <input type="time" name="start_time" id="start_time" value="{{ request('start_time') }}" class="form-control">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="end_date_time">End Date and Time</label>
                                     <div class="flex">
-                                        <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}" class="form-control mr-2">
+                                        <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}" class="form-control mr-2" min="{{$min}}" max="{{$max}}">
                                         <input type="time" name="end_time" id="end_time" value="{{ request('end_time') }}" class="form-control">
                                     </div>
                                 </div>
