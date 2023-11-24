@@ -13,9 +13,9 @@ class BookingController extends Controller
 {
     private Organization $organization;
 
-    private ?Appointment $appointment;
+    private Appointment $appointment;
 
-    private ?User $user;
+    private User $user;
 
 
     public function __construct()
@@ -36,7 +36,8 @@ class BookingController extends Controller
         ]);
     }
 
-    public function book(Request $request){
+    public function book(Request $request)
+    {
         $this->appointment = $request->offsetGet('appointment');
         $this->user = $request->offsetGet('user');
         $availableSlots = $this->appointment->getAvailableSlots();
@@ -84,7 +85,8 @@ class BookingController extends Controller
     }
 
     // Show booking edit or handle request to update an existing booking
-    public function editBooking(Request $request){
+    public function editBooking(Request $request)
+    {
         $this->appointment = $request->offsetGet('appointment');
         $this->user = $request->offsetGet('user');
         $booking = AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId());
