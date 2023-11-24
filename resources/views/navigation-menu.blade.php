@@ -32,7 +32,7 @@
                         <div class="space-x-8 sm:-my-px sm:ml-10 sm:flex items-center flex justify-end">
                             @auth
                                 @if(Request::url() !== url('/organization/1/edit') && !is_int($user) && $user->admin)
-                                    <form action="{{ route('organization.edit', ['id' => 1]) }}" method="GET">
+                                    <form action="{{ route('organization.get-edit', ['organizationId' => 1]) }}" method="GET">
                                         @csrf
                                         @method('GET')
                                         <button class="text-sm text-gray-500 dark:text-gray-400 dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300">Organization</button>

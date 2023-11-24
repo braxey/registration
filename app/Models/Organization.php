@@ -17,6 +17,11 @@ class Organization extends Model
         'registration_open'
     ];
 
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
     public function registrationIsOpen(): bool
     {
         return (int) $this->registration_open === 1;
@@ -25,6 +30,17 @@ class Organization extends Model
     public function registrationIsClosed(): bool
     {
         return !$this->registrationIsOpen();
+    }
+
+    public function setRegistration(bool $open)
+    {
+        $this->registration_open = $open;
+        $this->save();
+    }
+
+    public function toggleRegistration()
+    {
+        $this->setRegistration(!$this->registrationIsOpen());
     }
 
     public function getMaxSlotsPerUser(): int
