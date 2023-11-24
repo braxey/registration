@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         // 'phone.verified' => \App\Http\Middleware\EnsurePhoneIsVerified::class,
         'twilio.webhook' => RequestValidator::class,
+        'booking' => \App\Http\Middleware\BookingMiddleware::class,
     ];
 }

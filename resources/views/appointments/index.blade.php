@@ -81,9 +81,9 @@
                                             @if (!$appointment->isOpen() || !$organization->registration_open || $appointment->isWalkInOnly())
                                                 <a>Closed</a>  
                                             @elseif ($user?->id && AppointmentUser::where('user_id', $user->id)->where('appointment_id', $appointment->id)->exists())
-                                                <a class="grn-btn" href="{{ route('appointment.editbooking', $appointment->id) }}">Edit Booking</a>
+                                                <a class="grn-btn" href="{{ route('booking.get-edit-booking', $appointment->id) }}">Edit Booking</a>
                                             @else
-                                                <a class="grn-btn" href="{{ route('appointment.book', $appointment->id) }}">Book</a>
+                                                <a class="grn-btn" href="{{ route('booking.get-booking', $appointment->id) }}">Book</a>
                                             @endif
                                             <div>
                                         </td>

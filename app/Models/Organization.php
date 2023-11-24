@@ -16,4 +16,19 @@ class Organization extends Model
         'max_slots_per_user',
         'registration_open'
     ];
+
+    public function registrationIsOpen(): bool
+    {
+        return (int) $this->registration_open === 1;
+    }
+
+    public function registrationIsClosed(): bool
+    {
+        return !$this->registrationIsOpen();
+    }
+
+    public function getMaxSlotsPerUser(): int
+    {
+        return $this->max_slots_per_user;
+    }
 }
