@@ -114,6 +114,9 @@ Route::post('/forgot-password-update', [PasswordResetController::class, 'updateP
 //     Route::post('/incoming-sms', [TwilioController::class, 'handleIncomingSMS'])->name('twilio.incoming_sms');
 // });
 
+/**
+ * Booking
+ */
 Route::middleware(['auth', 'booking'])->group(function () {
     Route::prefix('appointments/{appointmentId}')->group(function () {
         Route::get('/book', [BookingController::class, 'getBookingPage'])->name('booking.get-booking');
@@ -125,14 +128,23 @@ Route::middleware(['auth', 'booking'])->group(function () {
     });
 });
 
+/**
+ * Organizations
+ */
+Route::middleware(['auth', 'admin'])->group(function() {
+    Route::prefix('organization/{organizationId}')->group(function () {
+        Route::get('/edit', [OrganizationController::class, 'getEditPage'])->name('organization.get-edit');
+
+        Route::put('/edit', [OrganizationController::class, 'update'])->name('organization.update');
+        Route::post('/toggle-registration', [OrganizationController::class, 'toggleRegistration'])->name('organization.toggle-registration');
+    });
+});
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/appointments/{id}/edit', [AppointmentController::class, 'edit'])->name('appointment.edit');
     Route::put('/appointments/{id}/edit', [AppointmentController::class, 'edit'])->name('appointment.update');
     Route::get('/guestlist', [AppointmentController::class, 'guestlist'])->name('appointments.guestlist');
     Route::post('/guestlist/update', [AppointmentController::class, 'update_guestlist'])->name('guestlist.update');
-    Route::get('/organization/{id}/edit', [OrganizationController::class, 'edit'])->name('organization.edit_form');
-    Route::put('/organization/{id}/edit', [OrganizationController::class, 'edit'])->name('organization.edit');
-    Route::post('/organization/{id}/toggle', [OrganizationController::class, 'toggle_registration'])->name('organization.toggle_registration');
     Route::get('/appointments/create', [AppointmentController::class, 'create'])->name('appointment.create_form');
     Route::post('/appointments/create', [AppointmentController::class, 'create'])->name('appointment.create');
     Route::post('/appointments/{id}/delete', [AppointmentController::class, 'delete'])->name('appointment.delete');

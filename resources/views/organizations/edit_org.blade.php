@@ -11,7 +11,7 @@
                 <div class="container form-container">
                     <h1>Edit Organization</h1>
 
-                    <form action="{{ route('organization.edit', ['id' => 1]) }}" method="POST" id="update-form">
+                    <form action="{{ route('organization.update', ['organizationId' => 1]) }}" method="POST" id="update-form">
                         @csrf
                         @method('PUT')
 
@@ -27,7 +27,7 @@
 
                         <button type="submit" class="grn-btn">Update</button>
                     </form>
-                    <form action="{{ route('organization.toggle_registration', ['id' => 1]) }}" method="POST" id="toggle-reg-form">
+                    <form action="{{ route('organization.toggle-registration', ['organizationId' => 1]) }}" method="POST" id="toggle-reg-form">
                         @csrf
                         @method('POST')
                         <div class="form-group flex flex-row justify-end">
