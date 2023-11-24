@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
 use App\Models\Organization;
-use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {

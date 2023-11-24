@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Twilio\Rest\Client;
 use App\Models\User;
 use App\Models\PhoneVerification;
 use Illuminate\Support\Facades\Hash;
