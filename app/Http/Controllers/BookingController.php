@@ -45,7 +45,7 @@ class BookingController extends Controller
         $validatedData = $request->validate([
             'slots' => 'required|integer|min:1|max:' . $availableSlots,
         ]);
-        $slotsRequested = $validatedData['slots'];
+        $slotsRequested = (int) $validatedData['slots'];
         
         if ($slotsRequested + $userSlots > $this->organization->getMaxSlotsPerUser()) {
             return redirect()->back();
@@ -99,25 +99,24 @@ class BookingController extends Controller
         $validatedData = $request->validate([
             'slots' => 'required|integer|min:0|max:'. ($availableSlots + $userSlots),
         ]);
-        $slotsRequested = $validatedData['slots'];
-
+        $slotsRequested = (int) $validatedData['slots'];
         $apptUserSlots = $booking->getSlotsTaken();
+        $slotChange = $slotsRequested - $apptUserSlots;
         
         if ($slotsRequested == 0) {
             $this->cancelBooking($request);
             return redirect()->route('appointments.index');
-        } else if ($slotsRequested + $userSlots - $apptUserSlots > $this->organization->getMaxSlotsPerUser()) {
+        } else if ($userSlots + $slotChange > $this->organization->getMaxSlotsPerUser()) {
             return redirect()->back();
         }
         
-        $this->appointment->incrementSlotsTaken($slotsRequested - $apptUserSlots);
-        $this->user->incrementSlotsBooked($slotsRequested - $apptUserSlots);
-        $booking->incrementSlotsTaken($slotsRequested - $apptUserSlots);
+        $this->appointment->incrementSlotsTaken($slotChange);
+        $this->user->incrementSlotsBooked($slotChange);
+        $booking->incrementSlotsTaken($slotChange);
     
         return redirect()->route('dashboard');
     }
 
-    // Handle request to cancel a booking
     public function cancelBooking(Request $request){
         $this->appointment = $request->offsetGet('appointment');
         $this->user = $request->offsetGet('user');
