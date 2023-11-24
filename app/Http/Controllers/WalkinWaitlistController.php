@@ -3,13 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
+use Illuminate\Support\Facades\Validator;
 use App\Models\Appointment;
 use App\Models\WalkIn;
-use App\Models\AppointmentUser;
-use App\Models\Organization;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
 class WalkinWaitlistController extends Controller

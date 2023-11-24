@@ -5,12 +5,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
-use App\Models\WalkIn;
-use App\Models\Organization;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
-
 
 class AppointmentController extends Controller
 {

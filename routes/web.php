@@ -1,11 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 
 use App\Http\Controllers\PasswordResetController;
-use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\AdminBookingController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\DashboardController;
@@ -13,12 +10,6 @@ use App\Http\Controllers\GuestlistController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\WalkinWaitlistController;
-
-use App\Models\Appointment;
-use App\Models\AppointmentUser;
-use App\Models\Organization;
-
-use App\Mail\VerificationEmail;
 
 Route::get('/', function () {
     return redirect('/register');
