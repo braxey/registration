@@ -35,6 +35,17 @@ class AppointmentUser extends Model{
         return $this->slots_taken;
     }
 
+    public function getShowedUp(): int
+    {
+        return $this->showed_up;
+    }
+
+    public function setShowedUp(int $showed)
+    {
+        $this->showed_up = $showed;
+        $this->save();
+    }
+
     public function cancel()
     {
         static::where('user_id', $this->user_id)

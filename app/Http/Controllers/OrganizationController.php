@@ -47,5 +47,4 @@ class OrganizationController extends Controller
 
         return redirect()->route('organization.get-edit', $organization->getId());
     }
-
 }
