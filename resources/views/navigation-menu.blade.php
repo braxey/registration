@@ -39,7 +39,7 @@
                                     </form>
                                 @endif
                                 @if(Request::url() !== url('/guestlist') && !is_int($user) && $user->admin)
-                                    <form action="{{ route('appointments.guestlist') }}" method="GET">
+                                    <form action="{{ route('guestlist') }}" method="GET">
                                         @csrf
                                         @method('GET')
                                         <button class="text-sm text-gray-500 dark:text-gray-400 dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300">Guestlist</button>
