@@ -72,7 +72,7 @@ class AdminBookingController extends Controller
             return response(null, 404);
         }
 
-        $booking = AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId());
+        $booking = AppointmentUser::fromUserIdAndAppointmentId($user->getId(), $appointment->getId());
         if ($booking === null) {
             return response(null, 404);
         }
@@ -109,7 +109,7 @@ class AdminBookingController extends Controller
             return response(null, 404);
         }
 
-        $booking = AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId());
+        $booking = AppointmentUser::fromUserIdAndAppointmentId($user->getId(), $appointment->getId());
         if ($booking === null) {
             return response(null, 404);
         }
