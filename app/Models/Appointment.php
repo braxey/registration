@@ -97,6 +97,11 @@ class Appointment extends Model{
         return $this->getTotalSlots() - $this->getSlotsTaken();
     }
 
+    public function pastEnd(): bool
+    {
+        return (int) $this->past_end === 1;
+    }
+
     public function incrementSlotsTaken(int $addedSlots)
     {
         $this->slots_taken += $addedSlots;

@@ -31,6 +31,22 @@ Route::get('/dashboard', [DashboardController::class, 'getDashboard'])
     ->middleware(['auth:sanctum', config('jetstream.auth_session')])->name('dashboard');
 Route::get('/appointments', [DashboardController::class, 'showAllAppointments'])->name('appointments.index');
 
+/**
+ * Appointments
+ */
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::prefix('appointments')->group(function () {
+        Route::get('/create', [AppointmentController::class, 'getCreatePage'])->name('appointment.get-create');
+        Route::post('/create', [AppointmentController::class, 'create'])->name('appointment.create');
+
+        Route::middleware(['appointment'])->group(function () {
+            Route::get('/{appointmentId}/edit', [AppointmentController::class, 'getEditPage'])->name('appointment.get-edit');
+            Route::put('/{appointmentId}/update', [AppointmentController::class, 'update'])->name('appointment.update');
+            Route::post('/{appointmentId}/delete', [AppointmentController::class, 'delete'])->name('appointment.delete');
+        });
+    });
+});
+
 // Forgot password
 Route::get('/forgot-password', [PasswordResetController::class, 'getForgotPasswordPage'])->name('forgot-password');
 Route::post('/forgot-password-email', [PasswordResetController::class, 'verifyEmail'])->name('forgot-password.check');
@@ -73,13 +89,6 @@ Route::middleware(['auth', 'admin'])->group(function() {
     });
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/appointments/{id}/edit', [AppointmentController::class, 'edit'])->name('appointment.edit');
-    Route::put('/appointments/{id}/edit', [AppointmentController::class, 'edit'])->name('appointment.update');
-    Route::get('/appointments/create', [AppointmentController::class, 'create'])->name('appointment.create_form');
-    Route::post('/appointments/create', [AppointmentController::class, 'create'])->name('appointment.create');
-    Route::post('/appointments/{id}/delete', [AppointmentController::class, 'delete'])->name('appointment.delete');
-});
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::prefix('walkin-waitlist')->group(function () {
         Route::get('/', [WalkinWaitlistController::class, 'getWaitlist'])->name('walk-in.show-waitlist');

@@ -49,7 +49,7 @@
 
                     @if ($user && $user->admin)
                         <div class="flex">
-                            <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 125px; margin-left: 5px;" href="{{ route('appointment.create_form') }}">Create Appt</a>
+                            <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 125px; margin-left: 5px;" href="{{ route('appointment.get-create') }}">Create Appt</a>
                             <a class="flex justify-left h-screen red-btn text-center" style="max-width: 140px; margin-left: 5px;" href="{{ route('admin-booking.lookup') }}">User Bookings</a>
                         </div>
                     @endif
@@ -76,7 +76,7 @@
                                         <td class="border border-slate-300">
                                             <div class="table-buttons-cell">
                                             @if ($user && $user->admin)
-                                                <a class="red-btn" href="{{ route('appointment.edit', $appointment->id) }}">Edit Appt</a>
+                                                <a class="red-btn" href="{{ route('appointment.get-edit', $appointment->id) }}">Edit Appt</a>
                                             @endif
                                             @if (!$appointment->isOpen() || !$organization->registration_open || $appointment->isWalkInOnly())
                                                 <a>Closed</a>  
