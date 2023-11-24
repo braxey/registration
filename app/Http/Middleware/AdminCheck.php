@@ -19,14 +19,14 @@ class AdminCheck
         try {
             $user = Auth::user();
             if (!$user->isAdmin()) {
-                return response(Response::HTTP_UNAUTHORIZED);
+                return response(null, Response::HTTP_UNAUTHORIZED);
             }
 
             $request->offsetSet('user', $user);
 
             return $next($request);
         } catch (Exception $e) {
-            return response(Response::HTTP_UNAUTHENTICATED);
+            return response(null, Response::HTTP_UNAUTHENTICATED);
         }
     }
 }

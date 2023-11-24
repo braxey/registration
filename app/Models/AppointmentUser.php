@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use App\Models\Appointment;
 
 class AppointmentUser extends Model{
     protected $table = 'appointment_user';
@@ -44,6 +46,26 @@ class AppointmentUser extends Model{
     {
         $this->showed_up = $showed;
         $this->save();
+    }
+
+    public function getUserId(): int
+    {
+        return $this->user_id;
+    }
+
+    public function getAppointmentId(): int
+    {
+        return $this->appointment_id;
+    }
+
+    public function getUser(): ?User
+    {
+        return User::where('id', $this->getUserId())->first();
+    }
+
+    public function getAppointment(): ?Appointment
+    {
+        return Appointment::where('id', $this->getAppointmentId())->first();
     }
 
     public function cancel()

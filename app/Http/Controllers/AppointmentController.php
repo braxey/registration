@@ -14,142 +14,85 @@ use Illuminate\Support\Collection;
 
 class AppointmentController extends Controller
 {
-    // Show the edit update appointment or handle update form submission
-    public function edit(Request $request, $id){
-        $user = Auth::user();
-        $appointment = Appointment::findOrFail($id);
-
-        // If it's a GET request, return the view
-        if($request->isMethod('get')){
-            // If the user is an admin, show the edit appointment page
-            // Else, redirect to appointments
-            return ($user->admin)
-                ? view('appointments.edit', compact('appointment'))
-                : redirect()->route('appointments.index');
-        }
-        if(!$user->admin) abort(404);
-
-        // If it's a PUT request, handle the form submission
-        // Get the validated data
-        $validatedData = $request->validate([
-            'description' => 'required',
-            'start_time' => 'required|date',
-            'total_slots' => 'required|integer|min:0',
-        ]);
-
-        // Update the appointment with the validated data
-        $appointment->description = $validatedData['description'];
-        $appointment->start_time = $validatedData['start_time'];
-        $appointment->end_time = Carbon::parse($validatedData['start_time'])->addHours(1)->format('Y-m-d\TH:i');
-        $appointment->total_slots = $validatedData['total_slots'];
-        $appointment->walk_in_only = $request->input('walk-in-only') === "on";
-        
-        // Save the appointment to the database
-        $appointment->save();
-
-        // Redirect to the same page
-        return redirect()->route('appointment.edit', $appointment->id);
+    public function getCreatePage(Request $request)
+    {
+        return view('appointments.create');
     }
 
-    // Show create form or handle create form submission
-    public function create(Request $request){        
-        // Retrieve the authenticated user
-        $user = Auth::user();
-
-        // See if the user is not an admin
-        if($user->admin == 0) abort(404);
-
-        // If it's a GET request, return the create view
-        if ($request->isMethod('get')) {
-            return view('appointments.create');
-        }
-        
-        // Validate the form data
+    public function create(Request $request)
+    {
         $validatedData = $request->validate([
             'description' => 'required',
-            'start_time' => 'required|date',
+            'start_time'  => 'required|date',
             'total_slots' => 'required|integer|min:1',
         ]);
 
-        // Create a new appointment instance
-        $appointment = new Appointment();
-        $appointment->description = $validatedData['description'];
-        $appointment->start_time = $validatedData['start_time'];
-        $appointment->end_time = Carbon::parse($validatedData['start_time'])->addHours(1)->format('Y-m-d\TH:i');
-        $appointment->total_slots = $validatedData['total_slots'];
-        $appointment->walk_in_only = $request->input('walk-in-only') === "on";
+        $data = array_merge($validatedData, [
+            'end_time'     => Carbon::parse($validatedData['start_time'])->addHours(1)->format('Y-m-d\TH:i'),
+            'walk_in_only' => $request->input('walk-in-only') === "on"
+        ]);
         
-        // Save the appointment to the database
-        $appointment->save();
-
-        // Redirect to a different page, such as the appointment index page
+        Appointment::create($data);
         return redirect()->route('appointments.index');
     }
 
-    // Handle request to delete appointment
-    public function delete(Request $request, $id){
+    public function getEditPage(Request $request)
+    {
+        $appointment = $request->offsetGet('appointment');
+        return view('appointments.edit', [
+            'appointment' => $appointment
+        ]);
+    }
 
-        // Retrieve the authenticated user
-        $user = Auth::user();
+    public function update(Request $request)
+    {
+        $appointment = $request->offsetGet('appointment');
 
-        // See if the user is not an admin
-        if($user->admin == 0) abort(404);
+        $validatedData = $request->validate([
+            'description' => 'required',
+            'start_time'  => 'required|date',
+            'total_slots' => 'required|integer|min:0',
+        ]);
 
-        // Retrieve the appointment to be deleted
-        $appointment = Appointment::findOrFail($id);
-
-        // Reallocate slots to users who booked the appt if the end time has not passed
-
-        // Retrieve all user-appointment relationships for the appt being deleted
-        $userAppointments = AppointmentUser::where('appointment_id', $appointment->id)->get();
-        // Handle each individually
-        foreach ($userAppointments as $userAppointment) {
-            // Retrive a user's ID from the user-appt entry
-            $_user_id = $userAppointment->user_id;
-            
-            // If the appointment is past end
-            if(!$appointment->past_end){
-            // Give the user the necessary amount of slots back
-                $_user = User::findOrFail($_user_id);
-                $_user->slots_booked = $_user->slots_booked - $userAppointment->slots_taken;
-                $_user->save();
-            }
+        $data = array_merge($validatedData, [
+            'end_time'     => Carbon::parse($validatedData['start_time'])->addHours(1)->format('Y-m-d\TH:i'),
+            'walk_in_only' => $request->input('walk-in-only') === "on"
+        ]);
         
-            // Delete the user-appointment record
-            AppointmentUser::where('appointment_id', $id)
-                   ->where('user_id', $_user_id)
-                   ->delete();
-        }
+        $appointment->update($data);
+        return redirect()->route('appointment.get-edit', $appointment->getId());
+    }
+
+    public function delete(Request $request)
+    {
+        $appointment = $request->offsetGet('appointment');
+
+        AppointmentUser::where('appointment_id', $appointment->getId())
+            ->get()
+            ->map(function (AppointmentUser $booking) use ($appointment) {
+                if (!$appointment->pastEnd()) {
+                    $user = $booking->getUser();
+                    if ($user !== null) {
+                        $user->decrementSlotsBooked($booking->getSlotsTaken());
+                    }
+                }
+                $booking->cancel();
+            });
         
-        // Delete the appointment
         $appointment->delete();
-
-        // Redirect to appointments
         return redirect()->route('appointments.index');
     }
 
-    // Give appointment slots back on user delete
-    public function userDelete(User $user){
-
-        // Get user appts associated with the user
-        $userAppointments = AppointmentUser::where('user_id', $user->id)->get();
-        // Handle each individually
-        foreach ($userAppointments as $userAppointment) {
-            // Retrive a appointment's ID from the user-appt entry
-            $_appt_id = $userAppointment->appointment_id;
-
-            // If the appointment is past end
-            $appointment = Appointment::findOrFail($_appt_id);
-            // Give the appointment the necessary amount of slots back
-            if(!$appointment->past_end){
-                $appointment->slots_taken -= $userAppointment->slots_taken;
-                $appointment->save();
-            }
-        
-            // Delete the user-appointment record
-            AppointmentUser::where('appointment_id', $_appt_id)
-                   ->where('user_id', $user->id)
-                   ->delete();
-        }
+    public function userDelete(User $user)
+    {
+        AppointmentUser::where('user_id', $user->getId())
+            ->get()
+            ->map(function (AppointmentUser $booking) {
+                $appointment = $booking->getAppointment();
+                if ($appointment !== null && !$appointment->pastEnd()) {
+                    $appointment->decrementSlotsTaken($booking->getSlotsTaken());
+                }
+                $booking->cancel();
+            });
     }
 }

@@ -83,7 +83,7 @@ class AppointmentsTest extends TestCase {
         $this->actingAs($notAdmin);
 
         // Send a GET request to the create appointment route
-        $response = $this->get(route('appointment.create_form'));
+        $response = $this->get(route('appointment.get-create'));
 
         // Assert that the response status is 404 Not Found
         $response->assertNotFound();
@@ -122,7 +122,7 @@ class AppointmentsTest extends TestCase {
         $this->actingAs($admin);
 
         // Send a GET request to the create appointment route
-        $response = $this->get(route('appointment.create_form'));
+        $response = $this->get(route('appointment.get-create'));
 
         // Assert that the response status is 200 OK
         $response->assertOk();
@@ -285,7 +285,7 @@ class AppointmentsTest extends TestCase {
         $appointment = Appointment::factory()->create();
 
         // Make a request to view the edit form for the appointment
-        $response = $this->get(route('appointment.edit', $appointment->id));
+        $response = $this->get(route('appointment.get-edit', $appointment->id));
 
         // Assert that the user is redirected to the appointments.index route
         $response->assertRedirect(route('appointments.index'));
@@ -337,7 +337,7 @@ class AppointmentsTest extends TestCase {
         $appointment = Appointment::factory()->create();
 
         // Make a request to view the edit form for the appointment
-        $response = $this->get(route('appointment.edit', $appointment->id));
+        $response = $this->get(route('appointment.get-edit', $appointment->id));
 
         // Assert that the response is successful
         $response->assertStatus(200);
