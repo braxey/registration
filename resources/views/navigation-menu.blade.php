@@ -45,7 +45,7 @@
                                         <button class="text-sm text-gray-500 dark:text-gray-400 dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300">Guestlist</button>
                                     </form>
                                 @endif
-                                @if(Request::url() !== url('/walkin-waitlist') && !is_int($user) && $user->admin)
+                                @if(Request::url() !== url('/walk-in/waitlist') && !is_int($user) && $user->admin)
                                     <form action="{{ route('walk-in.show-waitlist') }}" method="GET">
                                         @csrf
                                         @method('GET')

@@ -87,9 +87,21 @@ class Appointment extends Model{
         return $this->total_slots;
     }
 
+    public function setTotalSlots(int $slots)
+    {
+        $this->total_slots = $slots;
+        $this->save();
+    }
+
     public function getSlotsTaken(): int
     {
         return $this->slots_taken;
+    }
+
+    public function setSlotsTaken(int $slots)
+    {
+        $this->slots_taken = $slots;
+        $this->save();
     }
 
     public function getAvailableSlots(): int
@@ -112,5 +124,10 @@ class Appointment extends Model{
     {
         $this->slots_taken -= $removedSlots;
         $this->save();
+    }
+
+    public static function fromId($id): ?Appointment
+    {
+        return static::where('id', $id)->first();
     }
 }

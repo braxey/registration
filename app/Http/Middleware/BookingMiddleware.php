@@ -21,9 +21,8 @@ class BookingMiddleware
         }
 
         // Make sure a booking action can be performed on this appointment.
-        $appointmentId = $request->route('appointmentId');
-        $appointment = Appointment::where('id', $appointmentId)->first();
-        if (!$appointment) {
+        $appointment = Appointment::fromId($request->route('appointmentId'));
+        if ($appointment === null) {
             return response(null, 404);
         }
 

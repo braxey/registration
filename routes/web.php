@@ -9,7 +9,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuestlistController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\OrganizationController;
-use App\Http\Controllers\WalkinWaitlistController;
+use App\Http\Controllers\WalkInController;
+use App\Http\Controllers\LinkingController;
 
 Route::get('/', function () {
     return redirect('/register');
@@ -40,10 +41,10 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/create', [AppointmentController::class, 'getCreatePage'])->name('appointment.get-create');
             Route::post('/create', [AppointmentController::class, 'create'])->name('appointment.create');
 
-            Route::middleware(['appointment'])->group(function () {
-                Route::get('/{appointmentId}/edit', [AppointmentController::class, 'getEditPage'])->name('appointment.get-edit');
-                Route::put('/{appointmentId}/update', [AppointmentController::class, 'update'])->name('appointment.update');
-                Route::post('/{appointmentId}/delete', [AppointmentController::class, 'delete'])->name('appointment.delete');
+            Route::prefix('{appointmentId}')->middleware('appointment')->group(function () {
+                Route::get('/edit', [AppointmentController::class, 'getEditPage'])->name('appointment.get-edit');
+                Route::put('/update', [AppointmentController::class, 'update'])->name('appointment.update');
+                Route::post('/delete', [AppointmentController::class, 'delete'])->name('appointment.delete');
             });
         });
 
@@ -64,16 +65,30 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/toggle-registration', [OrganizationController::class, 'toggleRegistration'])->name('organization.toggle-registration');
         });
 
-        Route::prefix('walkin-waitlist')->group(function () {
-            Route::get('/', [WalkinWaitlistController::class, 'getWaitlist'])->name('walk-in.show-waitlist');
-            Route::get('/create-walkin', [WalkinWaitlistController::class, 'getCreateWalkinForm'])->name('walk-in.create-form');
-            Route::post('/create-walkin', [WalkinWaitlistController::class, 'createWalkin'])->name('walk-in.create');
-            Route::get('/{id}/edit-walkin', [WalkinWaitlistController::class, 'getEditWalkinForm'])->name('walk-in.edit-form');
-            Route::put('/{id}/edit-walkin', [WalkinWaitlistController::class, 'editWalkin'])->name('walk-in.edit');
-            Route::post('/{id}/delete', [WalkinWaitlistController::class, 'deleteWalkin'])->name('walk-in.delete');
-            Route::get('/{id}/link-appt', [WalkinWaitlistController::class, 'getApptLinkPage'])->name('walk-in.link-appt');
-            Route::post('/{walkInId}/{apptId}/link-appt', [WalkinWaitlistController::class, 'linkAppointment'])->name('walk-in.link-appt-post');
-            Route::post('/{walkInId}/{apptId}/unlink-appt', [WalkinWaitlistController::class, 'unlinkAppointment'])->name('walk-in.unlink-appt-post');
+        /**
+         * Walk-ins
+         */
+        Route::prefix('walk-in')->group(function () {
+            Route::get('/waitlist', [WalkInController::class, 'getWaitlist'])->name('walk-in.show-waitlist');
+            Route::get('/create', [WalkInController::class, 'getCreateWalkinPage'])->name('walk-in.get-create');
+            Route::post('/create', [WalkInController::class, 'createWalkin'])->name('walk-in.create');
+            
+            Route::prefix('{walkInId}')->middleware('walk-in')->group(function () {
+                Route::get('/edit-walkin', [WalkInController::class, 'getEditWalkinPage'])->name('walk-in.get-edit');
+                Route::put('/edit-walkin', [WalkInController::class, 'updateWalkin'])->name('walk-in.edit');
+                Route::post('/delete', [WalkInController::class, 'deleteWalkin'])->name('walk-in.delete');
+            });
+        });
+
+        /**
+         * Link/Unlink Walk-ins to Appointments
+         */
+        Route::prefix('walk-in/{walkInId}')->middleware('walk-in')->group(function () {
+            Route::get('/link-appointment', [LinkingController::class, 'getAppointmentLinkPage'])->name('walk-in.get-link-appointment');
+            Route::post('/{appointmentId}/link-appt', [LinkingController::class, 'linkAppointment'])
+                ->middleware('appointment')->name('walk-in.link-appointment');
+            Route::post('/{appointmentId}/unlink-appointment', [LinkingController::class, 'unlinkAppointment'])
+                ->middleware('appointment')->name('walk-in.unlink-appointment');
         });
     
         /**
@@ -91,14 +106,12 @@ Route::middleware(['auth'])->group(function () {
     /**
      * Booking
      */
-    Route::middleware(['booking'])->group(function () {
-        Route::prefix('appointments/{appointmentId}')->group(function () {
-            Route::get('/book', [BookingController::class, 'getBookingPage'])->name('booking.get-booking');
-            Route::get('/edit-booking', [BookingController::class, 'getEditBookingPage'])->name('booking.get-edit-booking');
-    
-            Route::post('/book', [BookingController::class, 'book'])->name('booking.book');
-            Route::put('/edit-booking', [BookingController::class, 'editBooking'])->name('booking.edit-booking');
-            Route::post('/cancel-booking', [BookingController::class, 'cancelBooking'])->name('booking.cancel-booking');
-        });
+    Route::prefix('appointments/{appointmentId}')->middleware('booking')->group(function () {
+        Route::get('/book', [BookingController::class, 'getBookingPage'])->name('booking.get-booking');
+        Route::get('/edit-booking', [BookingController::class, 'getEditBookingPage'])->name('booking.get-edit-booking');
+
+        Route::post('/book', [BookingController::class, 'book'])->name('booking.book');
+        Route::put('/edit-booking', [BookingController::class, 'editBooking'])->name('booking.edit-booking');
+        Route::post('/cancel-booking', [BookingController::class, 'cancelBooking'])->name('booking.cancel-booking');
     });
 });
