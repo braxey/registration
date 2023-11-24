@@ -85,6 +85,9 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/{walkInId}/{apptId}/unlink-appt', [WalkinWaitlistController::class, 'unlinkAppointment'])->name('walk-in.unlink-appt-post');
         });
     
+        /**
+         * Admin Booking Edit for User
+         */
         Route::prefix('admin-user')->group(function () {
             Route::get('/', [AdminBookingController::class, 'getAdminUserLookupPage'])->name('admin-booking.lookup');
             Route::get('/{userId}', [AdminBookingController::class, 'getUsersUpcomingBookings'])->name('admin-booking.user');

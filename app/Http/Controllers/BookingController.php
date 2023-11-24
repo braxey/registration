@@ -91,8 +91,8 @@ class BookingController extends Controller
         $this->user = $request->offsetGet('user');
         $booking = AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId());
 
-        if (!$booking) {
-            return response(null, 403);
+        if ($booking === null) {
+            return response(null, 404);
         }
         
         $availableSlots = $this->appointment->getAvailableSlots();

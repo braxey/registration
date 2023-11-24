@@ -79,7 +79,7 @@ class Appointment extends Model{
 
     public function userSlots(int $userId): int
     {
-        return AppointmentUser::where('user_id', $userId)->where('appointment_id', $this->id)->first()->slots_taken;
+        return AppointmentUser::where('user_id', $userId)->where('appointment_id', $this->getId())->first()->getSlotsTaken();
     }
 
     public function getTotalSlots(): int
