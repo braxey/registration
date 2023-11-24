@@ -11,15 +11,15 @@
         <form method="POST" action="{{ route('register') }}">
             @csrf
 
-            <div class="flex">
+            <div class="flex ">
                 <div class="mr-2">
                     <x-label for="first_name" value="{{ __('First Name') }}" />
-                    <x-input id="first_name" class="block mt-1 w-half" type="text" name="first_name" :value="old('first_name')" required autofocus autocomplete="first_name" />
+                    <x-input id="first_name" style="width: 100%;" class="block mt-1" type="text" name="first_name" :value="old('first_name')" required autofocus autocomplete="first_name" />
                 </div>
 
                 <div>
                     <x-label for="last_name" value="{{ __('Last Name') }}" />
-                    <x-input id="last_name" class="block mt-1 w-half" type="text" name="last_name" :value="old('last_name')" required autofocus autocomplete="last_name" />
+                    <x-input id="last_name" style="width: 100%;" class="block mt-1" type="text" name="last_name" :value="old('last_name')" required autofocus autocomplete="last_name" />
                 </div>
             </div>
 
