@@ -200,7 +200,7 @@ class PasswordResetController extends Controller
     private function sendNewToken($phone)
     {
         // Generate token
-        $token = (string) mt_rand(1000000, 9999999);
+        $token = $this->generateSecureNumericToken();
 
         // Send token
         $user = User::where('phone_number', $phone)->first();
@@ -253,7 +253,7 @@ class PasswordResetController extends Controller
     private function emailNewToken($email)
     {
         // Generate token
-        $token = (string) mt_rand(1000000, 9999999);
+        $token = $this->generateSecureNumericToken();
 
         // Send token
         $user = User::where('email', $email)->first();
@@ -307,5 +307,15 @@ class PasswordResetController extends Controller
     private function maskPhone($phone)
     {
         return '(***) *** - **' . substr($phone, strlen($phone) - 2);
+    }
+
+    function generateSecureNumericToken($length = 7)
+    {
+        $min = pow(10, $length - 1);
+        $max = pow(10, $length) - 1;
+
+        $randomNumber = random_int($min, $max);
+
+        return str_pad($randomNumber, $length, '0', STR_PAD_LEFT);
     }
 }
