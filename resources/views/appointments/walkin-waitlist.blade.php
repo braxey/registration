@@ -17,7 +17,7 @@
                 <div class="container">
                     <h1 class="flex justify-center items-center h-screen" style="font-size: larger">Walk-In Waitlist</h1>
 
-                    <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 125px; margin-left: 5px;" href="{{ route('walk-in.create-form') }}">New Walk-In</a>
+                    <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 125px; margin-left: 5px;" href="{{ route('walk-in.get-create') }}">New Walk-In</a>
 
                     <div class="tab-container">
                         <div class="tabs">
@@ -62,10 +62,10 @@
                                                     <td class="border border-slate-300">{{ $walkIn->slots }}</td>
                                                     <td class="border border-slate-300">{{ $desiredTime }}</td>
                                                     <td class="border border-slate-300">
-                                                        <a class="{{$color}}-btn text-center" href="{{ route('walk-in.link-appt', $walkIn->id) }}">{{$linkedAppt}}</a>
+                                                        <a class="{{ $color }}-btn text-center" href="{{ route('walk-in.get-link-appointment', $walkIn->getId()) }}">{{ $linkedAppt }}</a>
                                                     </td>
                                                     <td class="border border-slate-300">
-                                                        <a class="red-btn text-center" href="{{ route('walk-in.edit-form', $walkIn->id) }}">Edit</a>
+                                                        <a class="red-btn text-center" href="{{ route('walk-in.get-edit', $walkIn->getId()) }}">Edit</a>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -112,10 +112,10 @@
                                                         <td class="border border-slate-300">{{ $walkIn->slots }}</td>
                                                         <td class="border border-slate-300">{{ $desiredTime }}</td>
                                                         <td class="border border-slate-300">
-                                                            <a class="{{$color}}-btn text-center" href="{{ route('walk-in.link-appt', $walkIn->id) }}">{{$linkedAppt}}</a>
+                                                            <a class="{{$color}}-btn text-center" href="{{ route('walk-in.get-link-appointment', $walkIn->getId()) }}">{{ $linkedAppt }}</a>
                                                         </td>
                                                         <td class="border border-slate-300">
-                                                            <a class="red-btn text-center" href="{{ route('walk-in.edit-form', $walkIn->id) }}">Edit</a>
+                                                            <a class="red-btn text-center" href="{{ route('walk-in.get-edit', $walkIn->getId()) }}">Edit</a>
                                                         </td>
                                                     </tr>
                                                 @endif
@@ -162,10 +162,10 @@
                                                         <td class="border border-slate-300">{{ $walkIn->slots }}</td>
                                                         <td class="border border-slate-300">{{ $desiredTime }}</td>
                                                         <td class="border border-slate-300">
-                                                            <a class="{{$color}}-btn text-center" href="{{ route('walk-in.link-appt', $walkIn->id) }}">{{$linkedAppt}}</a>
+                                                            <a class="{{$color}}-btn text-center" href="{{ route('walk-in.get-link-appointment', $walkIn->getId()) }}">{{ $linkedAppt }}</a>
                                                         </td>
                                                         <td class="border border-slate-300">
-                                                            <a class="red-btn text-center" href="{{ route('walk-in.edit-form', $walkIn->id) }}">Edit</a>
+                                                            <a class="red-btn text-center" href="{{ route('walk-in.get-edit', $walkIn->getId()) }}">Edit</a>
                                                         </td>
                                                     </tr>
                                                 @endif

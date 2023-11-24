@@ -5,18 +5,18 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\Appointment;
+use App\Models\WalkIn;
 
-class AppointmentMiddleware
+class WalkInMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $appointment = Appointment::fromId($request->route('appointmentId'));
-        if ($appointment === null) {
+        $walkIn = WalkIn::fromId($request->route('walkInId'));
+        if ($walkIn === null) {
             return response(null, 404);
         }
 
-        $request->offsetSet('appointment', $appointment);
+        $request->offsetSet('walk-in', $walkIn);
 
         return $next($request);
     }

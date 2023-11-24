@@ -11,7 +11,7 @@
                 <div class="container form-container">
                     <h1>Edit Walk-In</h1>
 
-                    <form action="{{ route('walk-in.edit', $walkIn->id) }}" method="POST" id="update-form">
+                    <form action="{{ route('walk-in.edit', $walkIn->getId()) }}" method="POST" id="update-form">
                         @csrf
                         @method('PUT')
 
