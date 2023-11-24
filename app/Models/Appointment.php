@@ -19,6 +19,11 @@ class Appointment extends Model{
         'walk_in_only',
     ];
 
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
     public function isWalkInOnly(): bool
     {
         return (int) $this->walk_in_only === 1;
@@ -57,6 +62,11 @@ class Appointment extends Model{
         );
     }
 
+    public function getStartTime(): string
+    {
+        return $this->start_time;
+    }
+
     public function getStartDate(): string
     {
         return explode(' ', $this->start_time)[0];
@@ -70,5 +80,32 @@ class Appointment extends Model{
     public function userSlots(int $userId): int
     {
         return AppointmentUser::where('user_id', $userId)->where('appointment_id', $this->id)->first()->slots_taken;
+    }
+
+    public function getTotalSlots(): int
+    {
+        return $this->total_slots;
+    }
+
+    public function getSlotsTaken(): int
+    {
+        return $this->slots_taken;
+    }
+
+    public function getAvailableSlots(): int
+    {
+        return $this->getTotalSlots() - $this->getSlotsTaken();
+    }
+
+    public function incrementSlotsTaken(int $addedSlots)
+    {
+        $this->slots_taken += $addedSlots;
+        $this->save();
+    }
+
+    public function decrementSlotsTaken(int $removedSlots)
+    {
+        $this->slots_taken -= $removedSlots;
+        $this->save();
     }
 }

@@ -18,7 +18,7 @@
                         <br>
                         <p><b>Appointment:</b> {{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</p>
 
-                        <form action="{{ route('appointment.book', $appointment) }}" method="POST" id="book-form">
+                        <form action="{{ route('booking.book', $appointment) }}" method="POST" id="book-form">
                             @csrf
                             </br>
 

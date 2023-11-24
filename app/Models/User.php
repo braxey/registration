@@ -67,6 +67,11 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
     public function verifyPhone()
     {
         $this->phone_verified_at = now();
@@ -108,5 +113,27 @@ class User extends Authenticatable
     public function getName(): string
     {
         return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function getCurrentNumberOfSlots(): int
+    {
+        return $this->slots_booked;
+    }
+
+    public function incrementSlotsBooked(int $addedSlots)
+    {
+        $this->slots_booked += $addedSlots;
+        $this->save();
+    }
+
+    public function decrementSlotsBooked(int $removedSlots)
+    {
+        $this->slots_booked -= $removedSlots;
+        $this->save();
+    }
+
+    public function isAdmin(): bool
+    {
+        return (int) $this->admin === 1;
     }
 }

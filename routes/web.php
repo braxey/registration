@@ -8,6 +8,7 @@ use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\AdminBookingController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\WalkinWaitlistController;
 // use App\Http\Controllers\TwilioController;
@@ -113,10 +114,15 @@ Route::post('/forgot-password-update', [PasswordResetController::class, 'updateP
 //     Route::post('/incoming-sms', [TwilioController::class, 'handleIncomingSMS'])->name('twilio.incoming_sms');
 // });
 
-Route::middleware(['auth'])->group(function () {
-    Route::match(['GET', 'POST'], '/appointments/{id}/book', [AppointmentController::class, 'book'])->name('appointment.book');
-    Route::match(['GET', 'PUT'], '/appointments/{id}/editbooking', [AppointmentController::class, 'edit_booking'])->name('appointment.editbooking');
-    Route::post('/appointments/{id}/cancelbooking', [AppointmentController::class, 'cancel_booking'])->name('appointment.cancelbooking');
+Route::middleware(['auth', 'booking'])->group(function () {
+    Route::prefix('appointments/{appointmentId}')->group(function () {
+        Route::get('/book', [BookingController::class, 'getBookingPage'])->name('booking.get-booking');
+        Route::get('/edit-booking', [BookingController::class, 'getEditBookingPage'])->name('booking.get-edit-booking');
+
+        Route::post('/book', [BookingController::class, 'book'])->name('booking.book');
+        Route::put('/edit-booking', [BookingController::class, 'editBooking'])->name('booking.edit-booking');
+        Route::post('/cancel-booking', [BookingController::class, 'cancelBooking'])->name('booking.cancel-booking');
+    });
 });
 
 Route::middleware(['auth'])->group(function () {

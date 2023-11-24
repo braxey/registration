@@ -48,7 +48,7 @@
                                                     <td class="border border-slate-300 flex justify-center items-center h-screen text-center">
                                                     @if($appointment->canEdit() && $organization->registration_open)
                                                         <div class="button-container">
-                                                            <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="GET" id="edit-form">
+                                                            <form action="{{ route('booking.get-edit-booking', $appointment->id) }}" method="GET" id="edit-form">
                                                                 @csrf
                                                                 @method('GET')
                                                                 <button class="grn-btn" type="submit">Edit Booking</button>
@@ -94,7 +94,7 @@
                                                     <td class="border border-slate-300 flex justify-center items-center h-screen text-center">
                                                     @if($appointment->canEdit() && $organization->registration_open)
                                                         <div class="button-container">
-                                                            <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="GET" id="edit-form">
+                                                            <form action="{{ route('booking.get-edit-booking', $appointment->id) }}" method="GET" id="edit-form">
                                                                 @csrf
                                                                 @method('GET')
                                                                 <button class="grn-btn" type="submit">Edit Booking</button>
