@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
@@ -95,21 +96,6 @@ class User extends Authenticatable
         return false;
     }
 
-    public function getUpcomingAppointments()
-    {
-        $appointments = collect();
-        $apptUsers = AppointmentUser::where('user_id', $this->id)->get();
-
-        foreach($apptUsers as $apptUser) {
-            $appt = Appointment::where('id', $apptUser->appointment_id)->first();
-            if ($appt && $appt->getStatus() === "upcoming") {
-                $appointments->push($appt);
-            }
-        }
-
-        return $appointments;
-    }
-
     public function getName(): string
     {
         return $this->first_name . ' ' . $this->last_name;
@@ -135,5 +121,38 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return (int) $this->admin === 1;
+    }
+
+    public function getAllAppointments(): Collection
+    {
+        $upcomingAppointments = $this->getUpcomingAppointments();
+        $completedAppointments = $this->getPastAppointments();
+        return $upcomingAppointments->merge($completedAppointments);
+    }
+
+    public function getUpcomingAppointments(): Collection
+    {
+        $upcomingAppointmentIds = AppointmentUser::where('user_id', $this->getId())
+                        ->whereHas('appointment', function ($query) {
+                            $query->where('past_end', false);
+                        })
+                        ->pluck('appointment_id');
+        
+        return Appointment::whereIn('id', $upcomingAppointmentIds)
+                        ->orderBy('start_time')
+                        ->get();
+    }
+
+    public function getPastAppointments(): Collection
+    {
+        $pastAppointmentIds = AppointmentUser::where('user_id', $this->getId())
+                        ->whereHas('appointment', function ($query) {
+                            $query->where('past_end', true);
+                        })
+                        ->pluck('appointment_id');
+            
+        return Appointment::whereIn('id', $pastAppointmentIds)
+                        ->orderByDesc('start_time')
+                        ->get();
     }
 }
