@@ -121,7 +121,7 @@ class PasswordResetController extends Controller
     private function emailToken(string $email, string $token)
     {
         $user = User::fromEmail($email);
-        // Mail::to($email)->send(new VerificationEmail($token));
+        Mail::to($email)->send(new VerificationEmail($token));
         PhoneVerification::logTokenSend($user, $token);
     }
 
