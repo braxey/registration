@@ -9,8 +9,10 @@ use Carbon\Carbon;
 use App\Models\AppointmentUser;
 
 
-class Appointment extends Model{
+class Appointment extends Model
+{
     use HasFactory;
+
     protected $fillable = [
         'description',
         'start_time',
@@ -31,9 +33,9 @@ class Appointment extends Model{
 
     public function addWalkIn(WalkIn $walkIn)
     {
-        $updatedSlotsTaken = $this->slots_taken + $walkIn->slots;
+        $updatedSlotsTaken = $this->slots_taken + $walkIn->getNumberOfSlots();
         $this->slots_taken = $updatedSlotsTaken;
-        if ($updatedSlotsTaken > $this->total_slots) {
+        if ($updatedSlotsTaken > $this->getTotalSlots()) {
             $this->total_slots = $updatedSlotsTaken;
         }
         $this->save();
@@ -41,8 +43,7 @@ class Appointment extends Model{
 
     public function removeWalkIn(WalkIn $walkIn)
     {
-        $this->slots_taken -= $walkIn->slots;
-        $this->save();
+        $this->decrementSlotsTaken($walkIn->getNumberOfSlots());
     }
 
     public function isOpen(): bool

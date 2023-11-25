@@ -9,7 +9,7 @@
 
         <x-validation-errors class="mb-4" />
 
-        <form method="POST" action="{{ route('forgot-password.update') }}" id="reset-form">
+        <form method="POST" action="{{ route('forgot-password.update-password') }}" id="reset-form">
             @csrf
 
             <div class="mt-4">
@@ -23,7 +23,7 @@
             </div>
 
             <p style="color:red; display:none" id="no-match">The password does not match the confirmation password.</p>
-            <p style="color:red; display:none" id="invalid-password">The password must be at least 6 characters.</p>
+            <p style="color:red; display:none" id="invalid-password">The password must be at least 8 characters.</p>
 
             <div class="flex items-center justify-end mt-4">
                 <x-button>
