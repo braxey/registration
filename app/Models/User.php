@@ -11,6 +11,7 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Hash;
 
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
@@ -71,6 +72,13 @@ class User extends Authenticatable
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function setPassword(string $password)
+    {
+        $this->forceFill([
+            'password' => Hash::make($password),
+        ])->save();
     }
 
     public function verifyPhone()
@@ -154,5 +162,15 @@ class User extends Authenticatable
         return Appointment::whereIn('id', $pastAppointmentIds)
                         ->orderByDesc('start_time')
                         ->get();
+    }
+
+    public static function fromId($id): ?User
+    {
+        return static::where('id', $id)->first();
+    }
+
+    public static function fromEmail(string $email): ?User
+    {
+        return static::where('email', $email)->first();
     }
 }

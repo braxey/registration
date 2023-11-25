@@ -23,14 +23,19 @@ Route::get('/dashboard', [DashboardController::class, 'getDashboard'])
     ->middleware(['auth:sanctum', config('jetstream.auth_session')])->name('dashboard');
 Route::get('/appointments', [DashboardController::class, 'showAllAppointments'])->name('appointments.index');
 
-// Forgot password
-Route::get('/forgot-password', [PasswordResetController::class, 'getForgotPasswordPage'])->name('forgot-password');
-Route::post('/forgot-password-email', [PasswordResetController::class, 'verifyEmail'])->name('forgot-password.check');
-Route::get('/reset-verify-email', [PasswordResetController::class, 'getEmailVerifyForm'])->name('forgot-password.verify-form');
-Route::post('/reset-verify', [PasswordResetController::class, 'verify'])->name('forgot-password.verify-token');
-Route::post('/reset-resend-verify-token', [PasswordResetController::class, 'resend'])->name('forgot-password.resend-verify-token');
-Route::get('/forgot-password-reset', [PasswordResetController::class, 'getResetPasswordForm'])->name('forgot-password.reset-form');
-Route::post('/forgot-password-update', [PasswordResetController::class, 'updatePassword'])->name('forgot-password.update');
+/**
+ * Forgot Password
+ */
+Route::prefix('forgot-password')->group(function () {
+    Route::get('/', [PasswordResetController::class, 'getForgotPasswordPage'])->name('get-forgot-password');
+    Route::get('/verify-email', [PasswordResetController::class, 'getVerifyEmailPage'])->name('forgot-password.get-verify-email');
+    Route::get('/reset', [PasswordResetController::class, 'getResetPasswordPage'])->name('forgot-password.get-reset');
+
+    Route::post('/check-email', [PasswordResetController::class, 'verifyEmail'])->name('forgot-password.check-email');
+    Route::post('/verify-token', [PasswordResetController::class, 'verifyToken'])->name('forgot-password.verify-token');
+    Route::post('/resend-token', [PasswordResetController::class, 'resendToken'])->name('forgot-password.resend-token');
+    Route::post('/update-password', [PasswordResetController::class, 'updatePassword'])->name('forgot-password.update-password');
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::middleware(['admin'])->group(function () {
