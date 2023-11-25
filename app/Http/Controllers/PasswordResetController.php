@@ -3,14 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Services\MailerService;
 use App\Models\User;
 use App\Models\PhoneVerification;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\VerificationEmail;
 
 class PasswordResetController extends Controller
 {
     private const MINIMUM_PASSWORD_LENGTH = 8;
+
+    private $mailer;
+
+    public function __construct(MailerService $mailer)
+    {
+        $this->mailer = $mailer;
+    }
 
     public function getForgotPasswordPage()
     {
@@ -121,11 +128,11 @@ class PasswordResetController extends Controller
     private function emailToken(string $email, string $token)
     {
         $user = User::fromEmail($email);
-        Mail::to($email)->send(new VerificationEmail($token));
+        $this->mailer->sendVerificationEmail($email, $token);
         PhoneVerification::logTokenSend($user, $token);
     }
 
-    function generateSecureNumericToken($length = 7)
+    private function generateSecureNumericToken($length = 7)
     {
         $min = pow(10, $length - 1);
         $max = pow(10, $length) - 1;
