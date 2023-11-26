@@ -27,6 +27,11 @@ class Appointment extends Model
         return $this->id;
     }
 
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
     public function isWalkInOnly(): bool
     {
         return (int) $this->walk_in_only === 1;
@@ -56,12 +61,22 @@ class Appointment extends Model
         );
     }
 
+    public function isClosed(): bool
+    {
+        return !$this->isOpen();
+    }
+
     public function canEdit(): bool
     {
         return (
             $this->isUpcoming()
             && now('EST') < $this->getParsedStartTime()->setTime(12, 0, 0)
         );
+    }
+
+    public function cannotEdit(): bool
+    {
+        return !$this->canEdit();
     }
 
     public function getStartTime(): string
@@ -120,7 +135,12 @@ class Appointment extends Model
 
     public function userSlots(int $userId): int
     {
-        return AppointmentUser::where('user_id', $userId)->where('appointment_id', $this->getId())->first()->getSlotsTaken();
+        $booking = AppointmentUser::where('user_id', $userId)->where('appointment_id', $this->getId())->first();
+        if ($booking === null) {
+            return 0;
+        }
+
+        return $booking->getSlotsTaken();
     }
 
     public function getTotalSlots(): int

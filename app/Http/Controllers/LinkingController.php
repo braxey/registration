@@ -35,7 +35,7 @@ class LinkingController extends Controller
             });
 
         return view('appointments.appt-walk-in-link', [
-            'walkInId'                 => $request->route('walkInId'),
+            'walkIn'                   => $request->offsetGet('walk-in'),
             'nonCompletedAppointments' => $nonCompletedAppointments
         ]);
     }

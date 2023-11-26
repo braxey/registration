@@ -1,7 +1,3 @@
-@php
-    use Carbon\Carbon;
-    use App\Models\AppointmentUser;
-@endphp
 <x-app-layout>
     <html>
         <head>
@@ -30,14 +26,14 @@
                                 <div class="form-group">
                                     <label for="start_date_time">Start Date and Time</label>
                                     <div class="flex">
-                                        <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" class="form-control mr-2" min="{{$min}}" max="{{$max}}">
+                                        <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" class="form-control mr-2" min="{{ $min }}" max="{{ $max }}">
                                         <input type="time" name="start_time" id="start_time" value="{{ request('start_time') }}" class="form-control">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="end_date_time">End Date and Time</label>
                                     <div class="flex">
-                                        <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}" class="form-control mr-2" min="{{$min}}" max="{{$max}}">
+                                        <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}" class="form-control mr-2" min="{{ $min }}" max="{{ $max }}">
                                         <input type="time" name="end_time" id="end_time" value="{{ request('end_time') }}" class="form-control">
                                     </div>
                                 </div>
@@ -50,7 +46,7 @@
                     </form>
                     @endif
 
-                    @if ($user && $user->admin)
+                    @if ($user && $user->isAdmin())
                         <div class="flex">
                             <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 125px; margin-left: 5px;" href="{{ route('appointment.get-create') }}">Create Appt</a>
                             <a class="flex justify-left h-screen red-btn text-center" style="max-width: 140px; margin-left: 5px;" href="{{ route('admin-booking.lookup') }}">User Bookings</a>
@@ -71,23 +67,23 @@
                             <tbody>
                                 @foreach ($appointments as $appointment)
                                     <tr class="border border-slate-300">
-                                        <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
-                                        <td class="border border-slate-300">{{ $appointment->slots_taken }} / {{ $appointment->total_slots }}</td>
+                                        <td class="border border-slate-300">{{ $appointment->getParsedStartTime()->format('F d, Y g:i A') }}</td>
+                                        <td class="border border-slate-300">{{ $appointment->getSlotsTaken() }} / {{ $appointment->getTotalSlots() }}</td>
                                         <td class="border border-slate-300">
-                                            <span class="highlight text-white">{{ $appointment->status }}</span>
+                                            <span class="highlight text-white">{{ $appointment->getStatus() }}</span>
                                             {{ $appointment->isWalkInOnly() ? "W-I" : ""}}
                                         </td>
                                         <td class="border border-slate-300">
                                             <div class="table-buttons-cell">
-                                            @if ($user && $user->admin)
-                                                <a class="red-btn" href="{{ route('appointment.get-edit', $appointment->id) }}">Edit Appt</a>
+                                            @if ($user && $user->isAdmin())
+                                                <a class="red-btn" href="{{ route('appointment.get-edit', $appointment->getId()) }}">Edit Appt</a>
                                             @endif
-                                            @if (!$appointment->isOpen() || !$organization->registration_open || $appointment->isWalkInOnly())
-                                                <a>Closed</a>  
-                                            @elseif ($user?->id && AppointmentUser::where('user_id', $user->id)->where('appointment_id', $appointment->id)->exists())
-                                                <a class="grn-btn" href="{{ route('booking.get-edit-booking', $appointment->id) }}">Edit Booking</a>
+                                            @if ($appointment->isClosed() || $organization->registrationIsClosed() || $appointment->isWalkInOnly())
+                                                <a>Closed</a>
+                                            @elseif ($user && $appointment->userSlots($user->getId()) > 0)
+                                                <a class="grn-btn" href="{{ route('booking.get-edit-booking', $appointment->getId()) }}">Edit Booking</a>
                                             @else
-                                                <a class="grn-btn" href="{{ route('booking.get-booking', $appointment->id) }}">Book</a>
+                                                <a class="grn-btn" href="{{ route('booking.get-booking', $appointment->getId()) }}">Book</a>
                                             @endif
                                             <div>
                                         </td>
@@ -108,7 +104,7 @@
                     @endif
                 </div>
             </div>
-            <script type="module" src="{{ version('js/appt/highlight.js') }}"></script>
+            <script type="text/javascript" src="{{ version('js/appt/highlight.js') }}"></script>
         </body>
     </html>
 </x-app-layout>

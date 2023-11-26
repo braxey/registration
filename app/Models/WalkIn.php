@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Appointment;
+use Carbon\Carbon;
 
 class WalkIn extends Model
 {
@@ -38,6 +39,31 @@ class WalkIn extends Model
     public function getNumberOfSlots(): int
     {
         return $this->slots;
+    }
+
+    public function getDesiredTime(): string
+    {
+        return $this->desired_time;
+    }
+
+    public function getParsedDesiredTime(): Carbon
+    {
+        return Carbon::parse($this->getDesiredTime(), 'EST');
+    }
+
+    public function getCreatedAtTime(): string
+    {
+        return $this->created_at;
+    }
+
+    public function getParsedCreatedAtTime(): Carbon
+    {
+        return Carbon::parse($this->getCreatedAtTime(), 'EST');
+    }
+
+    public function getNotes(): ?string
+    {
+        return $this->notes;
     }
 
     public function wasNotified(): bool
@@ -75,6 +101,16 @@ class WalkIn extends Model
     {
         $this->appointment_id = $id;
         $this->save();
+    }
+
+    public function isAssigned(): bool
+    {
+        return $this->getAppointmentId() !== null;
+    }
+
+    public function isNotAssigned(): bool
+    {
+        return $this->getAppointmentId() === null;
     }
 
     public function getAppointment(): ?Appointment

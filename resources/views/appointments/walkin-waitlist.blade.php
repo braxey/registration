@@ -1,16 +1,11 @@
-@php
-    use Carbon\Carbon;
-    use Illuminate\Support\Facades\Auth;
-    use App\Models\Appointment;
-@endphp
 <x-app-layout>
     <html>
         <head>
             <title>Walk-Ins</title>
             <link rel="stylesheet" href="{{version('css/main.css')}}">
             <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
-            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-            <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+            <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
         </head>
         <body>
             <div class="flex justify-center items-center h-screen">
@@ -27,151 +22,25 @@
                         </div>
                         <div class="tab-content">
                             <div id="all-table" class="appointment-table" style="display: none;">
-                                <!-- All appointments table content here -->
+                                <!-- All walk-ins table content here -->
                                 @if ($walkIns->count() > 0)
-                                    <!-- component -->
-                                    <table class="table mx-auto border border-slate-300 appt-pagination">
-                                        <thead>
-                                            <tr class="border border-slate-300">
-                                                <th class="border border-slate-300">Time Entered</th>
-                                                <th class="border border-slate-300">Email</th>
-                                                <th class="border border-slate-300">Name</th>
-                                                <th class="border border-slate-300 slot-col">Slots</th>
-                                                <th class="border border-slate-300 slot-col">Desired Time</th>
-                                                <th class="border border-slate-300 slot-col">Appointment</th>
-                                                <th class="border border-slate-300 slot-col">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($walkIns as $walkIn)
-                                                @php
-                                                    $desiredTime = $walkIn->desired_time < now('EST') ? "Now" : \Carbon\Carbon::parse($walkIn->desired_time)->format('g:i A');
-                                                    if ($walkIn->appointment_id === null) {
-                                                        $linkedAppt = "Unassigned";
-                                                    } else {
-                                                        $appt = Appointment::find($walkIn->appointment_id);
-                                                        $linkedAppt = \Carbon\Carbon::parse($appt->start_time)->format('g:i A');
-                                                    }
-                                                    $color = $linkedAppt === "Unassigned" ? "red" : "grn";
-                                                    $emailNotProvided = $walkIn->email === "" ? "color: red;" : "";
-                                                @endphp
-                                                <tr class="border border-slate-300">
-                                                    <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('F d, Y g:i A') }}</td>
-                                                    <td class="border border-slate-300" style="{{$emailNotProvided}}">{{ $walkIn->email ?: "Not Provided" }}</td>
-                                                    <td class="border border-slate-300">{{ $walkIn->name }}</td>
-                                                    <td class="border border-slate-300">{{ $walkIn->slots }}</td>
-                                                    <td class="border border-slate-300">{{ $desiredTime }}</td>
-                                                    <td class="border border-slate-300">
-                                                        <a class="{{ $color }}-btn text-center" href="{{ route('walk-in.get-link-appointment', $walkIn->getId()) }}">{{ $linkedAppt }}</a>
-                                                    </td>
-                                                    <td class="border border-slate-300">
-                                                        <a class="red-btn text-center" href="{{ route('walk-in.get-edit', $walkIn->getId()) }}">Edit</a>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                    @include('appointments.partials.walk-in-table', ['unassigned' => 0, 'assigned' => 0])
                                 @else
                                     <p>No walk-ins.</p>
                                 @endif
                             </div>
                             <div id="unassigned-table" class="appointment-table">
-                                <!-- Upcoming appointments table content here -->
+                                <!-- Unassigned walk-ins table content here -->
                                 @if ($walkIns->where('appointment_id', null)->count() > 0)
-                                    <!-- component -->
-                                    <table class="table mx-auto border border-slate-300 appt-pagination">
-                                        <thead>
-                                            <tr class="border border-slate-300">
-                                                <th class="border border-slate-300">Time Entered</th>
-                                                <th class="border border-slate-300">Email</th>
-                                                <th class="border border-slate-300">Name</th>
-                                                <th class="border border-slate-300 slot-col">Slots</th>
-                                                <th class="border border-slate-300 slot-col">Desired Time</th>
-                                                <th class="border border-slate-300 slot-col">Appointment</th>
-                                                <th class="border border-slate-300 slot-col">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($walkIns as $walkIn)
-                                                @if ($walkIn->appointment_id == null)
-                                                    @php
-                                                        $desiredTime = $walkIn->desired_time < now('EST') ? "Now" : \Carbon\Carbon::parse($walkIn->desired_time)->format('g:i A');
-                                                        if ($walkIn->appointment_id === null) {
-                                                            $linkedAppt = "Unassigned";
-                                                        } else {
-                                                            $appt = Appointment::find($walkIn->appointment_id);
-                                                            $linkedAppt = \Carbon\Carbon::parse($appt->start_time)->format('g:i A');
-                                                        }
-                                                        $color = $linkedAppt === "Unassigned" ? "red" : "grn";
-                                                        $emailNotProvided = $walkIn->email === "" ? "color: red;" : "";
-                                                    @endphp
-                                                    <tr class="border border-slate-300">
-                                                        <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('F d, Y g:i A') }}</td>
-                                                        <td class="border border-slate-300" style="{{$emailNotProvided}}">{{ $walkIn->email ?: "Not Provided" }}</td>
-                                                        <td class="border border-slate-300">{{ $walkIn->name }}</td>
-                                                        <td class="border border-slate-300">{{ $walkIn->slots }}</td>
-                                                        <td class="border border-slate-300">{{ $desiredTime }}</td>
-                                                        <td class="border border-slate-300">
-                                                            <a class="{{$color}}-btn text-center" href="{{ route('walk-in.get-link-appointment', $walkIn->getId()) }}">{{ $linkedAppt }}</a>
-                                                        </td>
-                                                        <td class="border border-slate-300">
-                                                            <a class="red-btn text-center" href="{{ route('walk-in.get-edit', $walkIn->getId()) }}">Edit</a>
-                                                        </td>
-                                                    </tr>
-                                                @endif
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                    @include('appointments.partials.walk-in-table', ['unassigned' => 1, 'assigned' => 0])
                                 @else
                                     <p>No unassigned walk-ins.</p>
                                 @endif
                             </div>
                             <div id="assigned-table" class="appointment-table" style="display: none;">
-                                <!-- Past appointments table content here -->
+                                <!-- Assigned walk-ins table content here -->
                                 @if ($walkIns->where('appointment_id', '<>', null)->count() > 0)
-                                <table class="table mx-auto border border-slate-300 appt-pagination">
-                                        <thead>
-                                            <tr class="border border-slate-300">
-                                                <th class="border border-slate-300">Time Entered</th>
-                                                <th class="border border-slate-300">Email</th>
-                                                <th class="border border-slate-300">Name</th>
-                                                <th class="border border-slate-300 slot-col">Slots</th>
-                                                <th class="border border-slate-300 slot-col">Desired Time</th>
-                                                <th class="border border-slate-300 slot-col">Appointment</th>
-                                                <th class="border border-slate-300 slot-col">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($walkIns as $walkIn)
-                                                @if ($walkIn->appointment_id !== null)
-                                                    @php
-                                                        $desiredTime = $walkIn->desired_time < now('EST') ? "Now" : \Carbon\Carbon::parse($walkIn->desired_time)->format('g:i A');
-                                                        if ($walkIn->appointment_id === null) {
-                                                            $linkedAppt = "Unassigned";
-                                                        } else {
-                                                            $appt = Appointment::find($walkIn->appointment_id);
-                                                            $linkedAppt = \Carbon\Carbon::parse($appt->start_time)->format('g:i A');
-                                                        }
-                                                        $color = $linkedAppt === "Unassigned" ? "red" : "grn";
-                                                        $emailNotProvided = $walkIn->email === "" ? "color: red;" : "";
-                                                    @endphp
-                                                    <tr class="border border-slate-300">
-                                                        <td class="border border-slate-300">{{ \Carbon\Carbon::parse($walkIn->created_at)->format('F d, Y g:i A') }}</td>
-                                                        <td class="border border-slate-300" style="{{$emailNotProvided}}">{{ $walkIn->email ?: "Not Provided" }}</td>
-                                                        <td class="border border-slate-300">{{ $walkIn->name }}</td>
-                                                        <td class="border border-slate-300">{{ $walkIn->slots }}</td>
-                                                        <td class="border border-slate-300">{{ $desiredTime }}</td>
-                                                        <td class="border border-slate-300">
-                                                            <a class="{{$color}}-btn text-center" href="{{ route('walk-in.get-link-appointment', $walkIn->getId()) }}">{{ $linkedAppt }}</a>
-                                                        </td>
-                                                        <td class="border border-slate-300">
-                                                            <a class="red-btn text-center" href="{{ route('walk-in.get-edit', $walkIn->getId()) }}">Edit</a>
-                                                        </td>
-                                                    </tr>
-                                                @endif
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                    @include('appointments.partials.walk-in-table', ['unassigned' => 0, 'assigned' => 1])
                                 @else
                                     <p>No assigned walk-ins.</p>
                                 @endif
@@ -180,8 +49,8 @@
                     </div>
                 </div>
             </div>
-            <script type="module" src="{{ version('js/appt/highlight.js') }}"></script>
-            <script type="module" src="{{ version('js/appt/waitlist.js') }}"></script>
+            <script type="text/javascript" src="{{ version('js/appt/highlight.js') }}"></script>
+            <script type="text/javascript" src="{{ version('js/appt/waitlist.js') }}"></script>
         </body>
     </html>
 </x-app-layout>

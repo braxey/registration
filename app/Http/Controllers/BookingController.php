@@ -77,7 +77,7 @@ class BookingController extends Controller
         return view('appointments.edit_booking', [
             'appointment'    => $this->appointment,
             'availableSlots' => $this->appointment->getAvailableSlots(),
-            'apptUserSlots'  => $booking->getSlotsTaken(),
+            'bookingSlots'   => $booking->getSlotsTaken(),
             'userSlots'      => $this->user->getCurrentNumberOfSlots(),
             'organization'   => $this->organization
         ]);

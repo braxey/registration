@@ -94,10 +94,10 @@ class User extends Authenticatable
 
     public function hasUpcomingAppointment(): bool
     {
-        $apptUsers = AppointmentUser::where('user_id', $this->id)->get();
+        $bookings = AppointmentUser::where('user_id', $this->getId())->get();
 
-        foreach($apptUsers as $apptUser) {
-            if (Appointment::where('id', $apptUser->appointment_id)->first()->getStatus() === "upcoming") {
+        foreach($bookings as $booking) {
+            if ($booking->getAppointment()->isUpcoming()) {
                 return true;
             }
         }

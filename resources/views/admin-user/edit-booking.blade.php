@@ -1,14 +1,11 @@
-@php
-    use Carbon\Carbon;
-@endphp
 <x-app-layout>
 
 <html>
     <head>
         <title>Edit Booking</title>
-        <script src="{{version('js/dist/jquery.min.js')}}"></script>
-        <script src="{{version('js/dist/sweetalert2.all.min.js')}}"></script>
-        <link rel="stylesheet" href="{{version('css/main.css')}}">
+        <script type="text/javascript" src="{{ version('js/dist/jquery.min.js') }}"></script>
+        <script type="text/javascript" src="{{ version('js/dist/sweetalert2.all.min.js') }}"></script>
+        <link rel="stylesheet" href="{{version('css/main.css') }}">
     </head>
     <body>
         <div class="flex justify-center items-center h-screen text-center">
@@ -17,16 +14,16 @@
                     <div class="col-md-8 offset-md-2">
                         <h2><b>Edit Booking Slots</b></h2>
                         <br>
-                        <p><b>Appointment:</b> {{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</p>
+                        <p><b>Appointment:</b> {{ $appointment->getParsedStartTime()->format('F d, Y g:i A') }}</p>
 
-                        <form action="{{ route('admin-booking.edit-booking', ['userId' => $user->id, 'appointmentId' => $appointment->id]) }}" method="POST" id="edit-book-form">
+                        <form action="{{ route('admin-booking.edit-booking', ['userId' => $user->getId(), 'appointmentId' => $appointment->getId()]) }}" method="POST" id="edit-book-form">
                             @csrf
                             @method('PUT')
                             </br>
 
                             <div class="form-group">
                                 <label for="slots">Number of Guests</label>
-                                <input type="text" name="slots" id="slots" value="{{ $apptUserSlots }}" class="form-control">
+                                <input type="text" name="slots" id="slots" value="{{ $bookingSlots }}" class="form-control">
                             </div>
 
                             <button type="submit" class="grn-btn">Update</button>
@@ -45,18 +42,18 @@
         </div>
     </body>
     <script>
-        var slotsLeft = {{$availableSlots}}
-        var userSlots = {{$userSlots}}
-        var apptUserSlots = {{$apptUserSlots}}
-        var startTime = new Date("{{$appointment->start_time}}")
-        var MAX_SLOTS_PER_USER = {{$organization->max_slots_per_user}}
+        // TODO: Make this script its own file.
+        var slotsLeft = {{ $availableSlots }}
+        var userSlots = {{ $userSlots }}
+        var bookingSlots = {{ $bookingSlots }}
+        var startTime = new Date("{{ $appointment->getStartTime() }}")
+        var MAX_SLOTS_PER_USER = {{ $organization->getMaxSlotsPerUser() }}
 
         const MAX_CHAR_PER_STRING = 4
 
-        $(function(){
-            let form = document.getElementById('edit-book-form')
-            // if appt user slots isnt defined, set to 0
-            form.addEventListener('submit', function(e){
+        $(function() {
+            let form = $('#edit-book-form')
+            form.on('submit', function (e) {
                 let slotsRequested = $('#slots').val().toString()
                 e.preventDefault()
 
@@ -74,16 +71,17 @@
                 }
 
                 // make sure there are enough slots for the appt to allot
-                if (slotsRequested - apptUserSlots > slotsLeft) {
+                if (slotsRequested - bookingSlots > slotsLeft) {
                     let left = Math.max(slotsLeft, 0)
-                    errorPop('Error', left>0 ? 'The requested number of slots is not available. There are only '+slotsLeft+' open slots for this time.'
-                                            : 'There are no slots remaining for this appointment.')
+                    errorPop('Error', left > 0 
+                        ? 'The requested number of slots is not available. There are only ' + slotsLeft + ' open slots for this time.'
+                        : 'There are no slots remaining for this appointment.')
                     return false
                 // make sure the user doesn't surpass the max allowed per user
-                }else if(slotsRequested+userSlots-apptUserSlots > MAX_SLOTS_PER_USER){
-                    errorPop('Error', 'You can only book '+MAX_SLOTS_PER_USER+' slots at a time. ' 
+                } else if (slotsRequested + userSlots - bookingSlots > MAX_SLOTS_PER_USER){
+                    errorPop('Error', 'You can only book ' + MAX_SLOTS_PER_USER + ' slots at a time. ' 
                         + ((userSlots > 0) 
-                            ? 'You already have '+userSlots+' slots booked.' 
+                            ? 'You already have ' + userSlots + ' slots booked.' 
                             : 'You currently have no bookings.'))
                     return false
                 }
@@ -102,14 +100,15 @@
                 }).then((result) => {
                     // If the user confirms, submit the form
                     if (result.isConfirmed) {
+                        form.off('submit')
                         form.submit()
                     }
                 })
             })
 
-            let cancel_form = document.getElementById('cancel-form')
+            let cancelForm = $('#cancel-form')
             try{
-                cancel_form.addEventListener('submit', function(e){
+                cancelForm.on('submit', function (e) {
                     e.preventDefault()
 
                     // sweetalert for confirmation
@@ -122,22 +121,22 @@
                         cancelButtonText: 'No',
                         confirmButtonColor: "#088708"
                     }).then((result) => {
-                        // If the user confirms, submit the form
                         if (result.isConfirmed) {
-                            cancel_form.submit()
+                            cancelForm.off('submit')
+                            cancelForm.submit()
                         }
                     })
                 })
-            }catch(e){
+            } catch (e) {
                 // no appointments to cancel
             }
         })
 
         function isInteger(str) {
-            if (typeof str != "string") return false // we only process strings!  
-            return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
-                !isNaN(parseFloat(str)) && // ...and ensure strings of whitespace fail
-                !str.includes('.') // don't allow floats
+            if (typeof str != "string") return false
+            return !isNaN(str) &&
+                !isNaN(parseFloat(str)) &&
+                !str.includes('.')
         }
 
         function errorPop(_title, _text){
