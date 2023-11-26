@@ -26,14 +26,13 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'first_name' => $this->faker->firstName,
-            'last_name' => $this->faker->lastName,
-            'email' => $this->faker->unique()->safeEmail,
-            'phone_number' => $this->faker->phoneNumber,
-            'admin' => false,
+            'first_name'        => $this->faker->firstName,
+            'last_name'         => $this->faker->lastName,
+            'email'             => $this->faker->unique()->safeEmail,
+            'admin'             => false,
             'email_verified_at' => now('EST'),
-            'password' => bcrypt('password'),
-            'remember_token' => Str::random(10),
+            'password'          => bcrypt('password'),
+            'remember_token'    => Str::random(10),
         ];
     }
 
@@ -77,7 +76,6 @@ class UserFactory extends Factory
                         'name' => $user->first_name . '\'s Team',
                         'user_id' => $user->id,
                         'personal_team' => true,
-                        'phone_number' => $user->phone_number,
                     ];
                 })
                 ->when(is_callable($callback), $callback),

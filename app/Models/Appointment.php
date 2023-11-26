@@ -79,12 +79,12 @@ class Appointment extends Model
         return !$this->canEdit();
     }
 
-    public function getStartTime(): string
+    public function getStartTime()
     {
         return $this->start_time;
     }
 
-    public function getEndTime(): string
+    public function getEndTime()
     {
         return $this->end_time;
     }

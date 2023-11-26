@@ -20,8 +20,8 @@ class AppointmentFactory extends Factory
     
         return [
             'description' => $this->faker->text(100),
-            'start_time' => $startTime,
-            'end_time' => $endTime,
+            'start_time'  => $startTime,
+            'end_time'    => $endTime,
             'total_slots' => $this->faker->numberBetween(1, 10),
         ];
     }

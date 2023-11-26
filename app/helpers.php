@@ -39,5 +39,10 @@ function getBetween(array $arr): array
 
 function version(string $file): string
 {
-    return asset($file) . '?v=' . filemtime($file);
+    try {
+        $cacheBuster = filemtime($file);
+    } catch (Exception $e) {
+        $cacheBuster = (string) random_int(0, 9999999);
+    }
+    return asset($file) . '?v=' . $cacheBuster;
 }
