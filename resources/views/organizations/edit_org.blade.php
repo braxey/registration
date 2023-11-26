@@ -2,9 +2,9 @@
     <html>
         <head>
             <title>Edit Organization</title>
-            <script src="{{ asset('js/dist/jquery.min.js') }}"></script>
-            <script src="{{ asset('js/dist/sweetalert2.all.min.js') }}"></script>
-            <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+            <script src="{{ version('js/dist/jquery.min.js') }}"></script>
+            <script src="{{ version('js/dist/sweetalert2.all.min.js') }}"></script>
+            <link rel="stylesheet" href="{{ version('css/main.css') }}">
         </head>
         <body>
             <div class="flex justify-center items-center h-screen text-center">
@@ -39,8 +39,8 @@
                     </form>
                 </div>
             </div>
-            <script type="module" src="{{ asset('js/organizations/edit_org.js') }}"></script>
-            <script type="module" src="{{ asset('js/organizations/toggle_registration.js') }}"></script>
+            <script type="module" src="{{ version('js/organizations/edit_org.js') }}"></script>
+            <script type="module" src="{{ version('js/organizations/toggle_registration.js') }}"></script>
         </body>
     </html>
 </x-app-layout>

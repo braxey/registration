@@ -1,10 +1,10 @@
 <title>Forgot Password</title>
-<script src="{{asset('js/dist/jquery.min.js')}}"></script>
-<script type="module" src="{{ asset('js/auth/forgot-password.js') }}?v=1.0.0"></script>
+<script src="{{version('js/dist/jquery.min.js')}}"></script>
+<script type="module" src="{{ version('js/auth/forgot-password.js') }}?v=1.0.0"></script>
 <x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">
-            <img class="mx-auto" src="{{ asset('images/kabc-logo.png') }}" alt="Custom Logo" style="width: 150px;">
+            <img class="mx-auto" src="{{ version('images/kabc-logo.png') }}" alt="Custom Logo" style="width: 150px;">
         </x-slot>
 
         <div class="mb-4 text-sm text-gray-600">

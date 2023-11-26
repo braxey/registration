@@ -8,11 +8,11 @@
     <html>
         <head>
             <title>Dashboard - WTB Registration</title>
-            <link rel="stylesheet" href="{{asset('css/main.css')}}">
+            <link rel="stylesheet" href="{{version('css/main.css')}}">
             <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-            <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
+            <script src="{{version('js/dist/sweetalert2.all.min.js')}}"></script>
         </head>
         <body>
             <div class="flex justify-center items-center h-screen text-center">
@@ -144,9 +144,9 @@
                     </div>
                 </div>
             </div>
-        <script type="module" src="{{ asset('js/appt/cancelbooking.js') }}"></script>
-        <script type="module" src="{{ asset('js/appt/dashboard.js') }}"></script>
-        <script type="module" src="{{ asset('js/appt/highlight.js') }}"></script>
+        <script type="module" src="{{ version('js/appt/cancelbooking.js') }}"></script>
+        <script type="module" src="{{ version('js/appt/dashboard.js') }}"></script>
+        <script type="module" src="{{ version('js/appt/highlight.js') }}"></script>
         </body>
     </html>
 </x-app-layout>
