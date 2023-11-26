@@ -1,23 +1,17 @@
-@php
-    use Carbon\Carbon;
-    use Illuminate\Support\Facades\Auth;
-    use App\Models\AppointmentUser;
-    $user = Auth::user();
-@endphp
 <x-app-layout>
     <html>
         <head>
             <title>Dashboard - WTB Registration</title>
-            <link rel="stylesheet" href="{{version('css/main.css')}}">
+            <link rel="stylesheet" href="{{ version('css/main.css') }}">
             <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
-            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-            <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-            <script src="{{version('js/dist/sweetalert2.all.min.js')}}"></script>
+            <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+            <script type="text/javascript" src="{{ version('js/dist/sweetalert2.all.min.js') }}"></script>
         </head>
         <body>
             <div class="flex justify-center items-center h-screen text-center">
                 <div class="container">
-                    <h1 class="flex justify-center items-center h-screen" style="font-size: larger; margin-bottom: 25px">{{$user->first_name}}'s Dashboard</h1>
+                    <h1 class="flex justify-center items-center h-screen" style="font-size: larger; margin-bottom: 25px">{{ $user->getFirstName() }}'s Dashboard</h1>
 
                     <div class="tab-container">
                         <div class="tabs">
@@ -29,7 +23,6 @@
                             <div id="all-table" class="appointment-table">
                                 <!-- All appointments table content here -->
                                 @if ($allAppointments->count() > 0)
-                                    <!-- component -->
                                     <table class="table mx-auto border border-slate-300">
                                         <thead>
                                             <tr class="border border-slate-300">
@@ -42,13 +35,13 @@
                                         <tbody>
                                             @foreach ($allAppointments as $appointment)
                                                 <tr class="border border-slate-300">
-                                                    <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
-                                                    <td class="border border-slate-300">{{ AppointmentUser::where('appointment_id', $appointment->id)->where('user_id', $user->id)->sum('slots_taken') }}</td>
-                                                    <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
+                                                    <td class="border border-slate-300">{{ $appointment->getParsedStartTime()->format('F d, Y g:i A') }}</td>
+                                                    <td class="border border-slate-300">{{ $appointment->userSlots($user->getId()) }}</td>
+                                                    <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->getStatus() }}</span></td>
                                                     <td class="border border-slate-300 flex justify-center items-center h-screen text-center">
-                                                    @if($appointment->canEdit() && $organization->registration_open)
+                                                    @if($appointment->canEdit() && $organization->registrationIsOpen())
                                                         <div class="button-container">
-                                                            <form action="{{ route('booking.get-edit-booking', $appointment->id) }}" method="GET" id="edit-form">
+                                                            <form action="{{ route('booking.get-edit-booking', $appointment->getId()) }}" method="GET" id="edit-form">
                                                                 @csrf
                                                                 @method('GET')
                                                                 <button class="grn-btn" type="submit">Edit Booking</button>
@@ -68,7 +61,6 @@
                             </div>
                             <div id="upcoming-table" class="appointment-table" style="display: none;">
                                 <!-- Upcoming appointments table content here -->
-                                @php $currCount = 0; @endphp
                                 @if ($upcomingAppointments->count() > 0)
                                     <!-- component -->
                                     <table class="table mx-auto border border-slate-300">
@@ -82,19 +74,14 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($upcomingAppointments as $appointment)
-                                                @php 
-                                                    $currCount += (\App\Models\AppointmentUser::where('appointment_id', $appointment->id)
-                                                                                            ->where('user_id', $user->id)
-                                                                                            ->sum('slots_taken')); 
-                                                @endphp
                                                 <tr class="border border-slate-300">
-                                                    <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
-                                                    <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->where('user_id', $user->id)->sum('slots_taken') }}</td>
-                                                    <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
+                                                    <td class="border border-slate-300">{{ $appointment->getParsedStartTime()->format('F d, Y g:i A') }}</td>
+                                                    <td class="border border-slate-300">{{ $appointment->userSlots($user->getId()) }}</td>
+                                                    <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->getStatus() }}</span></td>
                                                     <td class="border border-slate-300 flex justify-center items-center h-screen text-center">
-                                                    @if($appointment->canEdit() && $organization->registration_open)
+                                                    @if($appointment->canEdit() && $organization->registrationIsOpen())
                                                         <div class="button-container">
-                                                            <form action="{{ route('booking.get-edit-booking', $appointment->id) }}" method="GET" id="edit-form">
+                                                            <form action="{{ route('booking.get-edit-booking', $appointment->getId()) }}" method="GET" id="edit-form">
                                                                 @csrf
                                                                 @method('GET')
                                                                 <button class="grn-btn" type="submit">Edit Booking</button>
@@ -126,9 +113,9 @@
                                         <tbody>
                                             @foreach ($pastAppointments as $appointment)
                                                 <tr class="border border-slate-300">
-                                                    <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
-                                                    <td class="border border-slate-300">{{ \App\Models\AppointmentUser::where('appointment_id', $appointment->id)->where('user_id', $user->id)->sum('slots_taken') }}</td>
-                                                    <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->status }}</span></td>
+                                                    <td class="border border-slate-300">{{ $appointment->getParsedStartTime()->format('F d, Y g:i A') }}</td>
+                                                    <td class="border border-slate-300">{{ $appointment->userSlots($user->getId()) }}</td>
+                                                    <td class="border border-slate-300"><span class="highlight text-white">{{ $appointment->getStatus() }}</span></td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -138,15 +125,15 @@
                                 @endif
                             </div>
                         </div>
-                        <div align="left" style="margin-bottom: 200px;">
-                            <b>Current number of slots booked: {{$currCount}}/{{$organization->max_slots_per_user}}</b>
+                        <div style="margin-bottom: 200px; text-align: left;">
+                            <b>Current number of slots booked: {{ $user->getCurrentNumberOfSlots() }}/{{ $organization->getMaxSlotsPerUser() }}</b>
                         </div>
                     </div>
                 </div>
             </div>
-        <script type="module" src="{{ version('js/appt/cancelbooking.js') }}"></script>
-        <script type="module" src="{{ version('js/appt/dashboard.js') }}"></script>
-        <script type="module" src="{{ version('js/appt/highlight.js') }}"></script>
+            <script type="text/javascript" src="{{ version('js/appt/cancelbooking.js') }}"></script>
+            <script type="text/javascript" src="{{ version('js/appt/dashboard.js') }}"></script>
+            <script type="text/javascript" src="{{ version('js/appt/highlight.js') }}"></script>
         </body>
     </html>
 </x-app-layout>

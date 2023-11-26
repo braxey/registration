@@ -34,7 +34,7 @@ class AdminBookingController extends Controller
 
     public function getUsersUpcomingBookings(Request $request)
     {
-        $user = User::where('id', $request->route('userId'))->first();
+        $user = User::fromId($request->route('userId'));
         if ($user === null) {
             return response(null, 404);
         }
@@ -48,8 +48,8 @@ class AdminBookingController extends Controller
 
     public function getBookingForUser(Request $request)
     {
-        $user = User::where('id', $request->route('userId'))->first();
-        $appointment = Appointment::where('id', $request->route('appointmentId'))->first();
+        $user = User::fromId($request->route('userId'));
+        $appointment = Appointment::fromId($request->route('appointmentId'));
         if ($user === null || $appointment === null) {
             return response(null, 404);
         }
@@ -60,14 +60,14 @@ class AdminBookingController extends Controller
             'organization'   => $this->organization,
             'availableSlots' => $appointment->getAvailableSlots(),
             'userSlots'      => $user->getCurrentNumberOfSlots(),
-            'apptUserSlots'  => $appointment->userSlots($user->getId())
+            'bookingSlots'   => $appointment->userSlots($user->getId())
         ]);
     }
 
     public function editBookingForUser(Request $request)
     {
-        $user = User::where('id', $request->route('userId'))->first();
-        $appointment = Appointment::where('id', $request->route('appointmentId'))->first();
+        $user = User::fromId($request->route('userId'));
+        $appointment = Appointment::fromId($request->route('appointmentId'));
         if ($user === null || $appointment === null) {
             return response(null, 404);
         }
@@ -103,8 +103,8 @@ class AdminBookingController extends Controller
 
     public function cancelBookingForUser(Request $request)
     {
-        $user = User::where('id', $request->route('userId'))->first();
-        $appointment = Appointment::where('id', $request->route('appointmentId'))->first();
+        $user = User::fromId($request->route('userId'));
+        $appointment = Appointment::fromId($request->route('appointmentId'));
         if ($user === null || $appointment === null) {
             return response(null, 404);
         }

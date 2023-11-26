@@ -22,6 +22,11 @@ class Organization extends Model
         return $this->id;
     }
 
+    public function getName(): string
+    {
+        return $this->org_name;
+    }
+
     public function registrationIsOpen(): bool
     {
         return (int) $this->registration_open === 1;
