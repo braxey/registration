@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use App\Models\WalkIn;
 use Carbon\Carbon;
 use App\Models\AppointmentUser;
@@ -49,23 +50,38 @@ class Appointment extends Model
     public function isOpen(): bool
     {
         return (
-            $this->status == "upcoming"
-            && $this->total_slots > $this->slots_taken
-            && now() < Carbon::parse($this->start_time)->setTime(12, 0, 0)
+            $this->isUpcoming()
+            && $this->getTotalSlots() > $this->getSlotsTaken()
+            && now('EST') < $this->getParsedStartTime()->setTime(12, 0, 0)
         );
     }
 
     public function canEdit(): bool
     {
         return (
-            $this->status == "upcoming"
-            && now() < Carbon::parse($this->start_time)->setTime(12, 0, 0)
+            $this->isUpcoming()
+            && now('EST') < $this->getParsedStartTime()->setTime(12, 0, 0)
         );
     }
 
     public function getStartTime(): string
     {
         return $this->start_time;
+    }
+
+    public function getEndTime(): string
+    {
+        return $this->end_time;
+    }
+
+    public function getParsedStartTime(): Carbon
+    {
+        return Carbon::parse($this->getStartTime(), 'EST');
+    }
+
+    public function getParsedEndTime(): Carbon
+    {
+        return Carbon::parse($this->getEndTime(), 'EST');
     }
 
     public function getStartDate(): string
@@ -76,6 +92,30 @@ class Appointment extends Model
     public function getStatus(): string
     {
         return $this->status;
+    }
+
+    public function setStatus(string $status)
+    {
+        $this->status = $status;
+        if ($status === 'completed') {
+            $this->past_end = true;
+        }
+        $this->save();
+    }
+
+    public function isUpcoming(): bool
+    {
+        return $this->status == 'upcoming';
+    }
+
+    public function isInProgress(): bool
+    {
+        return $this->status == 'in progress';
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->status == 'completed';
     }
 
     public function userSlots(int $userId): int
@@ -121,6 +161,16 @@ class Appointment extends Model
         $this->save();
     }
 
+    public function getBookings(): Collection
+    {
+        return AppointmentUser::where('appointment_id', $this->getId())->get();
+    }
+
+    public function getWalkIns(): Collection
+    {
+        return WalkIn::where('appointment_id', $this->getId())->get();
+    }
+
     public function decrementSlotsTaken(int $removedSlots)
     {
         $this->slots_taken -= $removedSlots;
@@ -130,5 +180,10 @@ class Appointment extends Model
     public static function fromId($id): ?Appointment
     {
         return static::where('id', $id)->first();
+    }
+
+    public static function getUpcoming(): Collection
+    {
+        return static::where('status', 'upcoming')->get();
     }
 }

@@ -21,7 +21,7 @@
 
                         <div class="form-group">
                             <label for="start_time">Start Time</label>
-                            <?php $startTime = date('Y-m-d\TH:i', strtotime(now())); ?>
+                            <?php $startTime = date('Y-m-d\TH:i', strtotime(now('EST'))); ?>
                             <input type="datetime-local" name="start_time" id="start_time" class="form-control" value="{{ $startTime }}">
                         </div>
 

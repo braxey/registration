@@ -68,6 +68,22 @@ class AppointmentUser extends Model{
         return Appointment::where('id', $this->getAppointmentId())->first();
     }
 
+    public function userWasNotified(): bool
+    {
+        return $this->notified == true;
+    }
+
+    public function userWasNotNotified(): bool
+    {
+        return !$this->userWasNotified();
+    }
+
+    public function markAsNotified()
+    {
+        $this->notified = true;
+        $this->save();
+    }
+
     public function cancel()
     {
         static::where('user_id', $this->user_id)

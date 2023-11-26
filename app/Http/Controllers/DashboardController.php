@@ -86,8 +86,8 @@ class DashboardController extends Controller
             'appointments' => $allAppointments,
             'user'         => $user,
             'organization' => $this->organization,
-            'min'          => $min ?: '',
-            'max'          => $max ?: ''
+            'min'          => $min ?? '',
+            'max'          => $max ?? ''
         ]);
     }
 }

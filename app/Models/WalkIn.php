@@ -18,6 +18,7 @@ class WalkIn extends Model
         'appointment_id',
         'notified',
         'notes',
+        'email',
     ];
 
     protected $attributes = [
@@ -29,9 +30,40 @@ class WalkIn extends Model
         return $this->id;
     }
 
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
     public function getNumberOfSlots(): int
     {
         return $this->slots;
+    }
+
+    public function wasNotified(): bool
+    {
+        return $this->notified == true;
+    }
+
+    public function wasNotNotified(): bool
+    {
+        return !$this->wasNotified();
+    }
+
+    public function markAsNotified()
+    {
+        $this->notified = true;
+        $this->save();
+    }
+
+    public function providedEmail(): bool
+    {
+        return $this->email != '';
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
     }
 
     public function getAppointmentId(): ?int

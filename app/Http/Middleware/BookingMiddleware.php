@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\Models\Appointment;
 use App\Models\Organization;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 
 class BookingMiddleware
 {
@@ -27,7 +26,7 @@ class BookingMiddleware
         }
 
         if(
-            now() > Carbon::parse($appointment->getStartTime())->setTime(12, 0, 0)
+            now('EST') > $appointment->getParsedStartTime()->setTime(12, 0, 0)
             || $appointment->isWalkInOnly()
         ) {
             return response(null, 403);
