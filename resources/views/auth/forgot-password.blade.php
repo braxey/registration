@@ -1,6 +1,6 @@
 <title>Forgot Password</title>
 <script src="{{asset('js/dist/jquery.min.js')}}"></script>
-<script type="module" src="{{ asset('js/auth/forgot-password.js') }}"></script>
+<script type="module" src="{{ asset('js/auth/forgot-password.js') }}?v=1.0.0"></script>
 <x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">
