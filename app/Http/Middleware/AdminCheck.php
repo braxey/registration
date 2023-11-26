@@ -19,6 +19,10 @@ class AdminCheck
 
             $request->offsetSet('user', $user);
 
+            if (session('dry-run') === true) {
+                return response(null, 202);
+            }
+
             return $next($request);
         } catch (Exception $e) {
             return response(null, Response::HTTP_UNAUTHENTICATED);

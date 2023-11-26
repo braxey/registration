@@ -52,6 +52,8 @@ class DashboardControllerTest extends TestCase
         $this->assertTrue($appointments->last()->isUpcoming());
     }
 
+    /* ========== USER DASHBOARD ========== */
+    // TODO: Add tests here.
 
     public function testIndexWithoutUserLoggedIn()
     {
@@ -68,6 +70,8 @@ class DashboardControllerTest extends TestCase
         $this->assertTrue($appointments->first()->isUpcoming());
         $this->assertTrue($appointments->last()->isUpcoming());
     }
+
+
 
     private function addAppointments()
     {

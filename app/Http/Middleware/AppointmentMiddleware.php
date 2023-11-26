@@ -18,6 +18,10 @@ class AppointmentMiddleware
 
         $request->offsetSet('appointment', $appointment);
 
+        if (session('dry-run') === true) {
+            return response(null, 202);
+        }
+
         return $next($request);
     }
 }

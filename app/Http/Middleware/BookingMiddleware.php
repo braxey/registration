@@ -15,7 +15,7 @@ class BookingMiddleware
     {
         // Make sure registration is open.
         $organization = Organization::find(1);
-        if($organization->registrationIsClosed()) {
+        if ($organization->registrationIsClosed()) {
             return redirect()->route('appointments.index');
         }
 
@@ -34,6 +34,10 @@ class BookingMiddleware
 
         $request->offsetSet('user', Auth::user());
         $request->offsetSet('appointment', $appointment);
+
+        if (session('dry-run') === true) {
+            return response(null, 202);
+        }
 
         return $next($request);
     }

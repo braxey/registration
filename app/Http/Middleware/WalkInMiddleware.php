@@ -18,6 +18,10 @@ class WalkInMiddleware
 
         $request->offsetSet('walk-in', $walkIn);
 
+        if (session('dry-run') === true) {
+            return response(null, 202);
+        }
+
         return $next($request);
     }
 }

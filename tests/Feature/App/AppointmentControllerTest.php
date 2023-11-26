@@ -10,8 +10,8 @@ class AppointmentControllerTest extends TestCase {
 
     use DatabaseTransactions;
 
-    protected $nonAdmin;
-    protected $admin;
+    protected User $nonAdmin;
+    protected User $admin;
 
     protected function setUp(): void
     {

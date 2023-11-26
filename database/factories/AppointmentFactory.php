@@ -14,7 +14,7 @@ class AppointmentFactory extends Factory
 
     public function definition()
     {
-        $startTime = $this->faker->dateTimeBetween('now', '+1 week');
+        $startTime = $this->faker->dateTimeBetween('+1 day', '+1 week');
         $endTime = clone $startTime;
         $endTime->modify('+1 hour');
     
