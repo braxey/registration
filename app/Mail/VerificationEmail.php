@@ -13,17 +13,22 @@ class VerificationEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private $code;
+    private string $token;
 
-    public function __construct($code)
+    public function __construct(string $token)
     {
-        $this->code = $code;
+        $this->token = $token;
     }
 
     public function build()
     {
         return $this->from('donotreply@wtbregistration.com', 'WTB Registration')
-                    ->view('emails.verify-email', ['code' => $this->code])
+                    ->view('emails.verify-email', ['code' => $this->token])
                     ->subject('WTB Verification Code');
+    }
+
+    public function assertTokensMatch(string $token): bool
+    {
+        return $this->token === $token;
     }
 }

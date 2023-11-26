@@ -14,9 +14,10 @@ class NotifyEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private $dateTime;
-    private $slots;
-    private $name;
+    private string $dateTime;
+    private int $slots;
+    private string $name;
+    private bool $update;
 
     public function __construct(Carbon $dateTime, int $slots, string $name, bool $update)
     {
@@ -35,5 +36,15 @@ class NotifyEmail extends Mailable
                 'name'     => $this->name,
                 'update'   => $this->update,
             ]);
+    }
+
+    public function assertHas(array $payload): bool
+    {
+        return (
+            $this->dateTime === $payload['date-time']->format('F j, Y g:i A')
+            && $this->slots === $payload['slots']
+            && $this->name === $payload['name']
+            && $this->update === $payload['update']
+        );
     }
 }

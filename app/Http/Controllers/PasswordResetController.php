@@ -120,7 +120,7 @@ class PasswordResetController extends Controller
 
     private function emailNewToken(string $email)
     {
-        $token = $this->generateSecureNumericToken();
+        $token = generateSecureNumericToken();
         $this->emailToken($email, $token);
     }
 
@@ -129,13 +129,5 @@ class PasswordResetController extends Controller
         $user = User::fromEmail($email);
         $this->mailer->sendVerificationEmail($email, $token);
         PhoneVerification::logTokenSend($user, $token);
-    }
-
-    private function generateSecureNumericToken($length = 7)
-    {
-        $min = pow(10, $length - 1);
-        $max = pow(10, $length) - 1;
-        $randomNumber = random_int($min, $max);
-        return str_pad($randomNumber, $length, '0', STR_PAD_LEFT);
     }
 }

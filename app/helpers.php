@@ -2,6 +2,9 @@
 
 use Carbon\Carbon;
 
+/**
+ * Get Carbon-parsed time ranges
+ */
 function getBetween(array $arr): array
 {
     $container = [];
@@ -37,6 +40,9 @@ function getBetween(array $arr): array
     return $container;
 }
 
+/**
+ * Version files for cache busting
+ */
 function version(string $file): string
 {
     try {
@@ -45,4 +51,15 @@ function version(string $file): string
         $cacheBuster = (string) random_int(0, 9999999);
     }
     return asset($file) . '?v=' . $cacheBuster;
+}
+
+/**
+ * Generate cryptographically secure, numeric token
+ */
+function generateSecureNumericToken($length = 7)
+{
+    $min = pow(10, $length - 1);
+    $max = pow(10, $length) - 1;
+    $randomNumber = random_int($min, $max);
+    return str_pad($randomNumber, $length, '0', STR_PAD_LEFT);
 }
