@@ -59,7 +59,7 @@ class PhoneVerification extends Model
     {
         static::create([
             'token'     => $token,
-            'time_sent' => now(),
+            'time_sent' => now('EST'),
             'user_id'   => $user->getId(),
         ]);
     }

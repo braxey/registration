@@ -45,7 +45,7 @@
                                         <tbody>
                                             @foreach ($walkIns as $walkIn)
                                                 @php
-                                                    $desiredTime = $walkIn->desired_time < now() ? "Now" : \Carbon\Carbon::parse($walkIn->desired_time)->format('g:i A');
+                                                    $desiredTime = $walkIn->desired_time < now('EST') ? "Now" : \Carbon\Carbon::parse($walkIn->desired_time)->format('g:i A');
                                                     if ($walkIn->appointment_id === null) {
                                                         $linkedAppt = "Unassigned";
                                                     } else {
@@ -95,7 +95,7 @@
                                             @foreach ($walkIns as $walkIn)
                                                 @if ($walkIn->appointment_id == null)
                                                     @php
-                                                        $desiredTime = $walkIn->desired_time < now() ? "Now" : \Carbon\Carbon::parse($walkIn->desired_time)->format('g:i A');
+                                                        $desiredTime = $walkIn->desired_time < now('EST') ? "Now" : \Carbon\Carbon::parse($walkIn->desired_time)->format('g:i A');
                                                         if ($walkIn->appointment_id === null) {
                                                             $linkedAppt = "Unassigned";
                                                         } else {
@@ -145,7 +145,7 @@
                                             @foreach ($walkIns as $walkIn)
                                                 @if ($walkIn->appointment_id !== null)
                                                     @php
-                                                        $desiredTime = $walkIn->desired_time < now() ? "Now" : \Carbon\Carbon::parse($walkIn->desired_time)->format('g:i A');
+                                                        $desiredTime = $walkIn->desired_time < now('EST') ? "Now" : \Carbon\Carbon::parse($walkIn->desired_time)->format('g:i A');
                                                         if ($walkIn->appointment_id === null) {
                                                             $linkedAppt = "Unassigned";
                                                         } else {

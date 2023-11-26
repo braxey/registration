@@ -83,7 +83,7 @@ class User extends Authenticatable
 
     public function verifyPhone()
     {
-        $this->phone_verified_at = now();
+        $this->phone_verified_at = now('EST');
         $this->save();
     }
 
@@ -104,9 +104,24 @@ class User extends Authenticatable
         return false;
     }
 
+    public function getFirstName(): string
+    {
+        return $this->first_name;
+    }
+
+    public function getLastName(): string
+    {
+        return $this->last_name;
+    }
+
     public function getName(): string
     {
-        return $this->first_name . ' ' . $this->last_name;
+        return $this->getFirstName() . ' ' . $this->getLastName();
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
     }
 
     public function getCurrentNumberOfSlots(): int

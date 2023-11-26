@@ -7,6 +7,7 @@ use App\Models\Appointment;
 use App\Models\WalkIn;
 use Carbon\Carbon;
 
+
 class WalkInController extends Controller
 {
     public function getWaitlist(Request $request)
@@ -30,7 +31,7 @@ class WalkInController extends Controller
             'notes'        => 'nullable|string'
         ]);
 
-        $email = $request->get('email');    
+        $email = $request->get('email');
         if ($email !== null) {
             $validatedData = array_merge($validatedData,
                 $request->validate([
