@@ -19,7 +19,7 @@
                         <br>
                         <p><b>Appointment:</b> {{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</p>
 
-                        <form action="{{ route('appointment.editbooking', $appointment->id) }}" method="POST" id="edit-book-form">
+                        <form action="{{ route('booking.edit-booking', $appointment->id) }}" method="POST" id="edit-book-form">
                             @csrf
                             @method('PUT')
                             </br>
@@ -31,7 +31,7 @@
 
                             <button type="submit" class="grn-btn">Update</button>
                         </form>
-                        <form action="{{ route('appointment.cancelbooking', $appointment->id) }}" method="POST" id="cancel-form">
+                        <form action="{{ route('booking.cancel-booking', $appointment->id) }}" method="POST" id="cancel-form">
                             @csrf
                             @method('POST')
                             <div class="form-group" style="text-align:center">

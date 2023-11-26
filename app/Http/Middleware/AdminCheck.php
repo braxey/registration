@@ -9,22 +9,19 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminCheck
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         try {
             $user = Auth::user();
-            if (!$user->admin) {
-                return response(Response::HTTP_UNAUTHORIZED);
+            if (!$user->isAdmin()) {
+                return response(null, Response::HTTP_UNAUTHORIZED);
             }
-        } catch (Exception $e) {
-            return response(Response::HTTP_UNAUTHENTICATED);
-        }
 
-        return $next($request);
+            $request->offsetSet('user', $user);
+
+            return $next($request);
+        } catch (Exception $e) {
+            return response(null, Response::HTTP_UNAUTHENTICATED);
+        }
     }
 }

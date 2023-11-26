@@ -16,7 +16,9 @@
                 
                 <div class="container" >
                     <h1 class="flex justify-center items-center h-screen" style="font-size: larger">Walk Thru Bethlehem Appointments</h1>
-                    <h3 class="flex justify-center items-center h-screen py-2">An appointment slot is needed for each person, including children.</h3>
+
+                    @if ($appointments->count() > 0)
+                    <h3 class="flex justify-center items-center h-screen py-2 text-center">An appointment slot is needed for each person, including children.</h3>
 
                     <!-- Filter Form -->
                     <form id="filter-form" method="GET" action="{{ route('appointments.index') }}">
@@ -46,14 +48,16 @@
                             </div>
                         </div>
                     </form>
+                    @endif
 
                     @if ($user && $user->admin)
                         <div class="flex">
-                            <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 125px; margin-left: 5px;" href="{{ route('appointment.create_form') }}">Create Appt</a>
+                            <a class="flex justify-left h-screen grn-btn text-center" style="max-width: 125px; margin-left: 5px;" href="{{ route('appointment.get-create') }}">Create Appt</a>
                             <a class="flex justify-left h-screen red-btn text-center" style="max-width: 140px; margin-left: 5px;" href="{{ route('admin-booking.lookup') }}">User Bookings</a>
                         </div>
                     @endif
 
+                    @if ($appointments->count() > 0)
                     <div class="tab-container appointment-table">
                         <table class="table mx-auto border border-slate-300 appt-pagination">  
                             <thead>
@@ -76,14 +80,14 @@
                                         <td class="border border-slate-300">
                                             <div class="table-buttons-cell">
                                             @if ($user && $user->admin)
-                                                <a class="red-btn" href="{{ route('appointment.edit', $appointment->id) }}">Edit Appt</a>
+                                                <a class="red-btn" href="{{ route('appointment.get-edit', $appointment->id) }}">Edit Appt</a>
                                             @endif
                                             @if (!$appointment->isOpen() || !$organization->registration_open || $appointment->isWalkInOnly())
                                                 <a>Closed</a>  
                                             @elseif ($user?->id && AppointmentUser::where('user_id', $user->id)->where('appointment_id', $appointment->id)->exists())
-                                                <a class="grn-btn" href="{{ route('appointment.editbooking', $appointment->id) }}">Edit Booking</a>
+                                                <a class="grn-btn" href="{{ route('booking.get-edit-booking', $appointment->id) }}">Edit Booking</a>
                                             @else
-                                                <a class="grn-btn" href="{{ route('appointment.book', $appointment->id) }}">Book</a>
+                                                <a class="grn-btn" href="{{ route('booking.get-booking', $appointment->id) }}">Book</a>
                                             @endif
                                             <div>
                                         </td>
@@ -92,6 +96,16 @@
                             </tbody>
                         </table>
                     </div>
+                    @else
+                    <div class="text-center">
+                        <br>
+                        <p>Thank you for visiting our registration site. At this time, we are fully booked up.</p><br>
+                        <p><b>We are open Friday (12/8) and Saturday (12/9) nights for Walk Ups.</b></p><br>
+                        <p>We open at 6:30pm on Friday and 4pm on Saturday.</p><br>
+                        <p>Please arrive as early as you can to get on the Walk Up list. You will be given a time when you check in at the desk.</p><br>
+                        <p>We hope you are able join us. See ya soon!</p>
+                    </div>
+                    @endif
                 </div>
             </div>
             <script type="module" src="{{ asset('js/appt/highlight.js') }}"></script>

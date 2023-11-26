@@ -17,7 +17,7 @@
                 <div class="container" >
 
                 <!-- Filter Form -->
-                <form id="filter-form" method="GET" action="{{ route('walk-in.link-appt', ['id' => request('id')]) }}">
+                <form id="filter-form" method="GET" action="{{ route('walk-in.get-link-appointment', ['walkInId' => request('walkInId')]) }}">
                     @csrf
                     @method('GET')
                     <div class="filter-container flex justify-center items-center h-screen mb-6 mt-6">
@@ -58,7 +58,7 @@
                         </thead>
                         <tbody>
                             @php
-                                $walkIn = WalkIn::find($id);
+                                $walkIn = WalkIn::find($walkInId);
                             @endphp
                             @foreach ($nonCompletedAppointments as $appointment)
                                 <tr class="border border-slate-300">
@@ -70,14 +70,14 @@
                                     </td>
                                     <td class="border border-slate-300">
                                     @if ($appointment->id == $walkIn->appointment_id)
-                                    <form action="{{ route('walk-in.unlink-appt-post', ['walkInId' => $id, 'apptId' => $appointment->id]) }}" method="POST" id="link-form">
+                                    <form action="{{ route('walk-in.unlink-appointment', ['walkInId' => $walkInId, 'appointmentId' => $appointment->id]) }}" method="POST" id="link-form">
                                         @csrf
                                         <div class="form-group">
                                             <button type="submit" class="red-btn flex" style="margin: auto !important">Unlink</button>
                                         </div>
                                     </form>
                                     @else
-                                    <form action="{{ route('walk-in.link-appt-post', ['walkInId' => $id, 'apptId' => $appointment->id]) }}" method="POST" id="link-form">
+                                    <form action="{{ route('walk-in.link-appointment', ['walkInId' => $walkInId, 'appointmentId' => $appointment->id]) }}" method="POST" id="link-form">
                                         @csrf
                                         <div class="form-group">
                                             <button type="submit" class="grn-btn flex" style="margin: auto !important">Link</button>

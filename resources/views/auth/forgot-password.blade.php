@@ -11,15 +11,9 @@
             {{ __('Forgot your password? No problem. Just let us know your email address and we will let you choose a new one.') }}
         </div>
 
-        @if (session('status'))
-            <div class="mb-4 font-medium text-sm text-green-600">
-                {{ session('status') }}
-            </div>
-        @endif
-
         <x-validation-errors class="mb-4" />
 
-        <form method="POST" action="{{ route('forgot-password.check') }}" id="forgot-password-form">
+        <form method="POST" action="{{ route('forgot-password.check-email') }}" id="forgot-password-form">
             @csrf
 
             <div class="block">
@@ -27,7 +21,6 @@
                 <x-input id="email" class="block mt-1 w-full" type="email" name="email" required autofocus />
             </div>
 
-            <p style="color:red; display:none" id="invalid-number">The given phone number is invalid.</p>
             <p style="color:red; display:none" id="no-account">No account exists with the given email.</p>
 
             <div class="flex items-center justify-end mt-4">

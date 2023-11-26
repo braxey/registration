@@ -13,6 +13,13 @@ use Illuminate\Support\Facades\DB;
 
 class AdminBookingController extends Controller
 {
+    private Organization $organization;
+
+    public function __construct()
+    {
+        $this->organization = Organization::find(1);
+    }
+
     public function getAdminUserLookupPage(Request $request)
     {
         $name = $request->input('name');
@@ -20,110 +27,98 @@ class AdminBookingController extends Controller
                     ->take(25)
                     ->get();
 
-        return view('admin-user.lookup', compact('users'));
+        return view('admin-user.lookup', [
+            'users' => $users
+        ]);
     }
 
-    public function getUsersUpcomingBookings($userId)
+    public function getUsersUpcomingBookings(Request $request)
     {
-        $user = User::where('id', $userId)->first();
+        $user = User::where('id', $request->route('userId'))->first();
+        if ($user === null) {
+            return response(null, 404);
+        }
+
         $appointments = $user->getUpcomingAppointments();
-
-        return view('admin-user.user-bookings', compact('user', 'appointments'));
+        return view('admin-user.user-bookings', [
+            'user'         => $user,
+            'appointments' => $appointments
+        ]);
     }
 
-    public function getBookingForUser($userId, $appointmentId)
+    public function getBookingForUser(Request $request)
     {
-        $user = User::where('id', $userId)->first();
-        $appointment = Appointment::where('id', $appointmentId)->first();
-        $organization = Organization::findOrFail(1);
-        $availableSlots = $appointment->total_slots - $appointment->slots_taken;
-        $userSlots = $user->slots_booked;
-        $apptUserSlots = $appointment->userSlots($user->id);
+        $user = User::where('id', $request->route('userId'))->first();
+        $appointment = Appointment::where('id', $request->route('appointmentId'))->first();
+        if ($user === null || $appointment === null) {
+            return response(null, 404);
+        }
 
-        return view('admin-user.edit-booking', compact('user', 'appointment', 'organization', 'availableSlots', 'userSlots', 'apptUserSlots'));
+        return view('admin-user.edit-booking', [
+            'user'           => $user,
+            'appointment'    => $appointment,
+            'organization'   => $this->organization,
+            'availableSlots' => $appointment->getAvailableSlots(),
+            'userSlots'      => $user->getCurrentNumberOfSlots(),
+            'apptUserSlots'  => $appointment->userSlots($user->getId())
+        ]);
     }
 
-    public function editBookingForUser(Request $request, $userId, $appointmentId)
+    public function editBookingForUser(Request $request)
     {
-        $user = User::where('id', $userId)->first();
-        $appointment = Appointment::where('id', $appointmentId)->first();
-        $organization = Organization::findOrFail(1);
-        $availableSlots = $appointment->total_slots - $appointment->slots_taken;
-        $userSlots = $user->slots_booked;
-        $apptUserSlots = $appointment->userSlots($user->id);
-        $MAX_SLOTS_PER_USER = $organization->max_slots_per_user;
+        $user = User::where('id', $request->route('userId'))->first();
+        $appointment = Appointment::where('id', $request->route('appointmentId'))->first();
+        if ($user === null || $appointment === null) {
+            return response(null, 404);
+        }
+
+        $booking = AppointmentUser::fromUserIdAndAppointmentId($user->getId(), $appointment->getId());
+        if ($booking === null) {
+            return response(null, 404);
+        }
+
+        $availableSlots = $appointment->getAvailableSlots();
+        $userSlots = $user->getCurrentNumberOfSlots();
+        $apptUserSlots = $appointment->userSlots($user->getId());
 
         $validatedData = $request->validate([
-            'slots' => 'required|integer|min:0|max:'.($availableSlots+$userSlots),
+            'slots' => 'required|integer|min:0|max:' . ($availableSlots + $userSlots),
         ]);
+        $slotsRequested = (int) $validatedData['slots'];
+        $slotChange = $slotsRequested - $apptUserSlots;
         
-        // Get the number of slots requested
-        $slotsRequested = $validatedData['slots'];
-        
-        // Check if the requested slots are not available
-        if ($slotsRequested-$apptUserSlots > $availableSlots || $slotsRequested+$userSlots-$apptUserSlots > $MAX_SLOTS_PER_USER) {
-            // Redirect back with an error message
+        if ($userSlots + $slotChange > $this->organization->getMaxSlotsPerUser()) {
             return redirect()->back();
-        // If the user requests to update to 0 slots
         } else if ($slotsRequested == 0){
-            // Cancel their booking
-            $this->cancelBookingForUser($request, $userId, $appointmentId);
-            // Redirect to appointments page
-            return redirect()->route('admin-booking.user', $userId);
+            $this->cancelBookingForUser($request, $user->getId(), $appointment->getId());
+            return redirect()->route('admin-booking.user', $user->getId());
         }
         
-        // Perform the booking logic
-        // Update the appointment slots_taken count
-        $appointment->slots_taken += $slotsRequested - $apptUserSlots;
-        $appointment->save();
-
-        // Update the slots booked for the user
-        $user->slots_booked += $slotsRequested - $apptUserSlots;
-        $user->save();
-
-        // Update the user-appointment entry
-        AppointmentUser::where('user_id', $user->id)
-            ->where('appointment_id', $appointment->id)
-            ->increment('slots_taken', $slotsRequested-$apptUserSlots);
+        $appointment->incrementSlotsTaken($slotChange);
+        $user->incrementSlotsBooked($slotChange);
+        $booking->incrementSlotsTaken($slotChange);
     
-        // Redirect to a dashboard
-        return redirect()->route('admin-booking.user', $userId);
+        return redirect()->route('admin-booking.user', $user->getId());
     }
 
-    public function cancelBookingForUser(Request $request, $userId, $appointmentId)
+    public function cancelBookingForUser(Request $request)
     {
-        $user = User::where('id', $userId)->first();
-        $appointment = Appointment::where('id', $appointmentId)->first();
-        
-
-        // Retrieve the appointment user row
-        $apptUserEntry = AppointmentUser::where('user_id', $userId)
-            ->where('appointment_id', $appointmentId)
-            ->first();
-
-        // If the row is not null
-        if($apptUserEntry){
-            // Get slots to return
-            $slotsToReturn = $apptUserEntry->slots_taken;
-
-            // Decrement appt slots taken
-            $appointment->slots_taken -= $slotsToReturn;
-            $appointment->save();
-
-            // Decrement the user slots booked (return slots back to them)
-            $user->slots_booked -= $slotsToReturn;
-            $user->save();
-
-            // Remove entry from appt user table
-            AppointmentUser::where('user_id', $user->id)
-            ->where('appointment_id', $appointment->id)
-            ->delete();
-        
-            // Navigate to the dashboard
-            return redirect()->route('admin-booking.user', $userId);
-        }else{
-            // Redirect back with an error message
-            return redirect()->back();
+        $user = User::where('id', $request->route('userId'))->first();
+        $appointment = Appointment::where('id', $request->route('appointmentId'))->first();
+        if ($user === null || $appointment === null) {
+            return response(null, 404);
         }
+
+        $booking = AppointmentUser::fromUserIdAndAppointmentId($user->getId(), $appointment->getId());
+        if ($booking === null) {
+            return response(null, 404);
+        }
+
+        $slotsToReturn = $booking->getSlotsTaken();
+        $appointment->decrementSlotsTaken($slotsToReturn);
+        $user->decrementSlotsBooked($slotsToReturn);
+
+        $booking->cancel();
+        return redirect()->route('admin-booking.user', $user->getId());
     }
 }

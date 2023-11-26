@@ -83,7 +83,7 @@ class AppointmentsTest extends TestCase {
         $this->actingAs($notAdmin);
 
         // Send a GET request to the create appointment route
-        $response = $this->get(route('appointment.create_form'));
+        $response = $this->get(route('appointment.get-create'));
 
         // Assert that the response status is 404 Not Found
         $response->assertNotFound();
@@ -99,8 +99,8 @@ class AppointmentsTest extends TestCase {
         // Generate the form data for creating an appointment
         $formData = [
             'description' => 'Test Appointment',
-            'start_time' => now()->format('Y-m-d H:i:s'),
-            'end_time' => now()->addHour()->format('Y-m-d H:i:s'),
+            'start_time' => now('EST')->format('Y-m-d H:i:s'),
+            'end_time' => now('EST')->addHour()->format('Y-m-d H:i:s'),
             'total_slots' => 5,
         ];
 
@@ -122,7 +122,7 @@ class AppointmentsTest extends TestCase {
         $this->actingAs($admin);
 
         // Send a GET request to the create appointment route
-        $response = $this->get(route('appointment.create_form'));
+        $response = $this->get(route('appointment.get-create'));
 
         // Assert that the response status is 200 OK
         $response->assertOk();
@@ -142,8 +142,8 @@ class AppointmentsTest extends TestCase {
         // Generate the form data for creating an appointment
         $formData = [
             'description' => 'Test Appointment',
-            'start_time' => now()->format('Y-m-d H:i:s'),
-            'end_time' => now()->addHour()->format('Y-m-d H:i:s'),
+            'start_time' => now('EST')->format('Y-m-d H:i:s'),
+            'end_time' => now('EST')->addHour()->format('Y-m-d H:i:s'),
             'total_slots' => 5,
         ];
 
@@ -167,8 +167,8 @@ class AppointmentsTest extends TestCase {
         // Send a POST request to create an appointment with an empty description
         $response = $this->post(route('appointment.create'), [
             'description' => '',
-            'start_time' => now(),
-            'end_time' => now()->addHour(),
+            'start_time' => now('EST'),
+            'end_time' => now('EST')->addHour(),
             'total_slots' => 10,
         ]);
 
@@ -285,7 +285,7 @@ class AppointmentsTest extends TestCase {
         $appointment = Appointment::factory()->create();
 
         // Make a request to view the edit form for the appointment
-        $response = $this->get(route('appointment.edit', $appointment->id));
+        $response = $this->get(route('appointment.get-edit', $appointment->id));
 
         // Assert that the user is redirected to the appointments.index route
         $response->assertRedirect(route('appointments.index'));
@@ -302,8 +302,8 @@ class AppointmentsTest extends TestCase {
         $appointment = Appointment::factory()->create();
 
         // Set the start_time and end_time values
-        $startTime = now()->addHour();
-        $endTime = now()->addHour(2);
+        $startTime = now('EST')->addHour();
+        $endTime = now('EST')->addHour(2);
 
         // Make a request to update the appointment
         $response = $this->put(route('appointment.update', $appointment->id), [
@@ -337,7 +337,7 @@ class AppointmentsTest extends TestCase {
         $appointment = Appointment::factory()->create();
 
         // Make a request to view the edit form for the appointment
-        $response = $this->get(route('appointment.edit', $appointment->id));
+        $response = $this->get(route('appointment.get-edit', $appointment->id));
 
         // Assert that the response is successful
         $response->assertStatus(200);
@@ -393,8 +393,8 @@ class AppointmentsTest extends TestCase {
         // Send a PUT request to update the appointment with an empty description
         $response = $this->put(route('appointment.update', $appointment->id), [
             'description' => '',
-            'start_time' => now(),
-            'end_time' => now()->addHour(),
+            'start_time' => now('EST'),
+            'end_time' => now('EST')->addHour(),
             'total_slots' => 10,
         ]);
 
@@ -423,7 +423,7 @@ class AppointmentsTest extends TestCase {
         $response = $this->put(route('appointment.update', $appointment->id), [
             'description' => 'Updated Description',
             'start_time' => '',
-            'end_time' => now()->addHour(),
+            'end_time' => now('EST')->addHour(),
             'total_slots' => 10,
         ]);
 
@@ -451,7 +451,7 @@ class AppointmentsTest extends TestCase {
         // Send a PUT request to update the appointment with an empty start_time
         $response = $this->put(route('appointment.update', $appointment->id), [
             'description' => 'Updated Description',
-            'start_time' => now()->addHour(),
+            'start_time' => now('EST')->addHour(),
             'end_time' => '',
             'total_slots' => 10,
         ]);
@@ -480,8 +480,8 @@ class AppointmentsTest extends TestCase {
         // Send a PUT request to update the appointment with an invalid start_time
         $response = $this->put(route('appointment.update', $appointment->id), [
             'description' => 'Updated Description',
-            'start_time' => now()->addHour(), // Set start_time after end_time
-            'end_time' => now(),
+            'start_time' => now('EST')->addHour(), // Set start_time after end_time
+            'end_time' => now('EST'),
             'total_slots' => 10,
         ]);
 
@@ -510,8 +510,8 @@ class AppointmentsTest extends TestCase {
         // Send a PUT request to update the appointment with a negative total_slots value
         $response = $this->put(route('appointment.update', $appointment->id), [
             'description' => 'Updated Description',
-            'start_time' => now(),
-            'end_time' => now()->addHour(),
+            'start_time' => now('EST'),
+            'end_time' => now('EST')->addHour(),
             'total_slots' => -1, // Set total_slots to a negative value
         ]);
 
@@ -540,8 +540,8 @@ class AppointmentsTest extends TestCase {
         // Send a PUT request to update the appointment with a negative total_slots value
         $response = $this->put(route('appointment.update', $appointment->id), [
             'description' => 'Updated Description',
-            'start_time' => now(),
-            'end_time' => now()->addHour(),
+            'start_time' => now('EST'),
+            'end_time' => now('EST')->addHour(),
             'total_slots' => 3.14, // Set total_slots to a negative value
         ]);
 
@@ -569,8 +569,8 @@ class AppointmentsTest extends TestCase {
         // Send a PUT request to update the appointment with a negative total_slots value
         $response = $this->put(route('appointment.update', $appointment->id), [
             'description' => 'Updated Description',
-            'start_time' => now(),
-            'end_time' => now()->addHour(),
+            'start_time' => now('EST'),
+            'end_time' => now('EST')->addHour(),
             'total_slots' => 'string', // Set total_slots to a negative value
         ]);
 
@@ -713,16 +713,16 @@ class AppointmentsTest extends TestCase {
         for($i = 0 ; $i < 3 ; $i++){
             $upcomingAppointments = Appointment::factory()->create([
                 'status' => 'upcoming',
-                'start_time' => now()->addDays(2)->addMinutes($i),
-                'end_time' => now()->addDays(2)->addHours(1)
+                'start_time' => now('EST')->addDays(2)->addMinutes($i),
+                'end_time' => now('EST')->addDays(2)->addHours(1)
             ]);
         }
 
         for($i = 0 ; $i < 3 ; $i++){
             $completedAppointments = Appointment::factory()->create([
                 'status' => 'completed',
-                'start_time' => now()->subDays(3)->addMinutes($i),
-                'end_time' => now()->subDays(3)->addHours(1),
+                'start_time' => now('EST')->subDays(3)->addMinutes($i),
+                'end_time' => now('EST')->subDays(3)->addHours(1),
                 'past_end' => true
             ]);
         }
@@ -730,8 +730,8 @@ class AppointmentsTest extends TestCase {
         for($i = 0 ; $i < 3 ; $i++){
             $inProgressAppointments = Appointment::factory()->create([
                 'status' => 'in progress',
-                'start_time' => now()->subMinutes($i),
-                'end_time' => now()->addHours(1)
+                'start_time' => now('EST')->subMinutes($i),
+                'end_time' => now('EST')->addHours(1)
             ]);
         }
     }

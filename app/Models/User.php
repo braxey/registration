@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Hash;
 
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
@@ -67,9 +69,21 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function setPassword(string $password)
+    {
+        $this->forceFill([
+            'password' => Hash::make($password),
+        ])->save();
+    }
+
     public function verifyPhone()
     {
-        $this->phone_verified_at = now();
+        $this->phone_verified_at = now('EST');
         $this->save();
     }
 
@@ -90,23 +104,88 @@ class User extends Authenticatable
         return false;
     }
 
-    public function getUpcomingAppointments()
+    public function getFirstName(): string
     {
-        $appointments = collect();
-        $apptUsers = AppointmentUser::where('user_id', $this->id)->get();
+        return $this->first_name;
+    }
 
-        foreach($apptUsers as $apptUser) {
-            $appt = Appointment::where('id', $apptUser->appointment_id)->first();
-            if ($appt && $appt->getStatus() === "upcoming") {
-                $appointments->push($appt);
-            }
-        }
-
-        return $appointments;
+    public function getLastName(): string
+    {
+        return $this->last_name;
     }
 
     public function getName(): string
     {
-        return $this->first_name . ' ' . $this->last_name;
+        return $this->getFirstName() . ' ' . $this->getLastName();
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function getCurrentNumberOfSlots(): int
+    {
+        return $this->slots_booked;
+    }
+
+    public function incrementSlotsBooked(int $addedSlots)
+    {
+        $this->slots_booked += $addedSlots;
+        $this->save();
+    }
+
+    public function decrementSlotsBooked(int $removedSlots)
+    {
+        $this->slots_booked -= $removedSlots;
+        $this->save();
+    }
+
+    public function isAdmin(): bool
+    {
+        return (int) $this->admin === 1;
+    }
+
+    public function getAllAppointments(): Collection
+    {
+        $upcomingAppointments = $this->getUpcomingAppointments();
+        $completedAppointments = $this->getPastAppointments();
+        return $upcomingAppointments->merge($completedAppointments);
+    }
+
+    public function getUpcomingAppointments(): Collection
+    {
+        $upcomingAppointmentIds = AppointmentUser::where('user_id', $this->getId())
+                        ->whereHas('appointment', function ($query) {
+                            $query->where('past_end', false);
+                        })
+                        ->pluck('appointment_id');
+        
+        return Appointment::whereIn('id', $upcomingAppointmentIds)
+                        ->orderBy('start_time')
+                        ->get();
+    }
+
+    public function getPastAppointments(): Collection
+    {
+        $pastAppointmentIds = AppointmentUser::where('user_id', $this->getId())
+                        ->whereHas('appointment', function ($query) {
+                            $query->where('past_end', true);
+                        })
+                        ->pluck('appointment_id');
+            
+        return Appointment::whereIn('id', $pastAppointmentIds)
+                        ->orderByDesc('start_time')
+                        ->get();
+    }
+
+    public static function fromId($id): ?User
+    {
+        return static::where('id', $id)->first();
+    }
+
+    public static function fromEmail(string $email): ?User
+    {
+        return static::where('email', $email)->first();
     }
 }

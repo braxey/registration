@@ -11,16 +11,16 @@ class AppointmentSeeder extends Seeder{
         Appointment::create([
             'title' => 'Appointment 1',
             'description' => 'Description for Appointment 1',
-            'start_time' => now(),
-            'end_time' => now()->addHours(1),
+            'start_time' => now('EST'),
+            'end_time' => now('EST')->addHours(1),
             'total_slots' => 5,
         ]);
 
         Appointment::create([
             'title' => 'Appointment 2',
             'description' => 'Description for Appointment 2',
-            'start_time' => now()->addDays(1),
-            'end_time' => now()->addDays(1)->addHours(2),
+            'start_time' => now('EST')->addDays(1),
+            'end_time' => now('EST')->addDays(1)->addHours(2),
             'total_slots' => 10,
         ]);
 

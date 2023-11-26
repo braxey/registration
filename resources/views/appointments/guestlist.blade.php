@@ -21,7 +21,7 @@
                     <h1 class="flex justify-center items-center h-screen" style="font-size: larger">Admin Guestlist</h1>
 
                     <!-- Filter Form -->
-                    <form id="filter-form" method="GET" action="{{ route('appointments.guestlist') }}">
+                    <form id="filter-form" method="GET" action="{{ route('guestlist') }}">
                         @csrf
                         @method('GET')
                         <div class="filter-container flex justify-center items-center h-screen">

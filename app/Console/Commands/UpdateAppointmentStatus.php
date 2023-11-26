@@ -17,36 +17,26 @@ class UpdateAppointmentStatus extends Command
     public function handle()
     {
         $appointments = Appointment::all();
-        $now = now();
+        $now = now('EST');
         foreach ($appointments as $appointment) {
-            
-            if($appointment->start_time > $now){
-                // Appointment is upcoming
-                if($appointment->status != "upcoming"){
-                    $appointment->status = "upcoming";
-                    $appointment->save();
+            if ($appointment->getParsedStartTime() > $now){
+                if (!$appointment->isUpcoming()) {
+                    $appointment->setStatus('upcoming');
                 }
-            }else if($appointment->end_time > $now){
-                // Appointment is in progress
-                if($appointment->status != "in progress"){
-                    $appointment->status = "in progress";
-                    $appointment->save();
+            } else if ($appointment->getParsedEndTime() > $now){
+                if (!$appointment->isInProgress()) {
+                    $appointment->setStatus('in progress');
                 }
-            }else if($appointment->end_time < $now && $appointment->past_end == false){ 
-                // Set the appointment to past end
-                $appointment->past_end = true;
-                $appointment->save();
-
-                // Set the status to completed
-                $appointment->status = "completed";
-                $appointment->save();
-
-                // Return the slots back to users
-                $appointmentUsers = AppointmentUser::where('appointment_id', $appointment->id)->get();
-                foreach ($appointmentUsers as $appointmentUser) {
-                    $user = User::find($appointmentUser->user_id);
-                    $user->slots_booked -= $appointmentUser->slots_taken;
-                    $user->save();
+            } else if ($appointment->getParsedEndTime() < $now) { 
+                if (!$appointment->pastEnd()) {
+                    $appointment->setStatus('completed');
+                    $bookings = $appointment->getBookings();
+                    foreach ($bookings as $booking) {
+                        $user = $booking->getUser();
+                        if ($user !== null) {
+                            $user->decrementSlotsBooked($booking->getSlotsTaken());
+                        }
+                    }
                 }
             }
         }

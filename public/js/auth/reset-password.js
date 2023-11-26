@@ -1,39 +1,43 @@
 $(function(){
-    let form = document.getElementById('reset-form')
-    form.addEventListener('submit', function(e){
-        let password = $('#password').val().toString()
-        let password_confirmation = $('#password_confirmation').val().toString()
+    const form = $('#reset-form')
+    const passwordInput = $('#password')
+    const passwordConfirmationInput = $('#password_confirmation')
 
+    passwordInput.on('keyup', function () {
+      hideErrors()
+    })
+
+    passwordConfirmationInput.on('keyup', function () {
+      hideErrors()
+    })
+
+    form.on('submit', function (e) {
         e.preventDefault()
+        let password = passwordInput.val().toString()
+        let passwordConfirmation = passwordConfirmationInput.val().toString()
 
-        if (password !== password_confirmation) {
+        if (password !== passwordConfirmation) {
             showPasswordsDontMatch()
             return false
         }
 
-        // Serialize the form data
-        var formData = $(form).serialize();
-
-        // Send the AJAX request
+        
         $.ajax({
-            url: form.action,
+            url: form.attr('action'),
             type: 'POST',
-            data: formData,
-            success: function() {
+            data: form.serialize(),
+            success: function () {
                 window.location.href = '/login'
             },
-            error: function(xhr, status, error) {
-                // Handle error response
+            error: function (xhr, status, error) {
                 if (xhr.status === 400) {
-                  var errorResponse = JSON.parse(xhr.responseText);
-                  var errorMessage = errorResponse.message;
+                  var errorResponse = JSON.parse(xhr.responseText)
+                  var errorMessage = errorResponse.message
                   if (errorMessage === 'The password does not match the confirmation') {
                     showPasswordsDontMatch()
                   } else {
                     showInvalidPassword()
                   }
-                } else {
-                  console.log('An error occurred:', error);
                 }
             }
         })
@@ -47,5 +51,10 @@ $(function(){
     function showInvalidPassword() {
         $('#no-match').hide()
         $('#invalid-password').show()
+    }
+
+    function hideErrors() {
+      $('#no-match').hide()
+      $('#invalid-password').hide()
     }
 })

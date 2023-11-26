@@ -23,8 +23,8 @@ class CreateOrganizationsTable extends Migration
             'org_name' => 'KABC',
             'max_slots_per_user' => 6,
             'registration_open' => 0,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'created_at' => now('EST'),
+            'updated_at' => now('EST'),
         ]);
     }
 

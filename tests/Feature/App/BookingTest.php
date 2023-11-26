@@ -35,7 +35,7 @@ class BookingTest extends TestCase {
         $org = Organization::factory()->create();
 
         // Create a user with a verified email
-        $user = User::factory()->create(['email_verified_at' => now()]);
+        $user = User::factory()->create(['email_verified_at' => now('EST')]);
 
         // Authenticate as the user
         $this->actingAs($user);
