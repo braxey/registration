@@ -7,7 +7,7 @@
     <html>
         <head>
             <title>Walk-Ins</title>
-            <link rel="stylesheet" href="{{asset('css/main.css')}}">
+            <link rel="stylesheet" href="{{version('css/main.css')}}">
             <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
@@ -180,8 +180,8 @@
                     </div>
                 </div>
             </div>
-            <script type="module" src="{{ asset('js/appt/highlight.js') }}"></script>
-            <script type="module" src="{{ asset('js/appt/waitlist.js') }}"></script>
+            <script type="module" src="{{ version('js/appt/highlight.js') }}"></script>
+            <script type="module" src="{{ version('js/appt/waitlist.js') }}"></script>
         </body>
     </html>
 </x-app-layout>

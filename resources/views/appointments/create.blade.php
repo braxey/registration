@@ -2,9 +2,9 @@
     <html>
         <head>
             <title>Create Appointment</title>
-            <script src="{{asset('js/dist/jquery.min.js')}}"></script>
-            <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
-            <link rel="stylesheet" href="{{asset('css/main.css')}}">
+            <script src="{{version('js/dist/jquery.min.js')}}"></script>
+            <script src="{{version('js/dist/sweetalert2.all.min.js')}}"></script>
+            <link rel="stylesheet" href="{{version('css/main.css')}}">
         </head>
         <body>
             <div class="flex justify-center items-center h-screen text-center">
@@ -37,7 +37,7 @@
 
                         <button type="submit" class="grn-btn">Create</button>
                     </form>
-                    <script type="module" src="{{ asset('js/appt/createedit.js') }}"></script>
+                    <script type="module" src="{{ version('js/appt/createedit.js') }}"></script>
                 </div>
             </div>
         </body>

@@ -5,9 +5,9 @@
 <html>
     <head>
         <title>Book</title>
-        <script src="{{asset('js/dist/jquery.min.js')}}"></script>
-        <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
-        <link rel="stylesheet" href="{{asset('css/main.css')}}">
+        <script src="{{version('js/dist/jquery.min.js')}}"></script>
+        <script src="{{version('js/dist/sweetalert2.all.min.js')}}"></script>
+        <link rel="stylesheet" href="{{version('css/main.css')}}">
     </head>
     <body>
         <div class="flex justify-center items-center h-screen text-center">
@@ -35,7 +35,7 @@
                             var MAX_SLOTS_PER_USER = {{$organization->max_slots_per_user}}
                             var registrationOpen = {{$organization->registration_open}}
                         </script>
-                        <script type="module" src="{{ asset('js/appt/book.js') }}"></script>
+                        <script type="module" src="{{ version('js/appt/book.js') }}"></script>
                     </div>
                 </div>
             </div>

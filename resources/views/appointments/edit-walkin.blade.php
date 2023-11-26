@@ -2,9 +2,9 @@
     <html>
         <head>
             <title>Edit Walk-In</title>
-            <script src="{{asset('js/dist/jquery.min.js')}}"></script>
-            <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
-            <link rel="stylesheet" href="{{asset('css/main.css')}}">
+            <script src="{{version('js/dist/jquery.min.js')}}"></script>
+            <script src="{{version('js/dist/sweetalert2.all.min.js')}}"></script>
+            <link rel="stylesheet" href="{{version('css/main.css')}}">
         </head>
         <body>
             <div class="flex justify-center items-center h-screen text-center">
@@ -42,7 +42,7 @@
 
                         <button type="submit" class="grn-btn">Update</button>
                     </form>
-                    <script type="module" src="{{ asset('js/appt/createedit-walkin.js') }}"></script>
+                    <script type="module" src="{{ version('js/appt/createedit-walkin.js') }}"></script>
                 
                     <form action="{{ route('walk-in.delete', $walkIn->id) }}" method="POST" id="delete-form">
                         @csrf
