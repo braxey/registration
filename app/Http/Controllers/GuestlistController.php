@@ -109,7 +109,7 @@ class GuestlistController extends Controller
             'showed_up' => 'required|integer|min:0',
         ]);
 
-        $guest = AppointmentUser::find($payload['guest_id']);
+        $guest = AppointmentUser::fromId($payload['guest_id']);
         if ($guest === null) {
             return response(null, 404);
         }

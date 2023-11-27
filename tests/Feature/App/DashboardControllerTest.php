@@ -52,9 +52,6 @@ class DashboardControllerTest extends TestCase
         $this->assertTrue($appointments->last()->isUpcoming());
     }
 
-    /* ========== USER DASHBOARD ========== */
-    // TODO: Add tests here.
-
     public function testIndexWithoutUserLoggedIn()
     {
         $response = $this->get(route('appointments.index'));
@@ -71,7 +68,8 @@ class DashboardControllerTest extends TestCase
         $this->assertTrue($appointments->last()->isUpcoming());
     }
 
-
+    /* ========== USER DASHBOARD ========== */
+    // testUserCanReachTheirDashboard (assert successful. set up bookings to assert)
 
     private function addAppointments()
     {
