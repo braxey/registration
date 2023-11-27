@@ -13,13 +13,13 @@ class AppointmentMiddleware
     {
         $appointment = Appointment::fromId($request->route('appointmentId'));
         if ($appointment === null) {
-            return response(null, 404);
+            return response('appointment not found', 404);
         }
 
         $request->offsetSet('appointment', $appointment);
 
-        if (session('dry-run') === true) {
-            return response(null, 202);
+        if (session('appointment-dry-run') === true) {
+            return response('passes appointment middleware', 202);
         }
 
         return $next($request);

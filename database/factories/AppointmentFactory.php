@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Appointment;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -24,5 +25,22 @@ class AppointmentFactory extends Factory
             'end_time'    => $endTime,
             'total_slots' => $this->faker->numberBetween(1, 10),
         ];
+    }
+
+    public function todayAtHour(int $hour)
+    {
+        $startTime = Carbon::now('EST')->setTime($hour, 0, 0);
+        $endTime = $startTime->addHours(1);
+        return $this->state([
+            'start_time' => $startTime,
+            'end_time'   => $endTime
+        ]);
+    }
+
+    public function asWalkInOnly(bool $walkInOnly = true)
+    {
+        return $this->state([
+            'walk_in_only' => $walkInOnly
+        ]);
     }
 }

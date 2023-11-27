@@ -14,13 +14,13 @@ class AdminCheckMiddleware
         try {
             $user = Auth::user();
             if (!$user->isAdmin()) {
-                return response(null, Response::HTTP_UNAUTHORIZED);
+                return response('not an admin', Response::HTTP_UNAUTHORIZED);
             }
 
             $request->offsetSet('user', $user);
 
-            if (session('dry-run') === true) {
-                return response(null, 202);
+            if (session('admin-check-dry-run') === true) {
+                return response('passes admin check middleware', 202);
             }
 
             return $next($request);

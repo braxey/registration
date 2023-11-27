@@ -1,15 +1,15 @@
 <?php
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Appointment;
 use App\Models\Organization;
 use App\Models\AppointmentUser;
 
-class BookingControllerTest extends TestCase {
-
-    use DatabaseTransactions;
+class BookingControllerTest extends TestCase
+{
+    use RefreshDatabase;
 
     protected User $user;
     protected Appointment $appointment;

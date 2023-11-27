@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Appointment;
@@ -8,7 +8,7 @@ use App\Models\AppointmentUser;
 
 class AppointmentControllerTest extends TestCase {
 
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     protected User $nonAdmin;
     protected User $admin;
