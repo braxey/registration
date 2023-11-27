@@ -21,6 +21,13 @@ class AdminCheckMiddlewareTest extends TestCase
         $this->nonAdmin = User::factory()->create();
     }
 
-    // testNonAdminsCannotPass
-    // testAdminsCanPass
+    public function testNonAdminsCannotPass()
+    {
+        $this->actingAs($this->nonAdmin)->get(route('appointment.get-create'))->assertUnauthorized();
+    }
+
+    public function testAdminsCanPass()
+    {
+        $this->actingAs($this->admin)->get(route('appointment.get-create'))->assertStatus(202);
+    }
 }
