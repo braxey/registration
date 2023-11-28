@@ -22,6 +22,7 @@ class UserFactory extends Factory
             'email_verified_at' => now('EST'),
             'password'          => bcrypt('password'),
             'remember_token'    => Str::random(10),
+            'slots_booked'      => 0
         ];
     }
 

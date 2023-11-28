@@ -2,15 +2,15 @@
 
 namespace Database\Factories;
 
-use App\Models\AppointmentUser;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Appointment;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AppointmentUser>
+ */
 class AppointmentUserFactory extends Factory
 {
-    protected $model = AppointmentUser::class;
-
     public function definition()
     {
         return [
@@ -22,6 +22,9 @@ class AppointmentUserFactory extends Factory
             },
             'slots_taken' => function () {
                 return 2;
+            },
+            'notified' => function () {
+                return 0;
             }
         ];
     }
