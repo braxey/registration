@@ -45,7 +45,7 @@ class BookingController extends Controller
         $this->user = $request->offsetGet('user');
 
         $booking = AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId());
-        if ($booking === null) {
+        if ($booking !== null) {
             return response(null, 401);
         }
 
@@ -62,7 +62,7 @@ class BookingController extends Controller
         
         $this->appointment->incrementSlotsTaken($slotsRequested);
         $this->user->incrementSlotsBooked($slotsRequested);
-        $booking->incrementSlotsTaken($slotsRequested);
+        AppointmentUser::insertBooking($this->user->getId(), $this->appointment->getId(), $slotsRequested);
 
         return redirect()->route('dashboard');
     }

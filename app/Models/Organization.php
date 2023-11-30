@@ -62,4 +62,10 @@ class Organization extends Model
     {
         return $this->max_slots_per_user;
     }
+
+    public function setMaxSlotsPerUser(int $slots)
+    {
+        $this->max_slots_per_user = $slots;
+        $this->save();
+    }
 }

@@ -21,7 +21,7 @@ class BookingControllerTest extends TestCase
         $this->organization = Organization::find(1);
         $this->organization->openRegistration();
         $this->user = User::factory()->create();
-        $this->appointment = Appointment::factory()->create();
+        $this->appointment = Appointment::factory()->withTotalSlots(15)->create();
     }
 
     /* ========== BOOK ========== */
@@ -43,31 +43,212 @@ class BookingControllerTest extends TestCase
 
     public function testRedirectToEditBookingIfGettingBookingPageWhenAppointmentUserExists()
     {
-        $slots = 2;
-        $booking = AppointmentUser::factory()->withSlots($slots)->forUser($this->user)->forAppointment($this->appointment)->create();
-        $this->user->incrementSlotsBooked($slots);
-        $this->appointment->incrementSlotsTaken($slots);
+        $booking = $this->setUpBooking($this->user, $this->appointment, 2);
 
         $this->actingAs($this->user)
             ->get(route('booking.get-booking', $this->appointment->getId()))
             ->assertRedirect(route('booking.get-edit-booking', $this->appointment->getId()));
     }
 
-    // testUserCanBookAppointment (assert database has: userAppointment, user has correct number of slots_booked, appointment has correct number of slots_taken)
-    // testSlotValidationForBooking (cannot be < 1, cannot be decimal, cannot be string, cannot be greater than available slots)
-    // testBookingBreachesMaxSlotsPerUserForOrganization
+    public function testUserCanBookAppointment()
+    {
+        $payload = ['slots' => 2];
+        $this->actingAs($this->user)
+            ->post(route('booking.book', $this->appointment->getId()), $payload)
+            ->assertRedirect(route('dashboard'));
+
+        $booking = AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId());
+        $this->assertTrue($booking->getSlotsTaken() === 2);
+        $this->assertTrue($booking->getUser()->is($this->user));
+        $this->assertTrue($booking->getAppointment()->is($this->appointment));
+    }
+
+    public function testCannotBookIfBookingAlreadyExists()
+    {
+        $booking = $this->setUpBooking($this->user, $this->appointment, 2);
+
+        $this->actingAs($this->user)
+            ->post(route('booking.book', $this->appointment->getId()))
+            ->assertUnauthorized();
+    }
+
+    public function testSlotValidationForBooking()
+    {
+        // slots < 1
+        $payload = ['slots' => 0];
+        $this->actingAs($this->user)
+            ->post(route('booking.book', $this->appointment->getId()), $payload)
+            ->assertRedirect();
+        $this->assertNull(AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId()));
+
+        // slots is a decimal
+        $payload = ['slots' => 3.14];
+        $this->actingAs($this->user)
+            ->post(route('booking.book', $this->appointment->getId()), $payload)
+            ->assertRedirect();
+        $this->assertNull(AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId()));
+
+        // slots is a string
+        $payload = ['slots' => 'a string'];
+        $this->actingAs($this->user)
+            ->post(route('booking.book', $this->appointment->getId()), $payload)
+            ->assertRedirect();
+        $this->assertNull(AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId()));
+    }
+    
+    public function testBookingBreachesMaxSlotsPerUserForOrganization()
+    {
+        $otherSlots = $this->organization->getMaxSlotsPerUser() - 2;
+        $otherAppointment = Appointment::factory()->withTotalSlots(15)->create();
+        $this->setUpBooking($this->user, $otherAppointment, $otherSlots);
+
+        $payload = ['slots' => 3];
+        $this->actingAs($this->user)
+            ->post(route('booking.book', $this->appointment->getId()), $payload)
+            ->assertRedirect();
+
+        $this->assertNull(AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId()));
+    }
 
     /* ========== EDIT BOOKING ========== */
 
-    // testUsersCanGetEditBookingPage (assert view has: appointment, availableSlots, userSlots, bookingSlots, organization)
-    // testRedirectToBookingIfGettingEditBookingPageWhenAppointmentUserDoesNotExist
-    // testUserCanEditBookingForAppointment (assert database has: userAppointment, user has correct number of slots_booked, appointment has correct number of slots_taken)
+    public function testUsersCanGetEditBookingPage()
+    {
+        $booking = $this->setUpBooking($this->user, $this->appointment, 2);
+
+        $response = $this->actingAs($this->user)
+            ->get(route('booking.get-edit-booking', $this->appointment->getId()))
+            ->assertSuccessful()
+            ->assertViewHas(['appointment', 'bookingSlots', 'userSlots', 'organization']);
+
+        $this->assertTrue(
+            $response->viewData('appointment')->is($this->appointment)
+            && $response->viewData('bookingSlots') === $booking->getSlotsTaken()
+            && $response->viewData('userSlots') === $this->user->getCurrentNumberOfSlots()
+            && $response->viewData('organization')->is($this->organization)
+        );
+    }
+
+    public function testRedirectToBookingIfGettingEditBookingPageWhenBookingDoesNotExist()
+    {
+        $this->actingAs($this->user)
+            ->get(route('booking.get-edit-booking', $this->appointment->getId()))
+            ->assertRedirect(route('booking.get-booking', $this->appointment->getId()));
+    }
+
+    public function testUserCanEditBookingForAppointment()
+    {
+        $this->setUpBooking($this->user, $this->appointment, 2);
+
+        $payload = ['slots' => 4];
+        $response = $this->actingAs($this->user)
+            ->put(route('booking.edit-booking', $this->appointment->getId()), $payload)
+            ->assertRedirect(route('dashboard'));
+        
+        $user = User::fromId($this->user->getId());
+        $appointment = Appointment::fromId($this->appointment->getId());
+        $booking = AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId());
+
+        $this->assertTrue(
+            $user->getCurrentNumberOfSlots() === 4
+            && $appointment->getSlotsTaken() === 4
+            && $booking->getSlotsTaken() === 4
+        );
+    }
+
     // testSlotValidationForEditBooking (cannot be < 0, cannot be decimal, cannot be string, cannot be greater than available slots + user slots)
-    // testBookingCancelsWhenEditingSlotsToZero
-    // testEditBookingBreachesMaxSlotsPerUserForOrganization
+    public function testSlotValidationForEditBooking()
+    {
+        $booking = $this->setUpBooking($this->user, $this->appointment, 2);
+
+        // slots < 0
+        $payload = ['slots' => -1];
+        $this->actingAs($this->user)
+            ->put(route('booking.edit-booking', $this->appointment->getId()), $payload)
+            ->assertRedirect();
+        $updatedBooking = AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId());
+        $this->assertTrue($booking->is($updatedBooking));
+
+        // slots is a decimal
+        $payload = ['slots' => 3.14];
+        $this->actingAs($this->user)
+            ->put(route('booking.edit-booking', $this->appointment->getId()), $payload)
+            ->assertRedirect();
+        $updatedBooking = AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId());
+        $this->assertTrue($booking->is($updatedBooking));
+
+        // slots is a string
+        $payload = ['slots' => 'S T R I N G'];
+        $this->actingAs($this->user)
+            ->put(route('booking.edit-booking', $this->appointment->getId()), $payload)
+            ->assertRedirect();
+        $updatedBooking = AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId());
+        $this->assertTrue($booking->is($updatedBooking));
+    }
+
+    public function testEditBookingBreachesMaxSlotsPerUserForOrganization()
+    {
+        $booking = $this->setUpBooking($this->user, $this->appointment, 3);
+        $payload = ['slots' => 4];
+        $this->actingAs($this->user)
+            ->put(route('booking.edit-booking', $this->appointment->getId()), $payload)
+            ->assertRedirect();
+        $updatedBooking = AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId());
+        $this->assertTrue($booking->is($updatedBooking));
+    }
+
+    public function testBookingCancelsWhenEditingSlotsToZero()
+    {
+        $this->setUpBooking($this->user, $this->appointment, 3);
+        $payload = ['slots' => 0];
+        $this->actingAs($this->user)
+            ->put(route('booking.edit-booking', $this->appointment->getId()), $payload)
+            ->assertRedirect(route('appointments.index'));
+        
+        $user = User::fromId($this->user->getId());
+        $appointment = Appointment::fromId($this->appointment->getId());
+        $booking = AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId());
+
+        $this->assertTrue(
+            $user->getCurrentNumberOfSlots() === 0
+            && $appointment->getSlotsTaken() === 0
+            && $booking === null
+        );
+    }
 
     /* ========== CANCEL BOOKING ========== */
 
-    // testCannotCancelBookingThatDoesNotExist
-    // testBookingCanBeCanceled
+    public function testBookingCanBeCanceled()
+    {
+        $this->setUpBooking($this->user, $this->appointment, 3);
+        $this->actingAs($this->user)
+            ->post(route('booking.cancel-booking', $this->appointment->getId()))
+            ->assertRedirect(route('dashboard'));
+        
+        $user = User::fromId($this->user->getId());
+        $appointment = Appointment::fromId($this->appointment->getId());
+        $booking = AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId());
+
+        $this->assertTrue(
+            $user->getCurrentNumberOfSlots() === 0
+            && $appointment->getSlotsTaken() === 0
+            && $booking === null
+        );
+    }
+
+    public function testCannotCancelBookingThatDoesNotExist()
+    {
+        $this->actingAs($this->user)
+            ->post(route('booking.cancel-booking', $this->appointment->getId()))
+            ->assertNotFound();
+    }
+
+    /* ========== HELPER FUNCTION ========== */
+
+    private function setUpBooking(User $user, Appointment $appointment, int $slots): AppointmentUser
+    {
+        $this->user->incrementSlotsBooked($slots);
+        $this->appointment->incrementSlotsTaken($slots);
+        return AppointmentUser::factory()->withSlots($slots)->forUser($user)->forAppointment($appointment)->create();
+    }
 }

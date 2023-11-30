@@ -43,4 +43,11 @@ class AppointmentFactory extends Factory
             'walk_in_only' => $walkInOnly
         ]);
     }
+
+    public function withTotalSlots(int $totalSlots)
+    {
+        return $this->state([
+            'total_slots' => $totalSlots
+        ]);
+    }
 }
