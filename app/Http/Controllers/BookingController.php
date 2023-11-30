@@ -86,7 +86,6 @@ class BookingController extends Controller
         ]);
     }
 
-    // Show booking edit or handle request to update an existing booking
     public function editBooking(Request $request)
     {
         $this->appointment = $request->offsetGet('appointment');
