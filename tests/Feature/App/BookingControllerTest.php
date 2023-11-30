@@ -156,7 +156,6 @@ class BookingControllerTest extends TestCase
         );
     }
 
-    // testSlotValidationForEditBooking (cannot be < 0, cannot be decimal, cannot be string, cannot be greater than available slots + user slots)
     public function testSlotValidationForEditBooking()
     {
         $booking = $this->setUpBooking($this->user, $this->appointment, 2);
