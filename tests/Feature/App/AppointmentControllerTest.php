@@ -22,7 +22,7 @@ class AppointmentControllerTest extends TestCase {
 
     /* ========== CREATE APPOINTMENT ========== */
 
-    public function testNonAdminsCantViewCreateAppointmentForm()
+    public function testNonAdminsCantViewCreateAppointmentPage()
     {
         $response = $this->actingAs($this->nonAdmin)->get(route('appointment.get-create'));
         $response->assertUnauthorized();
@@ -36,7 +36,7 @@ class AppointmentControllerTest extends TestCase {
         $this->assertDatabaseCount('appointments', 0);
     }
 
-    public function testAdminsCanViewCreateAppointmentForm()
+    public function testAdminsCanViewCreateAppointmentPage()
     {
         $response = $this->actingAs($this->admin)->get(route('appointment.get-create'));
         $response->assertOk();
@@ -107,7 +107,7 @@ class AppointmentControllerTest extends TestCase {
 
     /* ========== UPDATE APPOINTMENT ========== */
 
-    public function testNonAdminsCantViewEditAppointmentForm(){
+    public function testNonAdminsCantViewEditAppointmentPage(){
         $appointment = Appointment::factory()->create();
         $response = $this->actingAs($this->nonAdmin)->get(route('appointment.get-edit', $appointment->getId()));
         $response->assertUnauthorized();
@@ -127,7 +127,7 @@ class AppointmentControllerTest extends TestCase {
         $this->assertEquals($appointment->getTotalSlots(), $updatedAppointment->getTotalSlots());
     }
 
-    public function testAdminsCanViewEditAppointmentForm()
+    public function testAdminsCanViewEditAppointmentPage()
     {
         $appointment = Appointment::factory()->create();
         $response = $this->actingAs($this->admin)->get(route('appointment.get-edit', $appointment->getId()));

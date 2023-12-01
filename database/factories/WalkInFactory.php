@@ -17,7 +17,9 @@ class WalkInFactory extends Factory
             'name'           => $this->faker->name,
             'slots'          => $this->faker->numberBetween(1, 10),
             'desired_time'   => now('EST'),
-            'appointment_id' => null
+            'appointment_id' => null,
+            'notes'          => $this->faker->text(100),
+            'notified'       => $this->faker->boolean,
         ];
     }
 

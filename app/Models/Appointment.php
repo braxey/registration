@@ -197,6 +197,21 @@ class Appointment extends Model
         $this->save();
     }
 
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'description' => $this->getDescription(),
+            'start_time' => $this->getParsedStartTime(),
+            'end_time' => $this->getParsedEndTime(),
+            'total_slots' => $this->getTotalSlots(),
+            'slots_taken' => $this->getSlotsTaken(),
+            'past_end' => (int) $this->pastEnd(),
+            'status' => $this->getStatus(),
+            'walk_in_only' => (int) $this->isWalkInOnly(),
+        ];
+    }
+
     public static function fromId($id): ?Appointment
     {
         return static::where('id', $id)->first();

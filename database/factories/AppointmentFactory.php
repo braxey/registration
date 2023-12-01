@@ -20,10 +20,14 @@ class AppointmentFactory extends Factory
         $endTime->modify('+1 hour');
     
         return [
-            'description' => $this->faker->text(100),
-            'start_time'  => $startTime,
-            'end_time'    => $endTime,
-            'total_slots' => $this->faker->numberBetween(1, 10),
+            'description'  => $this->faker->text(100),
+            'start_time'   => $startTime,
+            'end_time'     => $endTime,
+            'total_slots'  => $this->faker->numberBetween(1, 10),
+            'slots_taken'  => 0,
+            'status'       => 'upcoming',
+            'past_end'     => 0,
+            'walk_in_only' => 0,
         ];
     }
 
@@ -48,6 +52,13 @@ class AppointmentFactory extends Factory
     {
         return $this->state([
             'total_slots' => $totalSlots
+        ]);
+    }
+
+    public function withSlotsTaken(int $slotsTaken)
+    {
+        return $this->state([
+            'slots_taken' => $slotsTaken
         ]);
     }
 }
