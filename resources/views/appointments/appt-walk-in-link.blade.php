@@ -1,52 +1,46 @@
-@php
-    use Carbon\Carbon;
-    use App\Models\WalkIn;
-@endphp
 <x-app-layout>
     <html>
         <head>
             <title>Appointments</title>
-            <link rel="stylesheet" href="{{asset('css/main.css')}}">
+            <link rel="stylesheet" href="{{version('css/main.css')}}">
             <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
-            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-            <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+            <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
         </head>
         <body>
             <div class="flex justify-center items-center h-screen">
-                
                 <div class="container" >
-
-                <!-- Filter Form -->
-                <form id="filter-form" method="GET" action="{{ route('walk-in.get-link-appointment', ['walkInId' => request('walkInId')]) }}">
-                    @csrf
-                    @method('GET')
-                    <div class="filter-container flex justify-center items-center h-screen mb-6 mt-6">
-                        <div id="filter-inputs-container" class="form-container togglers">
-                            <p class="mb-4 text-lg">Select your preferred time range:</p>
-                            <div class="form-group">
-                                <label for="start_date_time">Start Date and Time</label>
-                                <div class="flex">
-                                    <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" class="form-control mr-2">
-                                    <input type="time" name="start_time" id="start_time" value="{{ request('start_time') }}" class="form-control">
+                    <!-- Filter Form -->
+                    <form id="filter-form" method="GET" action="{{ route('walk-in.get-link-appointment', ['walkInId' => $walkIn->getId()]) }}">
+                        @csrf
+                        @method('GET')
+                        <div class="filter-container flex justify-center items-center h-screen mb-6 mt-6">
+                            <div id="filter-inputs-container" class="form-container togglers">
+                                <p class="mb-4 text-lg">Select your preferred time range:</p>
+                                <div class="form-group">
+                                    <label for="start_date_time">Start Date and Time</label>
+                                    <div class="flex">
+                                        <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" class="form-control mr-2">
+                                        <input type="time" name="start_time" id="start_time" value="{{ request('start_time') }}" class="form-control">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="end_date_time">End Date and Time</label>
-                                <div class="flex">
-                                    <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}" class="form-control mr-2">
-                                    <input type="time" name="end_time" id="end_time" value="{{ request('end_time') }}" class="form-control">
+                                <div class="form-group">
+                                    <label for="end_date_time">End Date and Time</label>
+                                    <div class="flex">
+                                        <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}" class="form-control mr-2">
+                                        <input type="time" name="end_time" id="end_time" value="{{ request('end_time') }}" class="form-control">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="button-container" style="justify-content: center;" id="filter-buttons">
-                                <button type="submit" class="grn-btn togglers" id="apply-filter">Apply</button>
-                                <button type="button" class="red-btn togglers" onclick="$('#start_date').val('');$('#start_time').val('');$('#end_date').val('');$('#end_time').val('');$('#apply-filter').click();">Reset</button>
+                                <div class="button-container" style="justify-content: center;" id="filter-buttons">
+                                    <button type="submit" class="grn-btn togglers" id="apply-filter">Apply</button>
+                                    <button type="button" class="red-btn togglers" onclick="$('#start_date').val('');$('#start_time').val('');$('#end_date').val('');$('#end_time').val('');$('#apply-filter').click();">Reset</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
 
 
-                <h1 class="flex justify-center items-center h-screen" style="font-size: larger">Appointments</h1>
+                    <h1 class="flex justify-center items-center h-screen" style="font-size: larger">Appointments</h1>
                     <table class="table mx-auto border border-slate-300 appt-pagination">  
                         <thead>
                             <tr class="border border-slate-300">
@@ -57,27 +51,24 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @php
-                                $walkIn = WalkIn::find($walkInId);
-                            @endphp
                             @foreach ($nonCompletedAppointments as $appointment)
                                 <tr class="border border-slate-300">
-                                    <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
-                                    <td class="border border-slate-300">{{ $appointment->slots_taken }} / {{ $appointment->total_slots }}</td>
+                                    <td class="border border-slate-300">{{ $appointment->getParsedStartTime()->format('F d, Y g:i A') }}</td>
+                                    <td class="border border-slate-300">{{ $appointment->getSlotsTaken() }} / {{ $appointment->getTotalSlots() }}</td>
                                     <td class="border border-slate-300">
-                                        <span class="highlight text-white">{{ $appointment->status }}</span>
+                                        <span class="highlight text-white">{{ $appointment->getStatus() }}</span>
                                         {{ $appointment->isWalkInOnly() ? "W-I" : ""}}
                                     </td>
                                     <td class="border border-slate-300">
-                                    @if ($appointment->id == $walkIn->appointment_id)
-                                    <form action="{{ route('walk-in.unlink-appointment', ['walkInId' => $walkInId, 'appointmentId' => $appointment->id]) }}" method="POST" id="link-form">
+                                    @if ($appointment->getId() == $walkIn->getAppointmentId())
+                                    <form action="{{ route('walk-in.unlink-appointment', ['walkInId' => $walkIn->getId(), 'appointmentId' => $appointment->getId()]) }}" method="POST" id="link-form">
                                         @csrf
                                         <div class="form-group">
                                             <button type="submit" class="red-btn flex" style="margin: auto !important">Unlink</button>
                                         </div>
                                     </form>
                                     @else
-                                    <form action="{{ route('walk-in.link-appointment', ['walkInId' => $walkInId, 'appointmentId' => $appointment->id]) }}" method="POST" id="link-form">
+                                    <form action="{{ route('walk-in.link-appointment', ['walkInId' => $walkIn->getId(), 'appointmentId' => $appointment->getId()]) }}" method="POST" id="link-form">
                                         @csrf
                                         <div class="form-group">
                                             <button type="submit" class="grn-btn flex" style="margin: auto !important">Link</button>
@@ -91,7 +82,7 @@
                     </table>
                 </div>
             </div>
-            <script type="module" src="{{ asset('js/appt/highlight.js') }}"></script>
+            <script type="text/javascript" src="{{ version('js/appt/highlight.js') }}"></script>
         </body>
     </html>
 </x-app-layout>

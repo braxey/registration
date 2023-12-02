@@ -13,27 +13,30 @@ class BookingMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        // Make sure registration is open.
         $organization = Organization::find(1);
-        if($organization->registrationIsClosed()) {
+        if ($organization->registrationIsClosed()) {
             return redirect()->route('appointments.index');
         }
 
-        // Make sure a booking action can be performed on this appointment.
         $appointment = Appointment::fromId($request->route('appointmentId'));
         if ($appointment === null) {
-            return response(null, 404);
+            return response('appointment not found', 404);
         }
 
-        if(
-            now('EST') > $appointment->getParsedStartTime()->setTime(12, 0, 0)
-            || $appointment->isWalkInOnly()
-        ) {
-            return response(null, 403);
+        if (now('EST') > $appointment->getParsedStartTime()->setTime(12, 0, 0)) {
+            return response('too late to book', 401);
+        }
+
+        if ($appointment->isWalkInOnly()) {
+            return response('appointment is walk-in-only', 401);
         }
 
         $request->offsetSet('user', Auth::user());
         $request->offsetSet('appointment', $appointment);
+
+        if (session('booking-dry-run') === true) {
+            return response('passes booking middleware', 202);
+        }
 
         return $next($request);
     }

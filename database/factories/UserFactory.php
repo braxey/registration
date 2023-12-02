@@ -7,33 +7,22 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Laravel\Jetstream\Features;
-use Faker\Provider\PhoneNumber;
 
 class UserFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
     protected $model = User::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            'first_name' => $this->faker->firstName,
-            'last_name' => $this->faker->lastName,
-            'email' => $this->faker->unique()->safeEmail,
-            'phone_number' => $this->faker->phoneNumber,
-            'admin' => false,
+            'first_name'        => $this->faker->firstName,
+            'last_name'         => $this->faker->lastName,
+            'email'             => $this->faker->unique()->safeEmail,
+            'admin'             => false,
             'email_verified_at' => now('EST'),
-            'password' => bcrypt('password'),
-            'remember_token' => Str::random(10),
+            'password'          => bcrypt('password'),
+            'remember_token'    => Str::random(10),
+            'slots_booked'      => 0
         ];
     }
 
@@ -77,7 +66,6 @@ class UserFactory extends Factory
                         'name' => $user->first_name . '\'s Team',
                         'user_id' => $user->id,
                         'personal_team' => true,
-                        'phone_number' => $user->phone_number,
                     ];
                 })
                 ->when(is_callable($callback), $callback),

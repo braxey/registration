@@ -1,15 +1,11 @@
-@php
-    use Carbon\Carbon;
-    use App\Models\AppointmentUser;
-@endphp
 <x-app-layout>
     <html>
         <head>
             <title>Appointments - WTB Registration</title>
-            <link rel="stylesheet" href="{{asset('css/main.css')}}">
+            <link rel="stylesheet" href="{{ version('css/main.css') }}">
             <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
-            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-            <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+            <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
         </head>
         <body>
             <div class="flex justify-center items-center h-screen">
@@ -52,11 +48,11 @@
                             <tbody>
                                 @foreach ($users as $user)
                                     <tr class="border border-slate-300">
-                                        <td class="border border-slate-300">{{ $user->first_name }} {{ $user->last_name }}</td>
-                                        <td class="border border-slate-300">{{ $user->email }}</td>
+                                        <td class="border border-slate-300">{{ $user->getFirstName() }} {{ $user->getLastName() }}</td>
+                                        <td class="border border-slate-300">{{ $user->getEmail() }}</td>
                                         <td class="border border-slate-300">
                                             @if ($user->hasUpcomingAppointment())
-                                                <a class="grn-btn" href="{{ route('admin-booking.user', $user->id) }}">Edit Bookings</a>
+                                                <a class="grn-btn" href="{{ route('admin-booking.user', $user->getId()) }}">Edit Bookings</a>
                                             @else
                                                 Nothing Upcoming
                                             @endif

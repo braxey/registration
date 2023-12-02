@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
 use App\Models\Appointment;
 
 class AppointmentUser extends Model{
+    use HasFactory;
+
     protected $table = 'appointment_user';
     public $timestamps = false;
 

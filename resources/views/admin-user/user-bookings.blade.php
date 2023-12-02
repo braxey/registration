@@ -1,15 +1,11 @@
-@php
-    use Carbon\Carbon;
-    use App\Models\AppointmentUser;
-@endphp
 <x-app-layout>
     <html>
         <head>
             <title>Appointments - WTB Registration</title>
-            <link rel="stylesheet" href="{{asset('css/main.css')}}">
+            <link rel="stylesheet" href="{{version('css/main.css')}}">
             <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
-            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-            <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+            <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
         </head>
         <body>
             <div class="justify-center items-center h-screen">
@@ -28,13 +24,13 @@
                             <tbody>
                             @foreach ($appointments as $appointment)
                                     <tr class="border border-slate-300">
-                                        <td class="border border-slate-300">{{ \Carbon\Carbon::parse($appointment->start_time)->format('F d, Y g:i A') }}</td>
-                                        <td class="border border-slate-300">{{ $appointment->userSlots($user->id) }}</td>
+                                        <td class="border border-slate-300">{{ $appointment->getParsedStartTime()->format('F d, Y g:i A') }}</td>
+                                        <td class="border border-slate-300">{{ $appointment->userSlots($user->getId()) }}</td>
                                         <td class="border border-slate-300">
-                                            <span class="highlight text-white">{{ $appointment->status }}</span>
+                                            <span class="highlight text-white">{{ $appointment->getStatus() }}</span>
                                         </td>
                                         <td class="border border-slate-300">
-                                            <a class="grn-btn" href="{{ route('admin-booking.user-booking', ['userId' => $user->id, 'appointmentId' => $appointment->id]) }}">Edit Booking</a>
+                                            <a class="grn-btn" href="{{ route('admin-booking.user-booking', ['userId' => $user->getId(), 'appointmentId' => $appointment->getId()]) }}">Edit Booking</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -44,6 +40,6 @@
                 </div>
             </div>
         </body>
-        <script type="module" src="{{ asset('js/appt/highlight.js') }}"></script>
+        <script type="text/javascript" src="{{ version('js/appt/highlight.js') }}"></script>
     </html>
 </x-app-layout>

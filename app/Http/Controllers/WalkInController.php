@@ -27,7 +27,7 @@ class WalkInController extends Controller
         $validatedData = $request->validate([
             'name'         => 'required',
             'desired_time' => 'required|date',
-            'slots'        => 'required|integer|min:0',
+            'slots'        => 'required|integer|min:1',
             'notes'        => 'nullable|string'
         ]);
 
@@ -54,21 +54,25 @@ class WalkInController extends Controller
     public function updateWalkin(Request $request)
     {
         $walkIn = $request->offsetGet('walk-in');
-        $email = $request->get('email');
 
         $validatedData = $request->validate([
             'name'         => 'required',
             'desired_time' => 'required|date',
-            'slots'        => 'required|integer|min:0',
+            'slots'        => 'required|integer|min:1',
             'notes'        => 'nullable|string',
         ]);
 
+        $email = $request->get('email');
         if ($email !== null) {
             $validatedData = array_merge($validatedData,
                 $request->validate([
                     'email' => 'required|email',
                 ])
             );
+        } else {
+            $validatedData = array_merge($validatedData, [
+                'email' => ''
+            ]);
         }
 
         $appointment = $walkIn->getAppointment();

@@ -8,12 +8,12 @@
     <html>
         <head>
             <title>Guestlist</title>
-            <link rel="stylesheet" href="{{asset('css/main.css')}}">
+            <link rel="stylesheet" href="{{ version('css/main.css') }}">
             <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-            <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-            <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
+            <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+            <script type="text/javascript" src="{{ version('js/dist/sweetalert2.all.min.js') }}"></script>
         </head>
         <body>
             <div class="flex justify-center items-center h-screen">
@@ -65,7 +65,7 @@
                     <div class="flex justify-end">
                         <p class="mr-1"><b>Showed Up / Registered:</b></p>
                         <p id="totalShowed" class="mr-1">{{ $totalShowedUp }}</p>
-                        <p>/ {{$totalSlotsTaken}}</p>
+                        <p>/ {{ $totalSlotsTaken }}</p>
                     </div>
                     <table class="table mx-auto border border-slate-300 appt-pagination">
                         <thead>
@@ -116,8 +116,8 @@
                 </div>
             </div>
             <script>var csrfToken = "{{ csrf_token() }}";</script>
-            <script type="module" src="{{ asset('js/appt/guestlist.js') }}"></script>
-            <script type="module" src="{{ asset('js/appt/highlight.js') }}"></script>
+            <script type="text/javascript" src="{{ version('js/appt/guestlist.js') }}"></script>
+            <script type="text/javascript" src="{{ version('js/appt/highlight.js') }}"></script>
         </body>
     </html>
 </x-app-layout>

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Appointment;
+use Carbon\Carbon;
 
 class WalkIn extends Model
 {
@@ -40,6 +41,31 @@ class WalkIn extends Model
         return $this->slots;
     }
 
+    public function getDesiredTime(): string
+    {
+        return $this->desired_time;
+    }
+
+    public function getParsedDesiredTime(): Carbon
+    {
+        return Carbon::parse($this->getDesiredTime(), 'EST');
+    }
+
+    public function getCreatedAtTime(): string
+    {
+        return $this->created_at;
+    }
+
+    public function getParsedCreatedAtTime(): Carbon
+    {
+        return Carbon::parse($this->getCreatedAtTime(), 'EST');
+    }
+
+    public function getNotes(): ?string
+    {
+        return $this->notes;
+    }
+
     public function wasNotified(): bool
     {
         return $this->notified == true;
@@ -63,7 +89,7 @@ class WalkIn extends Model
 
     public function getEmail(): string
     {
-        return $this->email;
+        return $this->email?? '';
     }
 
     public function getAppointmentId(): ?int
@@ -77,6 +103,16 @@ class WalkIn extends Model
         $this->save();
     }
 
+    public function isAssigned(): bool
+    {
+        return $this->getAppointmentId() !== null;
+    }
+
+    public function isNotAssigned(): bool
+    {
+        return $this->getAppointmentId() === null;
+    }
+
     public function getAppointment(): ?Appointment
     {
         $appointmentId = $this->getAppointmentId();
@@ -84,6 +120,20 @@ class WalkIn extends Model
             return null;
         }
         return Appointment::fromId($appointmentId);
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'email' => $this->getEmail(),
+            'name' => $this->getName(),
+            'slots' => $this->getNumberOfSlots(),
+            'desired_time' => $this->getDesiredTime(),
+            'appointment_id' => $this->getAppointmentId(),
+            'notified' => (int) $this->wasNotified(),
+            'notes' => $this->getNotes(),
+        ];
     }
 
     public static function fromId($id): ?WalkIn

@@ -27,6 +27,17 @@ class Appointment extends Model
         return $this->id;
     }
 
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setWalkInOnly(bool $walkInOnly)
+    {
+        $this->walk_in_only = $walkInOnly;
+        $this->save();
+    }
+
     public function isWalkInOnly(): bool
     {
         return (int) $this->walk_in_only === 1;
@@ -56,6 +67,11 @@ class Appointment extends Model
         );
     }
 
+    public function isClosed(): bool
+    {
+        return !$this->isOpen();
+    }
+
     public function canEdit(): bool
     {
         return (
@@ -64,12 +80,17 @@ class Appointment extends Model
         );
     }
 
-    public function getStartTime(): string
+    public function cannotEdit(): bool
+    {
+        return !$this->canEdit();
+    }
+
+    public function getStartTime()
     {
         return $this->start_time;
     }
 
-    public function getEndTime(): string
+    public function getEndTime()
     {
         return $this->end_time;
     }
@@ -120,7 +141,12 @@ class Appointment extends Model
 
     public function userSlots(int $userId): int
     {
-        return AppointmentUser::where('user_id', $userId)->where('appointment_id', $this->getId())->first()->getSlotsTaken();
+        $booking = AppointmentUser::where('user_id', $userId)->where('appointment_id', $this->getId())->first();
+        if ($booking === null) {
+            return 0;
+        }
+
+        return $booking->getSlotsTaken();
     }
 
     public function getTotalSlots(): int
@@ -175,6 +201,21 @@ class Appointment extends Model
     {
         $this->slots_taken -= $removedSlots;
         $this->save();
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'description' => $this->getDescription(),
+            'start_time' => $this->getParsedStartTime(),
+            'end_time' => $this->getParsedEndTime(),
+            'total_slots' => $this->getTotalSlots(),
+            'slots_taken' => $this->getSlotsTaken(),
+            'past_end' => (int) $this->pastEnd(),
+            'status' => $this->getStatus(),
+            'walk_in_only' => (int) $this->isWalkInOnly(),
+        ];
     }
 
     public static function fromId($id): ?Appointment

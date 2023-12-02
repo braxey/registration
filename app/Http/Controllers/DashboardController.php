@@ -29,7 +29,8 @@ class DashboardController extends Controller
             'allAppointments'      => $allAppointments,
             'pastAppointments'     => $pastAppointments,
             'upcomingAppointments' => $upcomingAppointments,
-            'organization'         => $this->organization
+            'organization'         => $this->organization,
+            'user'                 => $user,
         ]);
     }
 

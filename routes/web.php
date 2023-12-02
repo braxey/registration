@@ -37,8 +37,8 @@ Route::prefix('forgot-password')->group(function () {
     Route::post('/update-password', [PasswordResetController::class, 'updatePassword'])->name('forgot-password.update-password');
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::middleware(['admin'])->group(function () {
+Route::middleware('auth')->group(function () {
+    Route::middleware('admin')->group(function () {
         /**
          * Appointments
          */
@@ -120,3 +120,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/cancel-booking', [BookingController::class, 'cancelBooking'])->name('booking.cancel-booking');
     });
 });
+
+// Route::get('/test', function () {
+//     dump(auth()->id());
+// });

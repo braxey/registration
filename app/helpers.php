@@ -2,28 +2,9 @@
 
 use Carbon\Carbon;
 
-function formatPhoneBrackets($phone): string
-{
-    $phone = preg_replace("/[^0-9]/", "", $phone);
-
-    switch (strlen($phone)) {
-        case 7:
-            $formattedPhone = preg_replace("/([0-9]{3})([0-9]{4})/", "$1-$2", $phone);
-            break;
-        case 10:
-            $formattedPhone = preg_replace("/([0-9]{3})([0-9]{3})([0-9]{4})/", "($1) $2-$3", $phone);
-            break;
-        case 11:
-            $phone = ($phone[0] == "1") ? substr($phone, 1) : $phone;
-            $formattedPhone = preg_replace("/([0-9]{3})([0-9]{3})([0-9]{4})/", "($1) $2-$3", $phone);
-            break;
-        default:
-            $formattedPhone = $phone;
-    }
-    
-    return $formattedPhone;
-}
-
+/**
+ * Get Carbon-parsed time ranges
+ */
 function getBetween(array $arr): array
 {
     $container = [];
@@ -57,4 +38,28 @@ function getBetween(array $arr): array
     }
     
     return $container;
+}
+
+/**
+ * Version files for cache busting
+ */
+function version(string $file): string
+{
+    try {
+        $cacheBuster = filemtime($file);
+    } catch (Exception $e) {
+        $cacheBuster = (string) random_int(0, 9999999);
+    }
+    return asset($file) . '?v=' . $cacheBuster;
+}
+
+/**
+ * Generate cryptographically secure, numeric token
+ */
+function generateSecureNumericToken($length = 7)
+{
+    $min = pow(10, $length - 1);
+    $max = pow(10, $length) - 1;
+    $randomNumber = random_int($min, $max);
+    return str_pad($randomNumber, $length, '0', STR_PAD_LEFT);
 }

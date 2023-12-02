@@ -18,7 +18,7 @@ class OrganizationFactory extends Factory
     {
         return [
             'org_name' => 'kabc',
-            'max_slots_per_user' => $this->faker->numberBetween(5, 10),
+            'max_slots_per_user' => 6,
         ];
     }
 }

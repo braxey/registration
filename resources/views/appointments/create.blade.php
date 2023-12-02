@@ -2,9 +2,9 @@
     <html>
         <head>
             <title>Create Appointment</title>
-            <script src="{{asset('js/dist/jquery.min.js')}}"></script>
-            <script src="{{asset('js/dist/sweetalert2.all.min.js')}}"></script>
-            <link rel="stylesheet" href="{{asset('css/main.css')}}">
+            <script type="text/javascript" src="{{version('js/dist/jquery.min.js')}}"></script>
+            <script type="text/javascript" src="{{version('js/dist/sweetalert2.all.min.js')}}"></script>
+            <link rel="stylesheet" href="{{version('css/main.css')}}">
         </head>
         <body>
             <div class="flex justify-center items-center h-screen text-center">
@@ -27,7 +27,7 @@
 
                         <div class="form-group">
                             <label for="total_slots">Total Slots</label>
-                            <input type="text" name="total_slots" id="total_slots" class="form-control" value="{{ 1 }}">
+                            <input type="text" name="total_slots" id="total_slots" class="form-control" value="{{ 15 }}">
                         </div>
 
                         <div class="form-group py-4">
@@ -37,7 +37,7 @@
 
                         <button type="submit" class="grn-btn">Create</button>
                     </form>
-                    <script type="module" src="{{ asset('js/appt/createedit.js') }}"></script>
+                    <script type="text/javascript" src="{{ version('js/appt/createedit.js') }}"></script>
                 </div>
             </div>
         </body>
