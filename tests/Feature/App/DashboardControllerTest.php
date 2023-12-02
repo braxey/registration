@@ -40,12 +40,27 @@ class DashboardControllerTest extends TestCase
     {
         $user = User::factory()->create();
 
+        // no upcoming appointments are walk-in-only
         $response = $this->actingAs($user)->get(route('appointments.index'));
         $response->assertOk();
         $response->assertViewHas('appointments');
 
         $appointments = $response->viewData('appointments');
         $this->assertCount(3, $appointments);
+        $this->assertTrue($appointments->first()->getParsedStartTime() < $appointments->last()->getParsedStartTime());
+
+        $this->assertTrue($appointments->first()->isUpcoming());
+        $this->assertTrue($appointments->last()->isUpcoming());
+
+        // one upcoming appointment is walk-in-only
+        $appointments->last()->setWalkInOnly(true);
+
+        $response = $this->actingAs($user)->get(route('appointments.index'));
+        $response->assertOk();
+        $response->assertViewHas('appointments');
+
+        $appointments = $response->viewData('appointments');
+        $this->assertCount(2, $appointments);
         $this->assertTrue($appointments->first()->getParsedStartTime() < $appointments->last()->getParsedStartTime());
 
         $this->assertTrue($appointments->first()->isUpcoming());

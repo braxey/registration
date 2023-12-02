@@ -120,3 +120,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/cancel-booking', [BookingController::class, 'cancelBooking'])->name('booking.cancel-booking');
     });
 });
+
+// Route::get('/test', function () {
+//     dump(auth()->id());
+// });

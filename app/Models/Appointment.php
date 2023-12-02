@@ -32,6 +32,12 @@ class Appointment extends Model
         return $this->description;
     }
 
+    public function setWalkInOnly(bool $walkInOnly)
+    {
+        $this->walk_in_only = $walkInOnly;
+        $this->save();
+    }
+
     public function isWalkInOnly(): bool
     {
         return (int) $this->walk_in_only === 1;

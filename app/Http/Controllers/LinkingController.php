@@ -70,6 +70,10 @@ class LinkingController extends Controller
             return response(null, 400);
         }
 
+        if ($walkIn->getAppointmentId() === null) {
+            return response(null, 400);
+        }
+
         $appointment->removeWalkIn($walkIn);
         $walkIn->setAppointmentId(null);
         return redirect()->route('walk-in.show-waitlist');
