@@ -37,19 +37,35 @@ class Organization extends Model
         return !$this->registrationIsOpen();
     }
 
-    public function setRegistration(bool $open)
+    public function openRegistration()
     {
-        $this->registration_open = $open;
+        $this->registration_open = true;
+        $this->save();
+    }
+
+    public function closeRegistration()
+    {
+        $this->registration_open = false;
         $this->save();
     }
 
     public function toggleRegistration()
     {
-        $this->setRegistration(!$this->registrationIsOpen());
+        if ($this->registrationIsOpen()) {
+            $this->closeRegistration();
+        } else {
+            $this->openRegistration();
+        }
     }
 
     public function getMaxSlotsPerUser(): int
     {
         return $this->max_slots_per_user;
+    }
+
+    public function setMaxSlotsPerUser(int $slots)
+    {
+        $this->max_slots_per_user = $slots;
+        $this->save();
     }
 }

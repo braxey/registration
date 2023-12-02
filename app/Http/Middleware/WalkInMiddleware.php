@@ -13,10 +13,14 @@ class WalkInMiddleware
     {
         $walkIn = WalkIn::fromId($request->route('walkInId'));
         if ($walkIn === null) {
-            return response(null, 404);
+            return response('walk-in not found', 404);
         }
 
         $request->offsetSet('walk-in', $walkIn);
+
+        if (session('walk-in-dry-run') === true) {
+            return response('passes walk-in middleware', 202);
+        }
 
         return $next($request);
     }

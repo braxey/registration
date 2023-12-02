@@ -32,6 +32,12 @@ class Appointment extends Model
         return $this->description;
     }
 
+    public function setWalkInOnly(bool $walkInOnly)
+    {
+        $this->walk_in_only = $walkInOnly;
+        $this->save();
+    }
+
     public function isWalkInOnly(): bool
     {
         return (int) $this->walk_in_only === 1;
@@ -79,12 +85,12 @@ class Appointment extends Model
         return !$this->canEdit();
     }
 
-    public function getStartTime(): string
+    public function getStartTime()
     {
         return $this->start_time;
     }
 
-    public function getEndTime(): string
+    public function getEndTime()
     {
         return $this->end_time;
     }
@@ -195,6 +201,21 @@ class Appointment extends Model
     {
         $this->slots_taken -= $removedSlots;
         $this->save();
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'description' => $this->getDescription(),
+            'start_time' => $this->getParsedStartTime(),
+            'end_time' => $this->getParsedEndTime(),
+            'total_slots' => $this->getTotalSlots(),
+            'slots_taken' => $this->getSlotsTaken(),
+            'past_end' => (int) $this->pastEnd(),
+            'status' => $this->getStatus(),
+            'walk_in_only' => (int) $this->isWalkInOnly(),
+        ];
     }
 
     public static function fromId($id): ?Appointment

@@ -89,7 +89,7 @@ class WalkIn extends Model
 
     public function getEmail(): string
     {
-        return $this->email;
+        return $this->email?? '';
     }
 
     public function getAppointmentId(): ?int
@@ -120,6 +120,20 @@ class WalkIn extends Model
             return null;
         }
         return Appointment::fromId($appointmentId);
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'email' => $this->getEmail(),
+            'name' => $this->getName(),
+            'slots' => $this->getNumberOfSlots(),
+            'desired_time' => $this->getDesiredTime(),
+            'appointment_id' => $this->getAppointmentId(),
+            'notified' => (int) $this->wasNotified(),
+            'notes' => $this->getNotes(),
+        ];
     }
 
     public static function fromId($id): ?WalkIn

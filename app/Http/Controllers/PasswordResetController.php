@@ -60,7 +60,7 @@ class PasswordResetController extends Controller
         }
         
         $request->session()->put('email', $email);
-        return response(200);
+        return response(null, 200);
     }
 
     public function verifyToken(Request $request)
@@ -72,7 +72,7 @@ class PasswordResetController extends Controller
             if ($verification->isValidToken($token)) {
                 $verification->verify();
                 $request->session()->put('reset-verified', 1);
-                return response(200);
+                return response(null, 200);
             }
 
             return response()->json(['message' => 'Wrong token'], 400);
@@ -85,9 +85,14 @@ class PasswordResetController extends Controller
     {
         try {
             $email = $request->session()->get('email');
-            $token = PhoneVerification::fromUserEmail($email)->getToken();
+            $resetVerified = $request->session()->get('reset-verified');
+            if ($email === null || $resetVerified !== 0) {
+                return response(null, 401);
+            }
 
+            $token = PhoneVerification::fromUserEmail($email)->getToken();
             $this->emailToken($email, $token);
+
             return view('auth.forgot-pass-verify', [
                 'email' => $email
             ]);
@@ -112,7 +117,7 @@ class PasswordResetController extends Controller
             $user = User::fromEmail($request->session()->get('email'));
             $user->setPassword($payload['password']);
             $request->session()->flush();
-            return response(200);
+            return response(null, 200);
         }
         
         return response(null, 403);
@@ -120,7 +125,7 @@ class PasswordResetController extends Controller
 
     private function emailNewToken(string $email)
     {
-        $token = $this->generateSecureNumericToken();
+        $token = generateSecureNumericToken();
         $this->emailToken($email, $token);
     }
 
@@ -129,13 +134,5 @@ class PasswordResetController extends Controller
         $user = User::fromEmail($email);
         $this->mailer->sendVerificationEmail($email, $token);
         PhoneVerification::logTokenSend($user, $token);
-    }
-
-    private function generateSecureNumericToken($length = 7)
-    {
-        $min = pow(10, $length - 1);
-        $max = pow(10, $length) - 1;
-        $randomNumber = random_int($min, $max);
-        return str_pad($randomNumber, $length, '0', STR_PAD_LEFT);
     }
 }

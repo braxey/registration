@@ -28,7 +28,7 @@ class OrganizationController extends Controller
 
         $validatedData = $request->validate([
             'org_name'           => 'required|min:1',
-            'max_slots_per_user' => 'required|min:0',
+            'max_slots_per_user' => 'required|min:1|integer',
         ]);
         $organization->update($validatedData);
 
