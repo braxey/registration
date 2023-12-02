@@ -31,4 +31,9 @@ class VerificationEmail extends Mailable
     {
         return $this->token === $token;
     }
+
+    public function getToken(): string
+    {
+        return $this->token;
+    }
 }
