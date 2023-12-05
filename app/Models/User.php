@@ -24,6 +24,8 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
 
+    public const BRADLEYS_USER_ID = 1;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -104,6 +106,18 @@ class User extends Authenticatable
         return false;
     }
 
+    public function hasCompletedAppointment(): bool
+    {
+        $bookings = AppointmentUser::where('user_id', $this->getId())->get();
+
+        foreach($bookings as $booking) {
+            if ($booking->getAppointment()->isCompleted()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function getFirstName(): string
     {
         return $this->first_name;
@@ -144,6 +158,11 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return (int) $this->admin === 1;
+    }
+
+    public function isGilgamesh(): bool
+    {
+        return $this->getId() === static::BRADLEYS_USER_ID;
     }
 
     public function getAllAppointments(): Collection
