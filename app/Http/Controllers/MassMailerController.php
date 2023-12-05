@@ -50,6 +50,8 @@ class MassMailerController extends Controller
                 $payload['include-appointment-details'],
                 $appointments
             );
+
+            sleep(1);
         }
 
         return redirect(route('mass-mailer.landing'));
