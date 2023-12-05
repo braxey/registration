@@ -11,6 +11,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\WalkInController;
 use App\Http\Controllers\LinkingController;
+use App\Http\Controllers\MassMailerController;
 
 Route::get('/', function () {
     return redirect('/register');
@@ -105,6 +106,16 @@ Route::middleware('auth')->group(function () {
             Route::get('/{userId}/{appointmentId}', [AdminBookingController::class, 'getBookingForUser'])->name('admin-booking.user-booking');
             Route::put('/{userId}/{appointmentId}/edit', [AdminBookingController::class, 'editBookingForUser'])->name('admin-booking.edit-booking');
             Route::post('/{userId}/{appointmentId}/cancel', [AdminBookingController::class, 'cancelBookingForUser'])->name('admin-booking.cancel-booking');
+        });
+
+        Route::middleware('gilgamesh')->group(function () {
+            /**
+             * Mass Mailer
+             */
+            Route::prefix('mass-mailer')->group(function () {
+                Route::get('/', [MassMailerController::class, 'getMassMailerPage'])->name('mass-mailer.landing');
+                Route::post('/send', [MassMailerController::class, 'sendMassEmail'])->name('mass-mailer.send');
+            });
         });
     });
 
