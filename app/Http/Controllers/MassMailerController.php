@@ -51,7 +51,7 @@ class MassMailerController extends Controller
                 $appointments
             );
 
-            sleep(1);
+            sleep(37);
         }
 
         return redirect(route('mass-mailer.landing'));
