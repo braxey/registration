@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         'booking'           => \App\Http\Middleware\BookingMiddleware::class,
         'walk-in'           => \App\Http\Middleware\WalkInMiddleware::class,
         'gilgamesh'         => \App\Http\Middleware\GilgameshCheckMiddleware::class,
+        'timeout'           => \App\Http\Middleware\TimeoutMiddleware::class,
     ];
 }

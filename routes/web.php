@@ -114,7 +114,7 @@ Route::middleware('auth')->group(function () {
              */
             Route::prefix('mass-mailer')->group(function () {
                 Route::get('/', [MassMailerController::class, 'getMassMailerPage'])->name('mass-mailer.landing');
-                Route::post('/send', [MassMailerController::class, 'sendMassEmail'])->name('mass-mailer.send');
+                Route::post('/send', [MassMailerController::class, 'sendMassEmail'])->middleware(['timeout:14400'])->name('mass-mailer.send');
             });
         });
     });
