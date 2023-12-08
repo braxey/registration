@@ -46,6 +46,7 @@
                             <tr class="border border-slate-300">
                                 <th class="border border-slate-300">Start Time</th>
                                 <th class="border border-slate-300">Slots Filled</th>
+                                <th class="border border-slate-300">Showed Up</th>
                                 <th class="border border-slate-300">Status</th>
                                 <th class="border border-slate-300">Actions</th>
                             </tr>
@@ -55,6 +56,7 @@
                                 <tr class="border border-slate-300">
                                     <td class="border border-slate-300">{{ $appointment->getParsedStartTime()->format('F d, Y g:i A') }}</td>
                                     <td class="border border-slate-300">{{ $appointment->getSlotsTaken() }} / {{ $appointment->getTotalSlots() }}</td>
+                                    <td class="border border-slate-300">{{ $appointment->getShowedUp() }}</td>
                                     <td class="border border-slate-300">
                                         <span class="highlight text-white">{{ $appointment->getStatus() }}</span>
                                         {{ $appointment->isWalkInOnly() ? "W-I" : ""}}

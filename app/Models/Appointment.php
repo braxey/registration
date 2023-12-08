@@ -139,6 +139,25 @@ class Appointment extends Model
         return $this->status == 'completed';
     }
 
+    public function getShowedUp(): int
+    {
+        $count = 0;
+
+        AppointmentUser::where('appointment_id', $this->getId())
+            ->get()
+            ->map(function (AppointmentUser $booking) use (&$count) {
+                $count += $booking->getShowedUp();
+            });
+
+        WalkIn::where('appointment_id', $this->getId())
+            ->get()
+            ->map(function (WalkIn $walkIn) use (&$count) {
+                $count += $walkIn->getNumberOfSlots();
+            });
+
+        return $count;
+    }
+
     public function userSlots(int $userId): int
     {
         $booking = AppointmentUser::where('user_id', $userId)->where('appointment_id', $this->getId())->first();
