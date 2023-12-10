@@ -136,6 +136,6 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'max-per-hour' => (int) env('MAX_SENDS_PER_HOUR'),
+    'max-per-hour' => (int) env('MAX_SENDS_PER_HOUR', 100),
 
 ];

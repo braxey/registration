@@ -130,8 +130,4 @@ Route::middleware('auth')->group(function () {
         Route::put('/edit-booking', [BookingController::class, 'editBooking'])->name('booking.edit-booking');
         Route::post('/cancel-booking', [BookingController::class, 'cancelBooking'])->name('booking.cancel-booking');
     });
-
-    Route::get('/test', function () {
-        dump((config('mail.max-per-hour')));
-    });
 });
