@@ -21,7 +21,5 @@
             <br />
             @endforeach
         @endif
-
-        <p>We hope you enjoy Walk Thru Bethlehem!</p>
     </body>
 </html>
