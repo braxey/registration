@@ -37,16 +37,13 @@ class MassMailerController extends Controller
 
             $queuePayload = $payload;
             $appointments = null;
-            $queuePayload['appointmentCount'] = 0;
             $queuePayload['appointmentIds'] = [];
             if ($payload['include-appointment-details']) {
                 $appointments = $this->getAppointments($recipient, $payload['recipients']);
                 $appointments->map(function (Appointment $appointment) use (&$queuePayload) {
                     $queuePayload['appointmentIds'][] = $appointment->getId();
                 });
-                $queuePayload['appointmentCount'] = $appointments->count();
             }
-            $queuePayload['firstName'] = $recipient->getFirstName();
             $queuePayload['userId'] = $recipient->getId();
 
             QueuedEmail::queue($recipient->getEmail(), EmailTypes::CUSTOM, $queuePayload);

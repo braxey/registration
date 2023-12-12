@@ -29,7 +29,11 @@ class CustomEmail extends Mailable
         $this->sub = $payload['subject'];
         $this->mes = $payload['message'];
         $this->includeAppointments = $payload['include-appointment-details'];
-        $this->appointments = Appointment::whereIn('id', $payload['appointmentIds'])->orderBy('start_time')->get();
+        if (empty($payload['appointmentIds'])) {
+            $this->appointments = collect();
+        } else {
+            $this->appointments = Appointment::whereIn('id', $payload['appointmentIds'])->orderBy('start_time')->get();
+        }
     }
 
     public function build()
