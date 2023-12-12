@@ -50,14 +50,6 @@ class MassMailerController extends Controller
             $queuePayload['userId'] = $recipient->getId();
 
             QueuedEmail::queue($recipient->getEmail(), EmailTypes::CUSTOM, $queuePayload);
-
-            // $this->mailer->sendCustomEmail(
-            //     $recipient,
-            //     $payload['subject'],
-            //     $payload['message'],
-            //     $payload['include-appointment-details'],
-            //     $appointments
-            // );
         }
 
         return redirect(route('mass-mailer.landing'));

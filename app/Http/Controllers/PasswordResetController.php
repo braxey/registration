@@ -128,7 +128,6 @@ class PasswordResetController extends Controller
         $user = User::fromEmail($email);
         $payload = ['token' => $token];
         QueuedEmail::queue($email, EmailTypes::VERIFICATION, $payload);
-        // $this->mailer->sendVerificationEmail($email, $token);
         PhoneVerification::logTokenSend($user, $token);
     }
 }
