@@ -4,18 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use App\Services\MailerService;
+use App\Constants\EmailTypes;
 use App\Models\User;
+use App\Models\Appointment;
+use App\Models\QueuedEmail;
 
 
 class MassMailerController extends Controller
 {
-    private $mailer;
-
-    public function __construct(MailerService $mailer)
-    {
-        $this->mailer = $mailer;
-    }
 
     public function getMassMailerPage()
     {
@@ -38,18 +34,30 @@ class MassMailerController extends Controller
 
         $recipientList = $this->getRecipientList($request->get('recipients'));
         foreach ($recipientList as $recipient) {
+
+            $queuePayload = $payload;
             $appointments = null;
+            $queuePayload['appointmentCount'] = 0;
+            $queuePayload['appointmentIds'] = [];
             if ($payload['include-appointment-details']) {
                 $appointments = $this->getAppointments($recipient, $payload['recipients']);
+                $appointments->map(function (Appointment $appointment) use (&$queuePayload) {
+                    $queuePayload['appointmentIds'][] = $appointment->getId();
+                });
+                $queuePayload['appointmentCount'] = $appointments->count();
             }
+            $queuePayload['firstName'] = $recipient->getFirstName();
+            $queuePayload['userId'] = $recipient->getId();
 
-            $this->mailer->sendCustomEmail(
-                $recipient,
-                $payload['subject'],
-                $payload['message'],
-                $payload['include-appointment-details'],
-                $appointments
-            );
+            QueuedEmail::queue($recipient->getEmail(), EmailTypes::CUSTOM, $queuePayload);
+
+            // $this->mailer->sendCustomEmail(
+            //     $recipient,
+            //     $payload['subject'],
+            //     $payload['message'],
+            //     $payload['include-appointment-details'],
+            //     $appointments
+            // );
         }
 
         return redirect(route('mass-mailer.landing'));

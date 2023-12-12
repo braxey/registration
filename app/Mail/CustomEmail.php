@@ -11,6 +11,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use App\Models\User;
+use App\Models\Appointment;
 
 class CustomEmail extends Mailable
 {
@@ -20,15 +21,15 @@ class CustomEmail extends Mailable
     private string $sub;
     private string $message;
     private bool $includeAppointments;
-    private ?Collection $appointments;
+    private Collection $appointments;
 
-    public function __construct(User $recipient, string $subject, string $message, bool $includeAppointments, ?Collection $appointments = null)
+    public function __construct(array $payload)
     {
-        $this->recipient = $recipient;
-        $this->sub = $subject;
-        $this->mes = $message;
-        $this->includeAppointments = $includeAppointments;
-        $this->appointments = $appointments;
+        $this->recipient = User::fromId($payload['userId']);
+        $this->sub = $payload['subject'];
+        $this->mes = $payload['message'];
+        $this->includeAppointments = $payload['include-appointment-details'];
+        $this->appointments = Appointment::whereIn('id', $payload['appointmentIds'])->orderBy('start_time')->get();
     }
 
     public function build()

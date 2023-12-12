@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('appointments:update-status')->everyMinute();
         $schedule->command('notify:upcoming-appointments')->everyMinute();
+        $schedule->command('app:send-queued-emails')->everyMinute();
     }
 
 

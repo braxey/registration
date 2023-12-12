@@ -4,34 +4,55 @@ namespace App\Services;
 
 use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Collection;
+use App\Constants\EmailTypes;
 use App\Mail\NotifyEmail;
 use App\Mail\VerificationEmail;
 use App\Mail\CustomEmail;
-use Illuminate\Support\Collection;
 use App\Models\User;
+use App\Models\QueuedEmail;
+use Carbon\Carbon;
 
 class MailerService
 {
-    public function sendVerificationEmail(string $to, string $token)
+    private function sendVerificationEmail(string $to, array $payload)
     {
-        $mail = new VerificationEmail($token);
+        $mail = new VerificationEmail($payload['token']);
         $this->send($to, $mail);
     }
 
-    public function sendNotificationEmail(string $to, array $payload)
+    private function sendNotificationEmail(string $to, array $payload)
     {
-        $mail = new NotifyEmail($payload['date-time'], $payload['slots'], $payload['name'], $payload['update']);
+        $mail = new NotifyEmail(Carbon::parse($payload['date-time'], 'EST'), $payload['slots'], $payload['name'], $payload['update']);
         $this->send($to, $mail);
     }
 
-    public function sendCustomEmail(User $recipient, string $subject, string $message, bool $includeAppointments, ?Collection $appointments = null)
+    private function sendCustomEmail(string $to, array $payload)
     {
-        $mail = new CustomEmail($recipient, $subject, $message, $includeAppointments, $appointments);
-        $this->send($recipient->getEmail(), $mail);
+        $mail = new CustomEmail($payload);
+        $this->send($to, $mail);
     }
 
     private function send(string $to, Mailable $mail)
     {
         Mail::to($to)->send($mail);
+    }
+
+    public function sendFromQueue(QueuedEmail $queued)
+    {
+        $type = $queued->getEmailType();
+        $to = $queued->getTo();
+        $payload = $queued->getPayload();
+
+        switch ($type) {
+            case EmailTypes::VERIFICATION:
+                return $this->sendVerificationEmail($to, $payload);
+            case EmailTypes::NOTIFICATION:
+                return $this->sendNotificationEmail($to, $payload);
+            case EmailTypes::CUSTOM:
+                return $this->sendCustomEmail($to, $payload);
+            default:
+                return;
+        }
     }
 }

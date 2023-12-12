@@ -29,10 +29,11 @@ class QueuedEmail extends Model
         'sent' => 'boolean',
     ];
 
-    public static function push(string $to, int $type, array $payload): void
+    public static function queue(string $to, int $type, array $payload): void
     {
+        error_log('TO EMAIL: ' . $to);
         $email = new static();
-        $email->to = $to;
+        $email->to_address = $to;
         $email->email_type = $type;
         $email->payload = json_encode($payload);
         $email->save();
@@ -49,6 +50,16 @@ class QueuedEmail extends Model
     }
 
     /**
+     * Check if the email has been queued for over an hour.
+     *
+     * @return bool
+     */
+    public function isQueuedForLessThanAnHour(): bool
+    {
+        return $this->created_at->isAfter(Carbon::now()->subHour());
+    }
+
+    /**
      * Check if the email was sent.
      *
      * @return bool
@@ -56,6 +67,16 @@ class QueuedEmail extends Model
     public function wasSent(): bool
     {
         return (int) $this->sent === 1;
+    }
+
+    /**
+     * Check if the email was not sent.
+     *
+     * @return bool
+     */
+    public function wasNotSent(): bool
+    {
+        return !$this->wasSent();
     }
 
     /**
@@ -86,5 +107,14 @@ class QueuedEmail extends Model
     public function getEmailType(): int
     {
         return $this->email_type;
+    }
+
+    /**
+     * Mark an email as sent.
+     */
+    public function markSent()
+    {
+        $this->sent = true;
+        $this->save();
     }
 }
