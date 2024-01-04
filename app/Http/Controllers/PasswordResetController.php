@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Constants\EmailTypes;
 use App\Models\User;
@@ -129,5 +131,8 @@ class PasswordResetController extends Controller
         $payload = ['token' => $token];
         QueuedEmail::queue($email, EmailTypes::VERIFICATION, $payload);
         PhoneVerification::logTokenSend($user, $token);
+
+        // kick off sending queued emails so verifications get sent as soon as they can
+        Artisan::call('app:send-queued-emails');
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Console\Commands;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Console\Command;
 use App\Services\MailerService;
+use App\Constants\EmailTypes;
 use App\Models\QueuedEmail;
 
 class SendQueuedEmails extends Command
@@ -30,20 +32,28 @@ class SendQueuedEmails extends Command
             return $queued->isQueuedForLessThanAnHour() && $queued->wasSent();
         })->count();
 
-        // send any emails we can
-        $queuedEmails->each(function (QueuedEmail $queued) use (&$sentWithinPastHour, $maxPerHour, $mailer) {
+        Log::info("SENT IN PAST HOUR: $sentWithinPastHour");
+
+        // send any emails we can, prioritizing verification emails
+        $queuedEmails->filter(function (QueuedEmail $queued) {
+            return $queued->wasNotSent();
+        })->sortByDesc(function (QueuedEmail $queued) {
+            return $queued->getEmailType() === EmailTypes::VERIFICATION ? 1 : 0;
+        })->each(function (QueuedEmail $queued) use (&$sentWithinPastHour, $maxPerHour, $mailer) {
             if ($sentWithinPastHour >= $maxPerHour) {
                 return false;
             }
 
-            if ($queued->wasNotSent()) {
-                $mailer->sendFromQueue($queued);
-                $queued->markSent();
-            }
+            $mailer->sendFromQueue($queued);
+            $queued->markSent();
+            $sentWithinPastHour++;
+            Log::info("payload: " . json_encode($queued->getPayload()));
         });
 
         // delete items queued for over an hour that were already sent
-        $queuedEmails->each(function (QueuedEmail $queued) {
+        $queuedEmails->filter(function (QueuedEmail $queued) {
+            return $queued->wasSent();
+        })->each(function (QueuedEmail $queued) {
             if ($queued->isQueuedForLessThanAnHour()) {
                 return false;
             }
@@ -52,5 +62,7 @@ class SendQueuedEmails extends Command
                 $queued->delete();
             }
         });
+
+        Log::info("SENT IN PAST HOUR: $sentWithinPastHour");
     }
 }
