@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Support\Facades\Log;
 use Illuminate\Console\Command;
 use App\Services\MailerService;
 use App\Constants\EmailTypes;
@@ -32,8 +31,6 @@ class SendQueuedEmails extends Command
             return $queued->isQueuedForLessThanAnHour() && $queued->wasSent();
         })->count();
 
-        Log::info("SENT IN PAST HOUR: $sentWithinPastHour");
-
         // send any emails we can, prioritizing verification emails
         $queuedEmails->filter(function (QueuedEmail $queued) {
             return $queued->wasNotSent();
@@ -47,7 +44,6 @@ class SendQueuedEmails extends Command
             $mailer->sendFromQueue($queued);
             $queued->markSent();
             $sentWithinPastHour++;
-            Log::info("payload: " . json_encode($queued->getPayload()));
         });
 
         // delete items queued for over an hour that were already sent
@@ -62,7 +58,5 @@ class SendQueuedEmails extends Command
                 $queued->delete();
             }
         });
-
-        Log::info("SENT IN PAST HOUR: $sentWithinPastHour");
     }
 }
