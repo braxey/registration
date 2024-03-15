@@ -2,16 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Http\Request;
 use App\Constants\EmailTypes;
 use App\Models\User;
 use App\Models\PhoneVerification;
 use App\Models\QueuedEmail;
+use App\Services\QueueService;
 
 class PasswordResetController extends Controller
 {
     private const MINIMUM_PASSWORD_LENGTH = 8;
+
+    private QueueService $queueService;
+
+    public function __construct(QueueService $queueService)
+    {
+        $this->queueService = $queueService;
+    }
 
     public function getForgotPasswordPage()
     {
@@ -132,6 +139,6 @@ class PasswordResetController extends Controller
         PhoneVerification::logTokenSend($user, $token);
 
         // kick off sending queued emails so verifications get sent as soon as they can
-        Artisan::call('app:send-queued-emails');
+        $this->queueService->handleQueueDispatch();
     }
 }

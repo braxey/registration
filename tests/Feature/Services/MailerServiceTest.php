@@ -1,16 +1,21 @@
 <?php
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Mail\MailableFake;
+use App\Models\QueuedEmail;
 use App\Services\MailerService;
 use App\Mail\NotifyEmail;
 use App\Mail\VerificationEmail;
+use App\Constants\EmailTypes;
 use Tests\TestCase;
 use Faker\Factory as FakerFactory;
 use Carbon\Carbon;
 
 class MailerServiceTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected $mailer;
 
     protected $faker;
@@ -19,7 +24,7 @@ class MailerServiceTest extends TestCase
     {
         parent::setUp();
         Mail::fake();
-        $this->mailer = new MailerService();
+        $this->mailer = app(MailerService::class);
         $this->faker = FakerFactory::create();
     }
 
@@ -27,7 +32,12 @@ class MailerServiceTest extends TestCase
     {
         $token = generateSecureNumericToken();
         $to = $this->faker->email;
-        $this->mailer->sendVerificationEmail($to, $token);
+
+        $payload = ['token' => $token];
+        QueuedEmail::queue($to, EmailTypes::VERIFICATION, $payload);
+
+        $queuedEmail = QueuedEmail::orderByDesc('id')->first();
+        $this->mailer->sendFromQueue($queuedEmail);
 
         Mail::assertSent(VerificationEmail::class, function ($mail) use ($to, $token) {
             $this->assertTrue($mail instanceof VerificationEmail);
@@ -46,7 +56,10 @@ class MailerServiceTest extends TestCase
             'update'    => $this->faker->boolean,
         ];
 
-        $this->mailer->sendNotificationEmail($to, $payload);
+        QueuedEmail::queue($to, EmailTypes::NOTIFICATION, $payload);
+
+        $queuedEmail = QueuedEmail::orderByDesc('id')->first();
+        $this->mailer->sendFromQueue($queuedEmail);
 
         Mail::assertSent(NotifyEmail::class, function ($mail) use ($to, $payload) {
             $this->assertTrue($mail instanceof NotifyEmail);

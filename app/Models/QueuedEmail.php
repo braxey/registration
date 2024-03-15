@@ -31,7 +31,6 @@ class QueuedEmail extends Model
 
     public static function queue(string $to, int $type, array $payload): void
     {
-        error_log('TO EMAIL: ' . $to);
         $email = new static();
         $email->to_address = $to;
         $email->email_type = $type;
@@ -40,23 +39,13 @@ class QueuedEmail extends Model
     }
 
     /**
-     * Check if the email has been queued for over an hour.
+     * Check if the email was sent less than an hour ago.
      *
      * @return bool
      */
-    public function isQueuedForOverAnHour(): bool
+    public function wasSentLessThanAnHourAgo(): bool
     {
-        return $this->created_at->isBefore(Carbon::now()->subHour());
-    }
-
-    /**
-     * Check if the email has been queued for over an hour.
-     *
-     * @return bool
-     */
-    public function isQueuedForLessThanAnHour(): bool
-    {
-        return $this->created_at->isAfter(Carbon::now()->subHour());
+        return $this->getParsedSentTime()->gte(Carbon::now('EST')->subHour());
     }
 
     /**
@@ -77,6 +66,22 @@ class QueuedEmail extends Model
     public function wasNotSent(): bool
     {
         return !$this->wasSent();
+    }
+
+    /**
+     * @return string
+     */
+    public function getSentTime()
+    {
+        return $this->sent_at;
+    }
+
+    /**
+     * @return Carbon
+     */
+    public function getParsedSentTime()
+    {
+        return Carbon::parse($this->getSentTime(), 'EST');
     }
 
     /**
@@ -115,6 +120,7 @@ class QueuedEmail extends Model
     public function markSent()
     {
         $this->sent = true;
+        $this->sent_at = Carbon::now('EST');
         $this->save();
     }
 }
