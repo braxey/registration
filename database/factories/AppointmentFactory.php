@@ -34,7 +34,41 @@ class AppointmentFactory extends Factory
     public function todayAtHour(int $hour)
     {
         $startTime = Carbon::now('EST')->setTime($hour, 0, 0);
-        $endTime = $startTime->addHours(1);
+        $endTime = clone $startTime;
+        $endTime->modify('+1 hour');
+        return $this->state([
+            'start_time' => $startTime,
+            'end_time'   => $endTime
+        ]);
+    }
+
+    public function withinTheNextHour()
+    {
+        $startTime = Carbon::now('EST')->addMinutes(20);
+        $endTime = clone $startTime;
+        $endTime->modify('+1 hour');
+        return $this->state([
+            'start_time' => $startTime,
+            'end_time'   => $endTime
+        ]);
+    }
+
+    public function inProgress()
+    {
+        $startTime = Carbon::now('EST')->subMinutes(20);
+        $endTime = clone $startTime;
+        $endTime->modify('+1 hour');
+        return $this->state([
+            'start_time' => $startTime,
+            'end_time'   => $endTime
+        ]);
+    }
+
+    public function pastEnd()
+    {
+        $startTime = Carbon::now('EST')->subHours(3);
+        $endTime = clone $startTime;
+        $endTime->modify('+1 hour');
         return $this->state([
             'start_time' => $startTime,
             'end_time'   => $endTime

@@ -15,7 +15,7 @@ class QueuedEmailFactory extends Factory
     {
         return [
             'to_address' => $this->faker->email,
-            'created_at' => $this->faker->dateTimeBetween('-1 hour', 'now'),
+            'created_at' => $this->faker->dateTimeBetween('-1 day', 'now'),
             'sent'       => 0,
             'email_type' => EmailTypes::NOTIFICATION,
             'payload'    => json_encode([

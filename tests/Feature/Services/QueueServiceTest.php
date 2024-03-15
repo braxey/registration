@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Feature;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Mail\MailableFake;
