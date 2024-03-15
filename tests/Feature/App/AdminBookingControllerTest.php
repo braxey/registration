@@ -9,4 +9,9 @@ use Tests\TestCase;
 class AdminBookingControllerTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function testTrueIsTrue()
+    {
+        $this->assertTrue(true);
+    }
 }
