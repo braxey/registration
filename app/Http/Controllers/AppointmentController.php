@@ -24,7 +24,7 @@ class AppointmentController extends Controller
         ]);
 
         $data = array_merge($validatedData, [
-            'end_time'     => Carbon::parse($validatedData['start_time'])->addHours(1)->format('Y-m-d\TH:i'),
+            'end_time'     => Carbon::parse($validatedData['start_time'], 'EST')->addHours(1)->format('Y-m-d\TH:i'),
             'walk_in_only' => $request->input('walk-in-only') === "on"
         ]);
         
