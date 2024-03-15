@@ -53,7 +53,7 @@ class NotifyUpcomingAppointmentsCommand extends Command
                         try {
                             if ($walkIn->providedEmail()) {
                                 $payload = [
-                                    'date-time' => $appointment->getParsedStartTime(),
+                                    'date-time' => $appointment->getParsedStartTime()->toIso8601String(),
                                     'slots'     => $walkIn->getNumberOfSlots(),
                                     'name'      => $walkIn->getName(),
                                     'update'    => false,
