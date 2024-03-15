@@ -4,5 +4,5 @@ namespace App\Constants;
 
 class LogIdentifiers
 {
-    const NOTIFY_COMMAND = "NOTIFY COMMAND -- ";
+    public const NOTIFY_COMMAND = "NOTIFY COMMAND";
 }

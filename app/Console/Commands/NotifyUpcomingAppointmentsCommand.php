@@ -9,10 +9,10 @@ use App\Models\User;
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
 use App\Models\WalkIn;
+use App\Models\Logger;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Log;
 
 use App\Mail\NotifyEmail;
 
@@ -43,7 +43,7 @@ class NotifyUpcomingAppointmentsCommand extends Command
                                 $booking->markAsNotified();
                             }
                         } catch (Exception $e) {
-                            Log::error(LogIdentifiers::NOTIFY_COMMAND . $e->getMessage());
+                            Logger::error(LogIdentifiers::NOTIFY_COMMAND, $e->getMessage());
                         }
                     }
                 });
@@ -62,7 +62,7 @@ class NotifyUpcomingAppointmentsCommand extends Command
                             }
                             $walkIn->markAsNotified();
                         } catch (Exception $e) {
-                            Log::error(LogIdentifiers::NOTIFY_COMMAND . $e->getMessage());
+                            Logger::error(LogIdentifiers::NOTIFY_COMMAND, $e->getMessage());
                         }
                     }
                 });
