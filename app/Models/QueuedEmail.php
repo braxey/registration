@@ -29,15 +29,6 @@ class QueuedEmail extends Model
         'sent' => 'boolean',
     ];
 
-    public static function queue(string $to, int $type, array $payload): void
-    {
-        $email = new static();
-        $email->to_address = $to;
-        $email->email_type = $type;
-        $email->payload = json_encode($payload);
-        $email->save();
-    }
-
     /**
      * Check if the email was sent less than an hour ago.
      *

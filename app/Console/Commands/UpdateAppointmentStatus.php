@@ -16,18 +16,19 @@ class UpdateAppointmentStatus extends Command
 
     public function handle()
     {
-        $appointments = Appointment::all();
-        $now = now('EST');
+        $appointments = Appointment::whereNot('status', 'completed')->get();
+
+        $now = Carbon::now('EST');
         foreach ($appointments as $appointment) {
-            if ($appointment->getParsedStartTime() > $now){
+            if ($appointment->getParsedStartTime()->gt($now)){
                 if (!$appointment->isUpcoming()) {
                     $appointment->setStatus('upcoming');
                 }
-            } else if ($appointment->getParsedEndTime() > $now){
+            } else if ($appointment->getParsedEndTime()->gt($now)){
                 if (!$appointment->isInProgress()) {
                     $appointment->setStatus('in progress');
                 }
-            } else if ($appointment->getParsedEndTime() < $now) { 
+            } else if ($appointment->getParsedEndTime()->lt($now)) { 
                 if (!$appointment->pastEnd()) {
                     $appointment->setStatus('completed');
                     $bookings = $appointment->getBookings();

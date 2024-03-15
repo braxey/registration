@@ -101,7 +101,8 @@ Route::middleware('auth')->group(function () {
          * Admin Booking Edit for User
          */
         Route::prefix('admin-user')->group(function () {
-            Route::get('/', [AdminBookingController::class, 'getAdminUserLookupPage'])->name('admin-booking.lookup');
+            Route::get('/', [AdminBookingController::class, 'getAdminUserLookupPage'])->name('admin-booking.get-lookup');
+            Route::post('/user-lookup', [AdminBookingController::class, 'lookupUser'])->name('admin-booking.lookup');
             Route::get('/{userId}', [AdminBookingController::class, 'getUsersUpcomingBookings'])->name('admin-booking.user');
             Route::get('/{userId}/{appointmentId}', [AdminBookingController::class, 'getBookingForUser'])->name('admin-booking.user-booking');
             Route::put('/{userId}/{appointmentId}/edit', [AdminBookingController::class, 'editBookingForUser'])->name('admin-booking.edit-booking');

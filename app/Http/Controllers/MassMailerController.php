@@ -7,11 +7,18 @@ use Illuminate\Support\Collection;
 use App\Constants\EmailTypes;
 use App\Models\User;
 use App\Models\Appointment;
-use App\Models\QueuedEmail;
+use App\Services\QueueService;
 
 
 class MassMailerController extends Controller
 {
+
+    protected QueueService $queueService;
+
+    public function __construct(QueueService $queueService)
+    {
+        $this->queueService = $queueService;
+    }
 
     public function getMassMailerPage()
     {
@@ -46,7 +53,7 @@ class MassMailerController extends Controller
             }
             $queuePayload['userId'] = $recipient->getId();
 
-            QueuedEmail::queue($recipient->getEmail(), EmailTypes::CUSTOM, $queuePayload);
+            $this->queueService->push($recipient->getEmail(), EmailTypes::CUSTOM, $queuePayload);
         }
 
         return redirect(route('mass-mailer.landing'));

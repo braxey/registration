@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Constants\EmailTypes;
 use App\Models\User;
 use App\Models\PhoneVerification;
-use App\Models\QueuedEmail;
 use App\Services\QueueService;
 
 class PasswordResetController extends Controller
@@ -135,7 +134,7 @@ class PasswordResetController extends Controller
     {
         $user = User::fromEmail($email);
         $payload = ['token' => $token];
-        QueuedEmail::queue($email, EmailTypes::VERIFICATION, $payload);
+        $this->queueService->push($email, EmailTypes::VERIFICATION, $payload);
         PhoneVerification::logTokenSend($user, $token);
 
         // kick off sending queued emails so verifications get sent as soon as they can

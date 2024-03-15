@@ -2,16 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use libphonenumber\PhoneNumber;
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberUtil;
 
-class Phone extends Model
+class Phone
 {
-    use HasFactory;
-
     protected string $locale;
     protected string $originalNumber;
     protected ?PhoneNumber $parsedNumber;

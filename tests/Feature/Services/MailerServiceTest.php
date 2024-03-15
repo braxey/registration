@@ -1,10 +1,13 @@
 <?php
 
+namespace Tests\Feature;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Mail\MailableFake;
 use App\Models\QueuedEmail;
 use App\Services\MailerService;
+use App\Services\QueueService;
 use App\Mail\NotifyEmail;
 use App\Mail\VerificationEmail;
 use App\Constants\EmailTypes;
@@ -16,7 +19,9 @@ class MailerServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $mailer;
+    protected MailerService $mailer;
+
+    protected QueueService $queueService;
 
     protected $faker;
 
@@ -25,6 +30,7 @@ class MailerServiceTest extends TestCase
         parent::setUp();
         Mail::fake();
         $this->mailer = app(MailerService::class);
+        $this->queueService = app(QueueService::class);
         $this->faker = FakerFactory::create();
     }
 
@@ -34,7 +40,7 @@ class MailerServiceTest extends TestCase
         $to = $this->faker->email;
 
         $payload = ['token' => $token];
-        QueuedEmail::queue($to, EmailTypes::VERIFICATION, $payload);
+        $this->queueService->push($to, EmailTypes::VERIFICATION, $payload);
 
         $queuedEmail = QueuedEmail::orderByDesc('id')->first();
         $this->mailer->sendFromQueue($queuedEmail);
@@ -56,7 +62,7 @@ class MailerServiceTest extends TestCase
             'update'    => $this->faker->boolean,
         ];
 
-        QueuedEmail::queue($to, EmailTypes::NOTIFICATION, $payload);
+        $this->queueService->push($to, EmailTypes::NOTIFICATION, $payload);
 
         $queuedEmail = QueuedEmail::orderByDesc('id')->first();
         $this->mailer->sendFromQueue($queuedEmail);
