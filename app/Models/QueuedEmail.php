@@ -31,7 +31,6 @@ class QueuedEmail extends Model
 
     public static function queue(string $to, int $type, array $payload): void
     {
-        error_log('TO EMAIL: ' . $to);
         $email = new static();
         $email->to_address = $to;
         $email->email_type = $type;
