@@ -1,7 +1,10 @@
-on: push
+on:
+  push:
+    - 'master'
+    - 'release*'
 name: CI
 jobs:
-  phpunit:
+  build-and-test:
     runs-on: ubuntu-latest
     container:
       image: kirschbaumdevelopment/laravel-test-runner:8.1
