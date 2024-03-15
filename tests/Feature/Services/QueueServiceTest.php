@@ -28,6 +28,7 @@ class QueueServiceTest extends TestCase
         $this->queueService = app(QueueService::class);
         $this->faker = FakerFactory::create();
         $this->user = User::factory()->create();
+        config(['mail.max-per-hour' => 10]); // set a rate limit of 10 emails/hr
     }
 
     public function testQueueServiceCanHandleAnEmptyQueue()
@@ -38,9 +39,9 @@ class QueueServiceTest extends TestCase
 
     public function testQueueServiceCanDispatchWithAllEmailTypes()
     {
-        QueuedEmail::factory()->create(); // default is a notification email
-        QueuedEmail::factory()->asVerificationEmail()->create();
-        QueuedEmail::factory()->asCustomEmail($this->user->getId())->create();
+        $this->seedNotificationEmails(1);
+        $this->seedVerificationEmails(1);
+        $this->seedCustomEmails(1);
 
         $this->queueService->handleQueueDispatch();
 
@@ -49,10 +50,103 @@ class QueueServiceTest extends TestCase
         $this->assertCount(3, $queuedEmails->where('sent', 1)); // sent records
     }
 
-    // test emails of the same type are sent based on time queued
-    
-    // test queue service respects rate limit
-    // test queue service favors verification emails
+    public function testQueueServiceRespectsRateLimit()
+    {
+        $this->seedNotificationEmails(5);
+        $this->seedVerificationEmails(5);
+        $this->seedCustomEmails(5);
+
+        $this->queueService->handleQueueDispatch();
+
+        $queuedEmails = QueuedEmail::all();
+        $this->assertCount(10, $queuedEmails->where('sent', 1));
+        $this->assertCount(5, $queuedEmails->where('sent', 0));
+
+        // dispatching again should have no affect
+        $this->queueService->handleQueueDispatch();
+
+        $queuedEmails = QueuedEmail::all();
+        $this->assertCount(10, $queuedEmails->where('sent', 1));
+        $this->assertCount(5, $queuedEmails->where('sent', 0));
+    }
+
+    public function testEmailsOfTheSameTypeAreSentBasedOnTimeQueued()
+    {
+        config(['mail.max-per-hour' => 1]); // simulate rate of 1 emails/hr so we can see the send order
+
+        $this->seedNotificationEmails(25);
+        $expectedSendOrder = QueuedEmail::orderBy('created_at')->get();
+
+        foreach ($expectedSendOrder as $expected) {
+            $this->queueService->handleQueueDispatch();
+
+            // make sure we're sending in the expected order
+            $entireQueue = QueuedEmail::all();
+            $sentEmail = $entireQueue->where('sent', 1)->first();
+            $this->assertCount(1, $entireQueue->where('sent', 1));
+            $this->assertCount($entireQueue->count() - 1, $entireQueue->where('sent', 0));
+            $this->assertSame($expected->id, $sentEmail->id);
+
+            // delete the sent email so it doesn't seem like our rate limit was hit
+            $sentEmail->delete();
+        }
+    }
+
+    public function testQueueServiceFavorsVerificationEmails()
+    {
+        $this->seedNotificationEmails(9);
+        $this->seedVerificationEmails(9);
+        $this->seedCustomEmails(9);
+
+        $this->queueService->handleQueueDispatch();
+
+        $queuedEmails = QueuedEmail::all();
+        $sentEmails = $queuedEmails->where('sent', 1);
+        $this->assertCount(10, $sentEmails); // 10 emails sent
+        $this->assertCount(9, $sentEmails->where('email_type', EmailTypes::VERIFICATION)); // all the verification emails sent
+    }
+
     // test queued emails over an hour arent deleted if they weren't sent
+    public function testQueuedEmailsOverAnHourArentDeletedIfTheyWerentSent()
+    {
+        // config(['mail.max-per-hour' => 2]);
+
+        // QueuedEmail::factory()->create();
+        // QueuedEmail::factory()->asQueuedOverAnHourAgo()->create();
+        // QueuedEmail::factory()->asQueuedOverAnHourAgo()->create();
+
+        // $this->queueService->handleQueueDispatch();
+
+        // $queuedEmails = QueuedEmail::all();
+        // $sentEmails = $queuedEmails->where('sent', 1);
+
+        // // 2 should've been sent, but the sent email queued over an hour ago should've been deleted
+        // $this->assertCount(10, $sentEmails);
+        // $this->assertCount(9, $sentEmails->where('email_type', EmailTypes::VERIFICATION));
+
+        // however, the email queued over an hour ago
+    }
+
     // test unneeded queued emails are purged
+
+    private function seedNotificationEmails(int $count): void
+    {
+        for ($i = 0; $i < $count; $i++) {
+            QueuedEmail::factory()->asNotificationEmail()->create();
+        }
+    }
+
+    private function seedVerificationEmails(int $count): void
+    {
+        for ($i = 0; $i < $count; $i++) {
+            QueuedEmail::factory()->asVerificationEmail()->create();
+        }
+    }
+
+    private function seedCustomEmails(int $count): void
+    {
+        for ($i = 0; $i < $count; $i++) {
+            QueuedEmail::factory()->asCustomEmail($this->user->getId())->create();
+        }
+    }
 }

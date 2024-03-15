@@ -15,6 +15,7 @@ class QueuedEmailFactory extends Factory
     {
         return [
             'to_address' => $this->faker->email,
+            'created_at' => $this->faker->dateTimeBetween('-1 hour', 'now'),
             'sent'       => 0,
             'email_type' => EmailTypes::NOTIFICATION,
             'payload'    => json_encode([
@@ -24,6 +25,13 @@ class QueuedEmailFactory extends Factory
                 'update'    => $this->faker->boolean,
             ]),
         ];
+    }
+
+    public function asNotificationEmail()
+    {
+        return $this->state([
+            'email_type' => EmailTypes::NOTIFICATION
+        ]);
     }
 
     public function asVerificationEmail()
@@ -59,7 +67,7 @@ class QueuedEmailFactory extends Factory
     public function asQueuedOverAnHourAgo()
     {
         return $this->state([
-            'created_at' => now('EST')->modify('-2 hours')
+            'created_at' => $this->faker->dateTimeBetween('-10 hours', '-1 hour')
         ]);
     }
 }
