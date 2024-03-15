@@ -2,7 +2,7 @@ on:
   push:
     branches:
       - 'master'
-      - 'release*'
+      - 'release/*'
 name: CI
 jobs:
   build-and-test:
@@ -25,14 +25,14 @@ jobs:
       with:
         fetch-depth: 1
  
-    - name: Install composer dependencies
+    - name: install composer dependencies
       run: |
         composer install --no-scripts
  
-    - name: Prepare Laravel Application
+    - name: prepare laravel app
       run: |
         cp .env.ci .env
         php artisan key:generate
  
-    - name: Run Testsuite
+    - name: run tests
       run: vendor/bin/phpunit tests/
