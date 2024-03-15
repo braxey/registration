@@ -4,12 +4,12 @@ namespace App\Console\Commands;
 
 use App\Constants\EmailTypes;
 use App\Constants\LogIdentifiers;
-use App\Models\QueuedEmail;
 use App\Models\User;
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
 use App\Models\WalkIn;
 use App\Models\Logger;
+use App\Services\QueueService;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -21,6 +21,14 @@ class NotifyUpcomingAppointmentsCommand extends Command
     protected $signature = 'notify:upcoming-appointments';
 
     protected $description = 'Notify users about upcoming appointments';
+
+    protected QueueService $queueService;
+
+    public function __construct(QueueService $queueService)
+    {
+        parent::__construct();
+        $this->queueService = $queueService;
+    }
 
     public function handle()
     {
@@ -39,7 +47,9 @@ class NotifyUpcomingAppointmentsCommand extends Command
                                     'name'      => $user->getFirstName(),
                                     'update'    => false,
                                 ];
-                                QueuedEmail::queue($user->getEmail(), EmailTypes::NOTIFICATION, $payload);
+
+                                $this->queueService->push($user->getEmail(), EmailTypes::NOTIFICATION, $payload);
+
                                 $booking->markAsNotified();
                             }
                         } catch (Exception $e) {
@@ -58,7 +68,9 @@ class NotifyUpcomingAppointmentsCommand extends Command
                                     'name'      => $walkIn->getName(),
                                     'update'    => false,
                                 ];
-                                QueuedEmail::queue($walkIn->getEmail(), EmailTypes::NOTIFICATION, $payload);
+
+                                $this->queueService->push($walkIn->getEmail(), EmailTypes::NOTIFICATION, $payload);
+
                             }
                             $walkIn->markAsNotified();
                         } catch (Exception $e) {
