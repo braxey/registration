@@ -53,6 +53,28 @@ class AppointmentFactory extends Factory
         ]);
     }
 
+    public function inProgress()
+    {
+        $startTime = Carbon::now('EST')->subMinutes(20);
+        $endTime = clone $startTime;
+        $endTime->modify('+1 hour');
+        return $this->state([
+            'start_time' => $startTime,
+            'end_time'   => $endTime
+        ]);
+    }
+
+    public function pastEnd()
+    {
+        $startTime = Carbon::now('EST')->subHours(3);
+        $endTime = clone $startTime;
+        $endTime->modify('+1 hour');
+        return $this->state([
+            'start_time' => $startTime,
+            'end_time'   => $endTime
+        ]);
+    }
+
     public function asWalkInOnly(bool $walkInOnly = true)
     {
         return $this->state([
