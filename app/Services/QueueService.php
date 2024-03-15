@@ -19,6 +19,15 @@ class QueueService
         $this->mailer = $mailer;
     }
 
+    public function push(string $to, int $type, array $payload): void
+    {
+        $email = new QueuedEmail();
+        $email->to_address = $to;
+        $email->email_type = $type;
+        $email->payload = json_encode($payload);
+        $email->save();
+    }
+
     public function handleQueueDispatch(): void
     {
         $this->setQueuedEmails();
