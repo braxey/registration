@@ -33,7 +33,7 @@ class QueueServiceTest extends TestCase
     public function testQueueServiceCanHandleAnEmptyQueue()
     {
         $this->queueService->handleQueueDispatch();
-        $this->assertSame(0, QueuedEmail::all()->count());
+        $this->assertCount(0, QueuedEmail::all());
     }
 
     public function testQueueServiceCanDispatchWithAllEmailTypes()
@@ -45,14 +45,12 @@ class QueueServiceTest extends TestCase
         $this->queueService->handleQueueDispatch();
 
         $queuedEmails = QueuedEmail::all();
-        $this->assertSame(3, $queuedEmails->count()); // total records
-        $this->assertSame(3, $queuedEmails->where('sent', 1)->count()); // sent records
+        $this->assertCount(3, $queuedEmails); // total records
+        $this->assertCount(3, $queuedEmails->where('sent', 1)); // sent records
     }
 
     // test emails of the same type are sent based on time queued
     
-
-
     // test queue service respects rate limit
     // test queue service favors verification emails
     // test queued emails over an hour arent deleted if they weren't sent
