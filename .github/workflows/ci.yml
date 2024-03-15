@@ -1,7 +1,8 @@
 on:
   push:
-    - 'master'
-    - 'release*'
+    branches:
+      - 'master'
+      - 'release*'
 name: CI
 jobs:
   build-and-test:
