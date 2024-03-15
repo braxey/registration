@@ -77,11 +77,9 @@ class QueueService
         $this->queuedEmails->filter(function (QueuedEmail $queued) {
             return $queued->wasSent();
         })->each(function (QueuedEmail $queued) {
-            if ($queued->wasSentLessThanAnHourAgo()) {
-                return false;
+            if (! $queued->wasSentLessThanAnHourAgo()) {
+                $queued->delete();
             }
-
-            $queued->delete();
         });
     }
 }
