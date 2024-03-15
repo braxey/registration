@@ -1,36 +1,24 @@
-name: Run Tests
+name: Run Tests in Docker Container
 
-on:
-  push:
-    branches:
-      - '*'
+on: push
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: root_password
-          MYSQL_DATABASE: testing
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Check out code
+        uses: actions/checkout@v2
 
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.1'
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Build Docker image
+        run: docker build . -t app:latest
 
-    - name: Run tests
-      run: php artisan test
+      - name: Run tests in Docker container
+        run: |
+          docker run --rm \
+            -v $PWD:/app \
+            app \
+            php artisan test
