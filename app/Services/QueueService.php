@@ -2,16 +2,9 @@
 
 namespace App\Services;
 
-use Illuminate\Mail\Mailable;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Collection;
 use App\Constants\EmailTypes;
-use App\Mail\NotifyEmail;
-use App\Mail\VerificationEmail;
-use App\Mail\CustomEmail;
-use App\Models\User;
 use App\Models\QueuedEmail;
-use Carbon\Carbon;
 
 class QueueService
 {
@@ -41,7 +34,7 @@ class QueueService
     private function getNumberOfEmailsSentInThePastHour(): int
     {
         return $this->queuedEmails->filter(function (QueuedEmail $queued) {
-            return $queued->isQueuedForLessThanAnHour() && $queued->wasSent();
+            return $queued->wasSent() && $queued->wasSentLessThanAnHourAgo();
         })->count();
     }
 
@@ -75,13 +68,11 @@ class QueueService
         $this->queuedEmails->filter(function (QueuedEmail $queued) {
             return $queued->wasSent();
         })->each(function (QueuedEmail $queued) {
-            if ($queued->isQueuedForLessThanAnHour()) {
+            if ($queued->wasSentLessThanAnHourAgo()) {
                 return false;
             }
 
-            if ($queued->isQueuedForOverAnHour() && $queued->wasSent()) {
-                $queued->delete();
-            }
+            $queued->delete();
         });
     }
 }

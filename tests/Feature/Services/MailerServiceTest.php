@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Mail\MailableFake;
 use App\Models\QueuedEmail;
@@ -13,6 +14,8 @@ use Carbon\Carbon;
 
 class MailerServiceTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected $mailer;
 
     protected $faker;
@@ -21,7 +24,7 @@ class MailerServiceTest extends TestCase
     {
         parent::setUp();
         Mail::fake();
-        $this->mailer = new MailerService();
+        $this->mailer = app(MailerService::class);
         $this->faker = FakerFactory::create();
     }
 
