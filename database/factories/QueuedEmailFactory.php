@@ -59,15 +59,21 @@ class QueuedEmailFactory extends Factory
 
     public function asSent()
     {
+        $dateTime = $this->faker->dateTimeBetween('-1 hour', 'now');
+
         return $this->state([
-            'sent' => 1
+            'sent' => 1,
+            'sent_at' => $dateTime
         ]);
     }
 
-    public function asQueuedOverAnHourAgo()
+    public function asSentOverAnHourAgo()
     {
+        $dateTime = $this->faker->dateTimeBetween('-10 hours', '-2 hours');
         return $this->state([
-            'created_at' => $this->faker->dateTimeBetween('-10 hours', '-1 hour')
+            'sent' => 1,
+            'sent_at' => $dateTime,
+            'created_at' => $dateTime
         ]);
     }
 }

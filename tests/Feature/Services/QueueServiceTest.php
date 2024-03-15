@@ -106,28 +106,31 @@ class QueueServiceTest extends TestCase
         $this->assertCount(9, $sentEmails->where('email_type', EmailTypes::VERIFICATION)); // all the verification emails sent
     }
 
-    // test queued emails over an hour arent deleted if they weren't sent
-    public function testQueuedEmailsOverAnHourArentDeletedIfTheyWerentSent()
+    // test unneeded queued emails are purged
+    public function testEmailsSentOverAnHourAgoArePurged()
     {
-        // config(['mail.max-per-hour' => 2]);
+        config(['mail.max-per-hour' => 2]);
 
-        // QueuedEmail::factory()->create();
-        // QueuedEmail::factory()->asQueuedOverAnHourAgo()->create();
-        // QueuedEmail::factory()->asQueuedOverAnHourAgo()->create();
+        QueuedEmail::factory()->create();
+        QueuedEmail::factory()->asSent()->create();
+        QueuedEmail::factory()->asSentOverAnHourAgo()->create();
 
-        // $this->queueService->handleQueueDispatch();
+        $this->queueService->handleQueueDispatch();
 
-        // $queuedEmails = QueuedEmail::all();
-        // $sentEmails = $queuedEmails->where('sent', 1);
+        $queuedEmails = QueuedEmail::all();
+        $sentEmails = $queuedEmails->where('sent', 1);
 
-        // // 2 should've been sent, but the sent email queued over an hour ago should've been deleted
-        // $this->assertCount(10, $sentEmails);
-        // $this->assertCount(9, $sentEmails->where('email_type', EmailTypes::VERIFICATION));
+        // all 3 should've been sent, but the email sent over an hour ago should've been deleted
+        $this->assertCount(2, $sentEmails);
 
-        // however, the email queued over an hour ago
+        // see that the email queued over an hour ago was deleted
+        $this->assertCount(2, $queuedEmails);
+        foreach ($queuedEmails as $queuedEmail) {
+            $this->assertTrue($queuedEmail->wasSentLessThanAnHourAgo());
+        }
     }
 
-    // test unneeded queued emails are purged
+    /* ========== HELPERS ========== */
 
     private function seedNotificationEmails(int $count): void
     {
