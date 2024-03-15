@@ -22,12 +22,21 @@ class AdminBookingController extends Controller
 
     public function getAdminUserLookupPage(Request $request)
     {
+        return view('admin-user.lookup');
+    }
+
+    public function lookupUser(Request $request)
+    {
         $name = $request->input('name');
+        if ($name === null) {
+            return '';
+        }
+
         $users = User::where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', "%$name%")
                     ->take(25)
                     ->get();
 
-        return view('admin-user.lookup', [
+        return view('admin-user.lookup-results', [
             'users' => $users
         ]);
     }
