@@ -122,7 +122,8 @@ class BookingController extends Controller
         return redirect()->route('dashboard');
     }
 
-    public function cancelBooking(Request $request){
+    public function cancelBooking(Request $request)
+    {
         $this->appointment = $request->offsetGet('appointment');
         $this->user = $request->offsetGet('user');
 
