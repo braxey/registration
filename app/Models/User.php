@@ -198,7 +198,7 @@ class User extends Authenticatable
                         ->get();
     }
 
-    public static function fromId($id): ?User
+    public static function fromId(int $id): ?User
     {
         return static::where('id', $id)->first();
     }
