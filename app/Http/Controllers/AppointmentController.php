@@ -65,7 +65,7 @@ class AppointmentController extends Controller
 
         AppointmentUser::where('appointment_id', $appointment->getId())
             ->get()
-            ->map(function (AppointmentUser $booking) use ($appointment) {
+            ->each(function (AppointmentUser $booking) use ($appointment) {
                 if (!$appointment->pastEnd()) {
                     $user = $booking->getUser();
                     if ($user !== null) {
@@ -83,9 +83,9 @@ class AppointmentController extends Controller
     {
         AppointmentUser::where('user_id', $user->getId())
             ->get()
-            ->map(function (AppointmentUser $booking) {
+            ->each(function (AppointmentUser $booking) {
                 $appointment = $booking->getAppointment();
-                if ($appointment !== null && !$appointment->pastEnd()) {
+                if ($appointment !== null && $appointment->isUpcoming()) {
                     $appointment->decrementSlotsTaken($booking->getSlotsTaken());
                 }
                 $booking->cancel();

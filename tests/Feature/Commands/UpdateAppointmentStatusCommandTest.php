@@ -38,7 +38,7 @@ class UpdateAppointmentStatusCommandTest extends TestCase
 
     public function testAppointmentsGetUpdatedFromUpcomingToInProgress()
     {
-        $appointment = Appointment::factory()->inProgress()->create();
+        $appointment = Appointment::factory()->withInProgressStartTime()->create();
         $this->assertTrue($appointment->isUpcoming());
 
         Artisan::call(static::COMMAND_SIGNATURE);
@@ -50,7 +50,7 @@ class UpdateAppointmentStatusCommandTest extends TestCase
 
     public function testAppointmentsEndAndUsersGetSlotsBack()
     {
-        $appointment = Appointment::factory()->pastEnd()->create();
+        $appointment = Appointment::factory()->inProgress()->withCompletedStartTime()->create();
         $this->setUpBooking($appointment, 3);
         $this->assertSame(3, $this->user->getCurrentNumberOfSlots());
 

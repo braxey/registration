@@ -25,7 +25,7 @@ class BookingController extends Controller
     public function getBookingPage(Request $request)
     {
         $this->appointment = $request->offsetGet('appointment');
-        $this->user = $request->offsetGet('user');
+        $this->user = $request->offsetGet('sessionUser');
         $booking = AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId());
         if ($booking !== null) {
             return redirect()->route('booking.get-edit-booking', $this->appointment->getId());
@@ -42,7 +42,7 @@ class BookingController extends Controller
     public function book(Request $request)
     {
         $this->appointment = $request->offsetGet('appointment');
-        $this->user = $request->offsetGet('user');
+        $this->user = $request->offsetGet('sessionUser');
 
         $booking = AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId());
         if ($booking !== null) {
@@ -70,7 +70,7 @@ class BookingController extends Controller
     public function getEditBookingPage(Request $request)
     {
         $this->appointment = $request->offsetGet('appointment');
-        $this->user = $request->offsetGet('user');
+        $this->user = $request->offsetGet('sessionUser');
 
         $booking = AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId());
         if ($booking === null) {
@@ -89,7 +89,7 @@ class BookingController extends Controller
     public function editBooking(Request $request)
     {
         $this->appointment = $request->offsetGet('appointment');
-        $this->user = $request->offsetGet('user');
+        $this->user = $request->offsetGet('sessionUser');
 
         $booking = AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId());
         if ($booking === null) {
@@ -125,7 +125,7 @@ class BookingController extends Controller
     public function cancelBooking(Request $request)
     {
         $this->appointment = $request->offsetGet('appointment');
-        $this->user = $request->offsetGet('user');
+        $this->user = $request->offsetGet('sessionUser');
 
         $booking = AppointmentUser::fromUserIdAndAppointmentId($this->user->getId(), $this->appointment->getId());
         if ($booking === null) {
