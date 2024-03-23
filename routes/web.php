@@ -91,10 +91,11 @@ Route::middleware('auth')->group(function () {
          */
         Route::prefix('walk-in/{walkInId}')->middleware('walk-in')->group(function () {
             Route::get('/link-appointment', [LinkingController::class, 'getAppointmentLinkPage'])->name('walk-in.get-link-appointment');
-            Route::post('/{appointmentId}/link-appt', [LinkingController::class, 'linkAppointment'])
-                ->middleware('appointment')->name('walk-in.link-appointment');
-            Route::post('/{appointmentId}/unlink-appointment', [LinkingController::class, 'unlinkAppointment'])
-                ->middleware('appointment')->name('walk-in.unlink-appointment');
+
+            Route::prefix('{appointmentId}')->middleware('appointment')->group(function () {
+                Route::post('/link-appt', [LinkingController::class, 'linkAppointment'])->name('walk-in.link-appointment');
+                Route::post('/unlink-appointment', [LinkingController::class, 'unlinkAppointment'])->name('walk-in.unlink-appointment');
+            });
         });
     
         /**
@@ -106,9 +107,12 @@ Route::middleware('auth')->group(function () {
 
             Route::prefix('{userId}')->middleware('user')->group(function () {
                 Route::get('/', [AdminBookingController::class, 'getUsersUpcomingBookings'])->name('admin-booking.user');
-                Route::get('/{appointmentId}', [AdminBookingController::class, 'getBookingForUser'])->name('admin-booking.user-booking');
-                Route::put('/{appointmentId}/edit', [AdminBookingController::class, 'editBookingForUser'])->name('admin-booking.edit-booking');
-                Route::post('/{appointmentId}/cancel', [AdminBookingController::class, 'cancelBookingForUser'])->name('admin-booking.cancel-booking');
+
+                Route::prefix('{appointmentId}')->middleware('appointment')->group(function () {
+                    Route::get('/', [AdminBookingController::class, 'getBookingForUser'])->name('admin-booking.user-booking');
+                    Route::put('/edit', [AdminBookingController::class, 'editBookingForUser'])->name('admin-booking.edit-booking');
+                    Route::post('/cancel', [AdminBookingController::class, 'cancelBookingForUser'])->name('admin-booking.cancel-booking');
+                });
             });
         });
 
@@ -118,7 +122,7 @@ Route::middleware('auth')->group(function () {
              */
             Route::prefix('mass-mailer')->group(function () {
                 Route::get('/', [MassMailerController::class, 'getMassMailerPage'])->name('mass-mailer.landing');
-                Route::post('/send', [MassMailerController::class, 'sendMassEmail'])->middleware(['timeout:14400'])->name('mass-mailer.send');
+                Route::post('/send', [MassMailerController::class, 'sendMassEmail'])->name('mass-mailer.send');
             });
         });
     });
