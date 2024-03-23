@@ -243,13 +243,4 @@ class BookingControllerTest extends TestCase
             ->post(route('booking.cancel-booking', $this->appointment->getId()))
             ->assertNotFound();
     }
-
-    /* ========== HELPER FUNCTION ========== */
-
-    private function setUpBooking(User $user, Appointment $appointment, int $slots): AppointmentUser
-    {
-        $this->user->incrementSlotsBooked($slots);
-        $this->appointment->incrementSlotsTaken($slots);
-        return AppointmentUser::factory()->withSlots($slots)->forUser($user)->forAppointment($appointment)->create();
-    }
 }

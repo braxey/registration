@@ -71,13 +71,4 @@ class DeleteAccountTest extends TestCase
         $this->assertSame(4, $inProgressAppointment->fresh()->getSlotsTaken());
         $this->assertSame(5, $completedAppointment->fresh()->getSlotsTaken());
     }
-
-    /* ========== HELPER FUNCTION ========== */
-
-    private function setUpBooking(User $user, Appointment $appointment, int $slots): AppointmentUser
-    {
-        $user->incrementSlotsBooked($slots);
-        $appointment->incrementSlotsTaken($slots);
-        return AppointmentUser::factory()->withSlots($slots)->forUser($user)->forAppointment($appointment)->create();
-    }
 }

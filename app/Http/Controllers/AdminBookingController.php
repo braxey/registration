@@ -32,7 +32,7 @@ class AdminBookingController extends Controller
             return '';
         }
 
-        $users = User::where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', "%$name%")
+        $users = User::where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', "%{$name}%")
                     ->take(25)
                     ->get();
 
@@ -43,12 +43,9 @@ class AdminBookingController extends Controller
 
     public function getUsersUpcomingBookings(Request $request)
     {
-        $user = User::fromId($request->route('userId'));
-        if ($user === null) {
-            return response(null, 404);
-        }
-
+        $user = $request->offsetGet('user');
         $appointments = $user->getUpcomingAppointments();
+
         return view('admin-user.user-bookings', [
             'user'         => $user,
             'appointments' => $appointments
@@ -57,11 +54,8 @@ class AdminBookingController extends Controller
 
     public function getBookingForUser(Request $request)
     {
-        $user = User::fromId($request->route('userId'));
-        $appointment = Appointment::fromId($request->route('appointmentId'));
-        if ($user === null || $appointment === null) {
-            return response(null, 404);
-        }
+        $user = $request->offsetGet('user');
+        $appointment = $request->offsetGet('appointment');
 
         return view('admin-user.edit-booking', [
             'user'           => $user,
@@ -75,11 +69,8 @@ class AdminBookingController extends Controller
 
     public function editBookingForUser(Request $request)
     {
-        $user = User::fromId($request->route('userId'));
-        $appointment = Appointment::fromId($request->route('appointmentId'));
-        if ($user === null || $appointment === null) {
-            return response(null, 404);
-        }
+        $user = $request->offsetGet('user');
+        $appointment = $request->offsetGet('appointment');
 
         $booking = AppointmentUser::fromUserIdAndAppointmentId($user->getId(), $appointment->getId());
         if ($booking === null) {
@@ -112,11 +103,8 @@ class AdminBookingController extends Controller
 
     public function cancelBookingForUser(Request $request)
     {
-        $user = User::fromId($request->route('userId'));
-        $appointment = Appointment::fromId($request->route('appointmentId'));
-        if ($user === null || $appointment === null) {
-            return response(null, 404);
-        }
+        $user = $request->offsetGet('user');
+        $appointment = $request->offsetGet('appointment');
 
         $booking = AppointmentUser::fromUserIdAndAppointmentId($user->getId(), $appointment->getId());
         if ($booking === null) {

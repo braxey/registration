@@ -51,7 +51,7 @@ class UpdateAppointmentStatusCommandTest extends TestCase
     public function testAppointmentsEndAndUsersGetSlotsBack()
     {
         $appointment = Appointment::factory()->inProgress()->withCompletedStartTime()->create();
-        $this->setUpBooking($appointment, 3);
+        $this->setUpBooking($this->user, $appointment, 3);
         $this->assertSame(3, $this->user->getCurrentNumberOfSlots());
 
         Artisan::call(static::COMMAND_SIGNATURE);
@@ -62,14 +62,5 @@ class UpdateAppointmentStatusCommandTest extends TestCase
 
         $this->user->refresh();
         $this->assertSame(0, $this->user->getCurrentNumberOfSlots());
-    }
-
-    /* ========== HELPER FUNCTION ========== */
-
-    private function setUpBooking(Appointment $appointment, int $slots): AppointmentUser
-    {
-        $this->user->incrementSlotsBooked($slots);
-        $appointment->incrementSlotsTaken($slots);
-        return AppointmentUser::factory()->withSlots($slots)->forUser($this->user)->forAppointment($appointment)->create();
     }
 }
