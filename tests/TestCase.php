@@ -21,7 +21,9 @@ abstract class TestCase extends BaseTestCase
 
     protected function setUpBooking(User $user, Appointment $appointment, int $slots): AppointmentUser
     {
-        $user->incrementSlotsBooked($slots);
+        if (!$appointment->isCompleted()) {
+            $user->incrementSlotsBooked($slots);
+        }
         $appointment->incrementSlotsTaken($slots);
         return AppointmentUser::factory()->withSlots($slots)->forUser($user)->forAppointment($appointment)->create();
     }

@@ -57,13 +57,18 @@ class AdminBookingController extends Controller
         $user = $request->offsetGet('user');
         $appointment = $request->offsetGet('appointment');
 
+        $booking = AppointmentUser::fromUserIdAndAppointmentId($user->getId(), $appointment->getId());
+        if ($booking === null) {
+            return response(null, 404);
+        }
+
         return view('admin-user.edit-booking', [
             'user'           => $user,
             'appointment'    => $appointment,
             'organization'   => $this->organization,
             'availableSlots' => $appointment->getAvailableSlots(),
             'userSlots'      => $user->getCurrentNumberOfSlots(),
-            'bookingSlots'   => $appointment->userSlots($user->getId())
+            'bookingSlots'   => $booking->getSlotsTaken()
         ]);
     }
 
