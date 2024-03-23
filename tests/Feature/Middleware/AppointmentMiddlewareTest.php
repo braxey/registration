@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Appointment;
@@ -35,7 +34,7 @@ class AppointmentMiddlewareTest extends TestCase
     {
         $this->actingAs($this->admin)
             ->get(route('appointment.get-edit', $this->appointment->getId()))
-            ->assertSuccessful()
+            ->assertStatus(202)
             ->assertSee('passes appointment middleware');
     }
 }
