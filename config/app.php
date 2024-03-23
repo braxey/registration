@@ -187,4 +187,6 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
+    'gilgamesh' => env('GILGAMESH', 1),
+
 ];

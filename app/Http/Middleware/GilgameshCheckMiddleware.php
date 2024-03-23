@@ -14,10 +14,10 @@ class GilgameshCheckMiddleware
         try {
             $user = Auth::user();
             if (!$user->isGilgamesh()) {
-                return response("you don't have access", Response::HTTP_UNAUTHORIZED);
+                return response('you do not have access', Response::HTTP_UNAUTHORIZED);
             }
 
-            $request->offsetSet('user', $user);
+            $request->offsetSet('sessionUser', $user);
 
             if (session('gilgamesh-check-dry-run') === true) {
                 return response('passes gilgamesh check middleware', 202);

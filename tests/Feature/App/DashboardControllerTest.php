@@ -166,41 +166,4 @@ class DashboardControllerTest extends TestCase
 
         $this->assertEquals($allAppointments, $upcomingAppointments->concat($pastAppointments));
     }
-
-    /* ========== HELPER FUNCTION ========== */
-
-    private function setUpBooking(User $user, Appointment $appointment, int $slots): AppointmentUser
-    {
-        $user->incrementSlotsBooked($slots);
-        $appointment->incrementSlotsTaken($slots);
-        return AppointmentUser::factory()->withSlots($slots)->forUser($user)->forAppointment($appointment)->create();
-    }
-
-    private function addAppointments()
-    {
-        for ($i = 0; $i < 3; $i++) {
-            Appointment::factory()->create([
-                'status' => 'upcoming',
-                'start_time' => now('EST')->addDays(2)->addMinutes($i),
-                'end_time' => now('EST')->addDays(2)->addHours(1)
-            ]);
-        }
-
-        for ($i = 0; $i < 3; $i++) {
-            Appointment::factory()->create([
-                'status' => 'completed',
-                'start_time' => now('EST')->subDays(3)->addMinutes($i),
-                'end_time' => now('EST')->subDays(3)->addHours(1),
-                'past_end' => true
-            ]);
-        }
-        
-        for ($i = 0; $i < 3; $i++) {
-            Appointment::factory()->create([
-                'status' => 'in progress',
-                'start_time' => now('EST')->subMinutes($i),
-                'end_time' => now('EST')->addHours(1)
-            ]);
-        }
-    }
 }

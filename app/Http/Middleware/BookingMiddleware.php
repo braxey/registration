@@ -31,7 +31,7 @@ class BookingMiddleware
             return response('appointment is walk-in-only', 401);
         }
 
-        $request->offsetSet('user', Auth::user());
+        $request->offsetSet('sessionUser', Auth::user());
         $request->offsetSet('appointment', $appointment);
 
         if (session('booking-dry-run') === true) {

@@ -60,11 +60,36 @@ class AppointmentFactory extends Factory
         $endTime->modify('+1 hour');
         return $this->state([
             'start_time' => $startTime,
-            'end_time'   => $endTime
+            'end_time'   => $endTime,
+            'status'     => 'in progress'
         ]);
     }
 
     public function pastEnd()
+    {
+        $startTime = Carbon::now('EST')->subHours(3);
+        $endTime = clone $startTime;
+        $endTime->modify('+1 hour');
+        return $this->state([
+            'start_time' => $startTime,
+            'end_time'   => $endTime,
+            'status'     => 'completed',
+            'past_end'   => 1
+        ]);
+    }
+
+    public function withInProgressStartTime()
+    {
+        $startTime = Carbon::now('EST')->subMinutes(20);
+        $endTime = clone $startTime;
+        $endTime->modify('+1 hour');
+        return $this->state([
+            'start_time' => $startTime,
+            'end_time'   => $endTime
+        ]);
+    }
+
+    public function withCompletedStartTime()
     {
         $startTime = Carbon::now('EST')->subHours(3);
         $endTime = clone $startTime;

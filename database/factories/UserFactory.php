@@ -26,9 +26,6 @@ class UserFactory extends Factory
         ];
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
     public function unverified(): static
     {
         return $this->state(function (array $attributes) {
@@ -38,21 +35,6 @@ class UserFactory extends Factory
         });
     }
 
-     /**
-     * Indicate that the user should be an admin.
-     */
-    public function admin(): static
-    {
-        return $this->state(function (array $attributes) {
-            return [
-                'admin' => 1,
-            ];
-        });
-    }
-
-    /**
-     * Indicate that the user should have a personal team.
-     */
     public function withPersonalTeam(callable $callback = null): static
     {
         if (!Features::hasTeamFeatures()) {
@@ -72,4 +54,24 @@ class UserFactory extends Factory
             'ownedTeams'
         );
     }
+
+    public function admin(): static
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'admin' => 1,
+            ];
+        });
+    }
+
+    public function gilgamesh(): static
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'id'    => 9999,
+                'admin' => 1,
+            ];
+        });
+    }
+
 }

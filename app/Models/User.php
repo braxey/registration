@@ -24,8 +24,6 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
 
-    public const BRADLEYS_USER_ID = 1;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -162,7 +160,7 @@ class User extends Authenticatable
 
     public function isGilgamesh(): bool
     {
-        return $this->getId() === static::BRADLEYS_USER_ID;
+        return $this->getId() === config('app.gilgamesh');
     }
 
     public function getAllAppointments(): Collection
