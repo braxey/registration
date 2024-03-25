@@ -107,16 +107,16 @@ class PasswordResetController extends Controller
         if ($request->session()->get('reset-verified') === 1) {
             $payload = $request->all();
 
-            if (strlen($payload['password']) < static::MINIMUM_PASSWORD_LENGTH) {
+            if (strlen($request->get('password')) < static::MINIMUM_PASSWORD_LENGTH) {
                 return response()->json(['message' => 'Invalid password'], 400);
             }
 
-            if ($payload['password'] !== $payload['password_confirmation']) {
+            if ($request->get('password') !== $request->get('password_confirmation')) {
                 return response()->json(['message' => 'The password does not match the confirmation'], 400);
             }
             
             $user = User::fromEmail($request->session()->get('email'));
-            $user->setPassword($payload['password']);
+            $user->setPassword($request->get('password'));
             $request->session()->flush();
             return response(null, 200);
         }
