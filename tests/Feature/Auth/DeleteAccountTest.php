@@ -3,6 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Models\Appointment;
+use App\Models\AppointmentUser;
+use App\Models\Organization;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Jetstream\Features;
 use Laravel\Jetstream\Http\Livewire\DeleteUserForm;
@@ -13,14 +16,14 @@ class DeleteAccountTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_user_accounts_can_be_deleted(): void
+    public function setUp(): void
     {
-        if (! Features::hasAccountDeletionFeatures()) {
-            $this->markTestSkipped('Account deletion is not enabled.');
+        parent::setUp();
+        Organization::find(1)->setMaxSlotsPerUser(100);
+    }
 
-            return;
-        }
-
+    public function testUserAccountsCanBeDeleted(): void
+    {
         $this->actingAs($user = User::factory()->create());
 
         $component = Livewire::test(DeleteUserForm::class)
@@ -30,14 +33,8 @@ class DeleteAccountTest extends TestCase
         $this->assertNull($user->fresh());
     }
 
-    public function test_correct_password_must_be_provided_before_account_can_be_deleted(): void
+    public function testCorrectPasswordMustBeProvidedBeforeAccountCanBeDeleted(): void
     {
-        if (! Features::hasAccountDeletionFeatures()) {
-            $this->markTestSkipped('Account deletion is not enabled.');
-
-            return;
-        }
-
         $this->actingAs($user = User::factory()->create());
 
         Livewire::test(DeleteUserForm::class)
@@ -46,5 +43,32 @@ class DeleteAccountTest extends TestCase
             ->assertHasErrors(['password']);
 
         $this->assertNotNull($user->fresh());
+    }
+
+    public function testSlotsAreReturnedIfTheUserIsDeletedBeforeTheAppointmentStarts(): void
+    {
+        $this->actingAs($user = User::factory()->create());
+
+        $upcomingAppointment = Appointment::factory()->create();
+        $inProgressAppointment = Appointment::factory()->inProgress()->create();
+        $completedAppointment = Appointment::factory()->pastEnd()->create();
+
+        $upcomingBooking = $this->setUpBooking($user, $upcomingAppointment, 3);
+        $inProgressBooking = $this->setUpBooking($user, $inProgressAppointment, 4);
+        $completedBooking = $this->setUpBooking($user, $completedAppointment, 5);
+
+        $component = Livewire::test(DeleteUserForm::class)
+            ->set('password', 'password')
+            ->call('deleteUser');
+
+        // test bookings are gone
+        $this->assertNull($upcomingBooking->fresh());
+        $this->assertNull($inProgressBooking->fresh());
+        $this->assertNull($completedBooking->fresh());
+
+        // test only upcoming appointment was given slots back
+        $this->assertSame(0, $upcomingAppointment->fresh()->getSlotsTaken());
+        $this->assertSame(4, $inProgressAppointment->fresh()->getSlotsTaken());
+        $this->assertSame(5, $completedAppointment->fresh()->getSlotsTaken());
     }
 }
