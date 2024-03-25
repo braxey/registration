@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use Carbon\Carbon;
 
 class PhoneVerification extends Model
 {
@@ -14,6 +15,16 @@ class PhoneVerification extends Model
         return $this->token?? '';
     }
 
+    public function getTimeSent()
+    {
+        return $this->time_sent;
+    }
+
+    public function getParsedTimeSent(): Carbon
+    {
+        return Carbon::parse($this->getTimeSent(), 'EST');
+    }
+
     public function getUserId(): int
     {
         return $this->user_id;
@@ -22,17 +33,6 @@ class PhoneVerification extends Model
     public function getUser(): User
     {
         return User::fromId($this->getUserId());
-    }
-
-    public function isValidToken(string $token): bool
-    {
-        return strlen($token) === 7 && $this->getToken() === $token;
-    }
-
-    public function verify()
-    {
-        $user = $this->getUser();
-        static::where('user_id', $user->getId())->delete();
     }
 
     public static function fromUserEmail(string $email): ?PhoneVerification
@@ -53,14 +53,5 @@ class PhoneVerification extends Model
         }
 
         return static::where('user_id', $user->getId())->orderBy('time_sent', 'desc')->first();;
-    }
-
-    public static function logTokenSend(User $user, string $token)
-    {
-        static::create([
-            'token'     => $token,
-            'time_sent' => now('EST'),
-            'user_id'   => $user->getId(),
-        ]);
     }
 }

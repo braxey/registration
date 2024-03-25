@@ -3,21 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Constants\EmailTypes;
 use App\Models\User;
-use App\Models\PhoneVerification;
-use App\Services\QueueService;
+use App\Managers\VerificationManager;
 
 class PasswordResetController extends Controller
 {
     private const MINIMUM_PASSWORD_LENGTH = 8;
-
-    private QueueService $queueService;
-
-    public function __construct(QueueService $queueService)
-    {
-        $this->queueService = $queueService;
-    }
 
     public function getForgotPasswordPage()
     {
@@ -33,7 +24,9 @@ class PasswordResetController extends Controller
         $email = $request->session()->get('email');
         $request->session()->put('reset-verified', 0);
 
-        $this->emailNewToken($email);
+        $verificationManager = new VerificationManager($email);
+        $verificationManager->sendVerification(true);
+
         return view('auth.forgot-pass-verify', [
             'email' => $email
         ]);
@@ -67,11 +60,10 @@ class PasswordResetController extends Controller
     public function verifyToken(Request $request)
     {
         try {
-            $token = trim($request->get('token'));            
-            $verification = PhoneVerification::fromUserEmail($request->session()->get('email'));
+            $token = trim($request->get('token'));
+            $verificationManager = new VerificationManager($request->session()->get('email'));
 
-            if ($verification->isValidToken($token)) {
-                $verification->verify();
+            if ($verificationManager->verify($token)) {
                 $request->session()->put('reset-verified', 1);
                 return response(null, 200);
             }
@@ -91,8 +83,8 @@ class PasswordResetController extends Controller
                 return response(null, 401);
             }
 
-            $token = PhoneVerification::fromUserEmail($email)->getToken();
-            $this->emailToken($email, $token);
+            $verificationManager = new VerificationManager($email);
+            $verificationManager->sendVerification();
 
             return view('auth.forgot-pass-verify', [
                 'email' => $email
@@ -122,22 +114,5 @@ class PasswordResetController extends Controller
         }
         
         return response(null, 403);
-    }
-
-    private function emailNewToken(string $email)
-    {
-        $token = generateSecureNumericToken();
-        $this->emailToken($email, $token);
-    }
-
-    private function emailToken(string $email, string $token)
-    {
-        $user = User::fromEmail($email);
-        $payload = ['token' => $token];
-        $this->queueService->push($email, EmailTypes::VERIFICATION, $payload);
-        PhoneVerification::logTokenSend($user, $token);
-
-        // kick off sending queued emails so verifications get sent as soon as they can
-        $this->queueService->handleQueueDispatch();
     }
 }
