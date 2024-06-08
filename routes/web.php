@@ -39,6 +39,18 @@ Route::prefix('forgot-password')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    /**
+     * Booking
+     */
+    Route::prefix('appointments/{appointmentId}')->where(['appointmentId' => '[1-9][0-9]*'])->middleware('booking')->group(function () {
+        Route::get('/book', [BookingController::class, 'getBookingPage'])->name('booking.get-booking');
+        Route::get('/edit-booking', [BookingController::class, 'getEditBookingPage'])->name('booking.get-edit-booking');
+
+        Route::post('/book', [BookingController::class, 'book'])->name('booking.book');
+        Route::put('/edit-booking', [BookingController::class, 'editBooking'])->name('booking.edit-booking');
+        Route::post('/cancel-booking', [BookingController::class, 'cancelBooking'])->name('booking.cancel-booking');
+    });
+
     Route::middleware('admin')->group(function () {
         /**
          * Appointments
@@ -125,17 +137,5 @@ Route::middleware('auth')->group(function () {
                 Route::post('/send', [MassMailerController::class, 'sendMassEmail'])->name('mass-mailer.send');
             });
         });
-    });
-
-    /**
-     * Booking
-     */
-    Route::prefix('appointments/{appointmentId}')->where(['appointmentId' => '[1-9][0-9]*'])->middleware('booking')->group(function () {
-        Route::get('/book', [BookingController::class, 'getBookingPage'])->name('booking.get-booking');
-        Route::get('/edit-booking', [BookingController::class, 'getEditBookingPage'])->name('booking.get-edit-booking');
-
-        Route::post('/book', [BookingController::class, 'book'])->name('booking.book');
-        Route::put('/edit-booking', [BookingController::class, 'editBooking'])->name('booking.edit-booking');
-        Route::post('/cancel-booking', [BookingController::class, 'cancelBooking'])->name('booking.cancel-booking');
     });
 });
