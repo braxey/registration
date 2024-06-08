@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Managers\VerificationManager;
 
+/**
+ * @see PasswordResetControllerTest
+ */
 class PasswordResetController extends Controller
 {
     private const MINIMUM_PASSWORD_LENGTH = 8;

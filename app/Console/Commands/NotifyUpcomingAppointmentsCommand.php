@@ -13,9 +13,11 @@ use App\Services\QueueService;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
-
 use App\Mail\NotifyEmail;
 
+/**
+ * @see AppointmentNotificationCommandTest
+ */
 class NotifyUpcomingAppointmentsCommand extends Command
 {
     protected $signature = 'notify:upcoming-appointments';

@@ -10,6 +10,9 @@ use App\Models\Appointment;
 use App\Models\Organization;
 use Carbon\Carbon;
 
+/**
+ * @see BookingMiddleware
+ */
 class BookingMiddlewareTest extends TestCase
 {
     use RefreshDatabase;

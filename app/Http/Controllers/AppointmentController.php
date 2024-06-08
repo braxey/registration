@@ -8,6 +8,9 @@ use App\Models\AppointmentUser;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
+/**
+ * @see AppointmentControllerTest
+ */
 class AppointmentController extends Controller
 {
     public function getCreatePage(Request $request)

@@ -11,6 +11,9 @@ use App\Models\AppointmentUser;
 use App\Models\WalkIn;
 use App\Models\QueuedEmail;
 
+/**
+ * @see UpdateAppointmentStatus
+ */
 class UpdateAppointmentStatusCommandTest extends TestCase
 {
     use RefreshDatabase;

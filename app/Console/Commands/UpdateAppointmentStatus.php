@@ -8,6 +8,9 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
+/**
+ * @see UpdateAppointmentStatusCommandTest
+ */
 class UpdateAppointmentStatus extends Command
 {
     protected $signature = 'appointments:update-status';

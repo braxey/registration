@@ -6,6 +6,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\User;
 
+/**
+ * @see UserMiddleware
+ */
 class UserMiddlewareTest extends TestCase
 {
     use RefreshDatabase;

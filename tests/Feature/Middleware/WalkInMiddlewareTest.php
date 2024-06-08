@@ -7,6 +7,9 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\WalkIn;
 
+/**
+ * @see WalkInMiddleware
+ */
 class WalkInMiddlewareTest extends TestCase
 {
     use RefreshDatabase;

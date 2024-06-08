@@ -10,6 +10,9 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\PhoneVerification;
 
+/**
+ * @see PasswordResetController
+ */
 class PasswordResetControllerTest extends TestCase
 {
     use RefreshDatabase;

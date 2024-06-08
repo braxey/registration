@@ -9,6 +9,9 @@ use App\Models\Appointment;
 use App\Models\Organization;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @see BookingMiddlewareTest
+ */
 class BookingMiddleware
 {
     public function handle(Request $request, Closure $next)

@@ -7,6 +7,10 @@ use Illuminate\Support\Collection;
 use App\Models\AppointmentUser;
 use App\Models\WalkIn;
 
+/**
+ * @see GuestlistControllerTest
+ * TODO: Implement tests for this controller
+ */
 class GuestlistController extends Controller
 {
     public function getGuestlist(Request $request)

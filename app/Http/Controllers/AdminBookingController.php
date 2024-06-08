@@ -6,11 +6,12 @@ use App\Models\User;
 use App\Models\Appointment;
 use App\Models\Organization;
 use App\Models\AppointmentUser;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-
+/**
+ * @see AdminBookingControllerTest
+ */
 class AdminBookingController extends Controller
 {
     private Organization $organization;

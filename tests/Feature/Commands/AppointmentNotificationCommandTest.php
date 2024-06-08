@@ -11,6 +11,9 @@ use App\Models\AppointmentUser;
 use App\Models\WalkIn;
 use App\Models\QueuedEmail;
 
+/**
+ * @see NotifyUpcomingAppointmentsCommand
+ */
 class AppointmentNotificationCommandTest extends TestCase
 {
     use RefreshDatabase;

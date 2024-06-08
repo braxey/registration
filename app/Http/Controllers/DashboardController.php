@@ -8,6 +8,9 @@ use App\Models\Organization;
 use App\Models\Appointment;
 use Carbon\Carbon;
 
+/**
+ * @see DashboardControllerTest
+ */
 class DashboardController extends Controller
 {
     private Organization $organization;

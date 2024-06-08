@@ -10,6 +10,9 @@ use App\Models\User;
 use App\Models\Appointment;
 use App\Models\WalkIn;
 
+/**
+ * @LinkingController
+ */
 class LinkingControllerTest extends TestCase
 {
     use RefreshDatabase;

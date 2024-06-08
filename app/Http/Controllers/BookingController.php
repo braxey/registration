@@ -8,6 +8,9 @@ use App\Models\Appointment;
 use App\Models\AppointmentUser;
 use App\Models\Organization;
 
+/**
+ * @see BookingControllerTest
+ */
 class BookingController extends Controller
 {
     private Organization $organization;

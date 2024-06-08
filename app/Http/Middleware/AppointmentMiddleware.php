@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Appointment;
 
+/**
+ * @see AppointmentMiddlewareTest
+ */
 class AppointmentMiddleware
 {
     public function handle(Request $request, Closure $next): Response
