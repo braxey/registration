@@ -47,7 +47,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/create', [AppointmentController::class, 'getCreatePage'])->name('appointment.get-create');
             Route::post('/create', [AppointmentController::class, 'create'])->name('appointment.create');
 
-            Route::prefix('{appointmentId}')->middleware('appointment')->group(function () {
+            Route::prefix('{appointmentId}')->where(['appointmentId' => '[1-9][0-9]*'])->middleware('appointment')->group(function () {
                 Route::get('/edit', [AppointmentController::class, 'getEditPage'])->name('appointment.get-edit');
                 Route::put('/update', [AppointmentController::class, 'update'])->name('appointment.update');
                 Route::post('/delete', [AppointmentController::class, 'delete'])->name('appointment.delete');
@@ -65,7 +65,7 @@ Route::middleware('auth')->group(function () {
         /**
          * Organization
          */
-        Route::prefix('organization/{organizationId}')->group(function () {
+        Route::prefix('organization/{organizationId}')->where(['organizationId' => '[1-9][0-9]*'])->group(function () {
             Route::get('/edit', [OrganizationController::class, 'getEditPage'])->name('organization.get-edit');
             Route::put('/edit', [OrganizationController::class, 'update'])->name('organization.update');
             Route::post('/toggle-registration', [OrganizationController::class, 'toggleRegistration'])->name('organization.toggle-registration');
@@ -79,7 +79,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/create', [WalkInController::class, 'getCreateWalkinPage'])->name('walk-in.get-create');
             Route::post('/create', [WalkInController::class, 'createWalkin'])->name('walk-in.create');
             
-            Route::prefix('{walkInId}')->middleware('walk-in')->group(function () {
+            Route::prefix('{walkInId}')->where(['walkInId' => '[1-9][0-9]*'])->middleware('walk-in')->group(function () {
                 Route::get('/edit-walkin', [WalkInController::class, 'getEditWalkinPage'])->name('walk-in.get-edit');
                 Route::put('/edit-walkin', [WalkInController::class, 'updateWalkin'])->name('walk-in.edit');
                 Route::post('/delete', [WalkInController::class, 'deleteWalkin'])->name('walk-in.delete');
@@ -89,10 +89,10 @@ Route::middleware('auth')->group(function () {
         /**
          * Link/Unlink Walk-ins to Appointments
          */
-        Route::prefix('walk-in/{walkInId}')->middleware('walk-in')->group(function () {
+        Route::prefix('walk-in/{walkInId}')->where(['walkInId' => '[1-9][0-9]*'])->middleware('walk-in')->group(function () {
             Route::get('/link-appointment', [LinkingController::class, 'getAppointmentLinkPage'])->name('walk-in.get-link-appointment');
 
-            Route::prefix('{appointmentId}')->middleware('appointment')->group(function () {
+            Route::prefix('{appointmentId}')->where(['appointmentId' => '[1-9][0-9]*'])->middleware('appointment')->group(function () {
                 Route::post('/link-appt', [LinkingController::class, 'linkAppointment'])->name('walk-in.link-appointment');
                 Route::post('/unlink-appointment', [LinkingController::class, 'unlinkAppointment'])->name('walk-in.unlink-appointment');
             });
@@ -105,10 +105,10 @@ Route::middleware('auth')->group(function () {
             Route::get('/', [AdminBookingController::class, 'getAdminUserLookupPage'])->name('admin-booking.get-lookup');
             Route::post('/user-lookup', [AdminBookingController::class, 'lookupUser'])->name('admin-booking.lookup');
 
-            Route::prefix('{userId}')->middleware('user')->group(function () {
+            Route::prefix('{userId}')->where(['userId' => '[1-9][0-9]*'])->middleware('user')->group(function () {
                 Route::get('/', [AdminBookingController::class, 'getUsersUpcomingBookings'])->name('admin-booking.user');
 
-                Route::prefix('{appointmentId}')->middleware('appointment')->group(function () {
+                Route::prefix('{appointmentId}')->where(['appointmentId' => '[1-9][0-9]*'])->middleware('appointment')->group(function () {
                     Route::get('/', [AdminBookingController::class, 'getBookingForUser'])->name('admin-booking.user-booking');
                     Route::put('/edit', [AdminBookingController::class, 'editBookingForUser'])->name('admin-booking.edit-booking');
                     Route::post('/cancel', [AdminBookingController::class, 'cancelBookingForUser'])->name('admin-booking.cancel-booking');
@@ -130,7 +130,7 @@ Route::middleware('auth')->group(function () {
     /**
      * Booking
      */
-    Route::prefix('appointments/{appointmentId}')->middleware('booking')->group(function () {
+    Route::prefix('appointments/{appointmentId}')->where(['appointmentId' => '[1-9][0-9]*'])->middleware('booking')->group(function () {
         Route::get('/book', [BookingController::class, 'getBookingPage'])->name('booking.get-booking');
         Route::get('/edit-booking', [BookingController::class, 'getEditBookingPage'])->name('booking.get-edit-booking');
 
