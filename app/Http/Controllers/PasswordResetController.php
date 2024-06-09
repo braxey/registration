@@ -3,21 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Constants\EmailTypes;
 use App\Models\User;
-use App\Models\PhoneVerification;
-use App\Services\QueueService;
+use App\Managers\VerificationManager;
+use App\Exceptions\VerificationLimitHitException;
+use Exception;
 
+/**
+ * @see PasswordResetControllerTest
+ */
 class PasswordResetController extends Controller
 {
     private const MINIMUM_PASSWORD_LENGTH = 8;
-
-    private QueueService $queueService;
-
-    public function __construct(QueueService $queueService)
-    {
-        $this->queueService = $queueService;
-    }
 
     public function getForgotPasswordPage()
     {
@@ -26,17 +22,30 @@ class PasswordResetController extends Controller
 
     public function getVerifyEmailPage(Request $request)
     {
-        if ($request->session()->missing('email')) {
-            return redirect()->route('get-forgot-password');
+        try {
+            if ($request->session()->missing('email')) {
+                return redirect()->route('get-forgot-password');
+            }
+
+            $email = $request->session()->get('email');
+            $request->session()->put('reset-verified', 0);
+
+            $verificationManager = new VerificationManager($email);
+            $verificationManager->sendVerification(true);
+
+            return view('auth.forgot-pass-verify', [
+                'email' => $email,
+                'rate_limit' => false
+            ]);
+
+        } catch (VerificationLimitHitException $e) {
+            return view('auth.forgot-pass-verify', [
+                'email' => $email,
+                'rate_limit' => true
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Something went wrong'], 500);
         }
-
-        $email = $request->session()->get('email');
-        $request->session()->put('reset-verified', 0);
-
-        $this->emailNewToken($email);
-        return view('auth.forgot-pass-verify', [
-            'email' => $email
-        ]);
     }
 
     public function getResetPasswordPage(Request $request)
@@ -67,11 +76,10 @@ class PasswordResetController extends Controller
     public function verifyToken(Request $request)
     {
         try {
-            $token = trim($request->get('token'));            
-            $verification = PhoneVerification::fromUserEmail($request->session()->get('email'));
+            $token = trim($request->get('token'));
+            $verificationManager = new VerificationManager($request->session()->get('email'));
 
-            if ($verification->isValidToken($token)) {
-                $verification->verify();
+            if ($verificationManager->verify($token)) {
                 $request->session()->put('reset-verified', 1);
                 return response(null, 200);
             }
@@ -91,12 +99,20 @@ class PasswordResetController extends Controller
                 return response(null, 401);
             }
 
-            $token = PhoneVerification::fromUserEmail($email)->getToken();
-            $this->emailToken($email, $token);
+            $verificationManager = new VerificationManager($email);
+            $verificationManager->sendVerification();
 
             return view('auth.forgot-pass-verify', [
-                'email' => $email
+                'email' => $email,
+                'rate_limit' => false
             ]);
+
+        } catch (VerificationLimitHitException $e) {
+            return view('auth.forgot-pass-verify', [
+                'email' => $email,
+                'rate_limit' => true
+            ]);
+
         } catch (Exception $e) {
             return response()->json(['message' => 'Something went wrong'], 500);
         }
@@ -107,37 +123,20 @@ class PasswordResetController extends Controller
         if ($request->session()->get('reset-verified') === 1) {
             $payload = $request->all();
 
-            if (strlen($payload['password']) < static::MINIMUM_PASSWORD_LENGTH) {
+            if (strlen($request->get('password')) < static::MINIMUM_PASSWORD_LENGTH) {
                 return response()->json(['message' => 'Invalid password'], 400);
             }
 
-            if ($payload['password'] !== $payload['password_confirmation']) {
+            if ($request->get('password') !== $request->get('password_confirmation')) {
                 return response()->json(['message' => 'The password does not match the confirmation'], 400);
             }
             
             $user = User::fromEmail($request->session()->get('email'));
-            $user->setPassword($payload['password']);
+            $user->setPassword($request->get('password'));
             $request->session()->flush();
             return response(null, 200);
         }
         
         return response(null, 403);
-    }
-
-    private function emailNewToken(string $email)
-    {
-        $token = generateSecureNumericToken();
-        $this->emailToken($email, $token);
-    }
-
-    private function emailToken(string $email, string $token)
-    {
-        $user = User::fromEmail($email);
-        $payload = ['token' => $token];
-        $this->queueService->push($email, EmailTypes::VERIFICATION, $payload);
-        PhoneVerification::logTokenSend($user, $token);
-
-        // kick off sending queued emails so verifications get sent as soon as they can
-        $this->queueService->handleQueueDispatch();
     }
 }

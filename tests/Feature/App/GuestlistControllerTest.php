@@ -6,6 +6,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+/**
+ * @see GuestlistController
+ */
 class GuestlistControllerTest extends TestCase
 {
     use RefreshDatabase;

@@ -9,6 +9,9 @@ use App\Models\Appointment;
 use App\Models\AppointmentUser;
 use App\Models\Organization;
 
+/**
+ * @see DashboardController
+ */
 class DashboardControllerTest extends TestCase
 {
     use RefreshDatabase;

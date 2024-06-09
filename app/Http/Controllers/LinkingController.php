@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Appointment;
 use Carbon\Carbon;
 
+/**
+ * @LinkingControllerTest
+ */
 class LinkingController extends Controller
 {
     public function getAppointmentLinkPage(Request $request)

@@ -25,6 +25,7 @@
                                 </div>
 
                                 <p style="color:red; display:none" id="wrong-token">The entered token is incorrect.</p>
+                                <p style="color:red; {{ $rate_limit ? '' : 'display: none;' }}" id="rate-limit">You have reached the rate limit. Please try again later.</p>
 
                                 <button class="grn-btn" type="submit">Verify</button>
                             </form>

@@ -8,6 +8,9 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Appointment;
 
+/**
+ * @see GilgameshCheckMiddleware
+ */
 class GilgameshCheckMiddlewareTest extends TestCase
 {
     use RefreshDatabase;
