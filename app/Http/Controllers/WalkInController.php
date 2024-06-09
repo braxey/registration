@@ -7,7 +7,9 @@ use App\Models\Appointment;
 use App\Models\WalkIn;
 use Carbon\Carbon;
 
-
+/**
+ * @see WalkInControllerTest
+ */
 class WalkInController extends Controller
 {
     public function getWaitlist(Request $request)

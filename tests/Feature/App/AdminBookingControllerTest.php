@@ -9,6 +9,9 @@ use App\Models\Appointment;
 use App\Models\Organization;
 use App\Models\AppointmentUser;
 
+/**
+ * @see AdminBookingController
+ */
 class AdminBookingControllerTest extends TestCase
 {
     use RefreshDatabase;

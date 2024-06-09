@@ -8,6 +8,9 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Organization;
 
+/**
+ * @see OrganizationController
+ */
 class OrganizationControllerTest extends TestCase
 {
     use RefreshDatabase;

@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\WalkIn;
 
+/**
+ * @see WalkInMiddlewareTest
+ */
 class WalkInMiddleware
 {
     public function handle(Request $request, Closure $next): Response

@@ -9,7 +9,9 @@ use App\Models\User;
 use App\Models\Appointment;
 use App\Services\QueueService;
 
-
+/**
+ * TODO: Write tests for this controller
+ */
 class MassMailerController extends Controller
 {
 

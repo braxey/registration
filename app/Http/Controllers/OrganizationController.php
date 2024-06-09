@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Organization;
 use Illuminate\Http\Request;
 
+/**
+ * @see OrganizationControllerTest
+ */
 class OrganizationController extends Controller
 {
     public function getEditPage(Request $request)

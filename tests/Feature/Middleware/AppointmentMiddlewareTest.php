@@ -7,6 +7,9 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Appointment;
 
+/**
+ * @see AppointmentMiddleware
+ */
 class AppointmentMiddlewareTest extends TestCase
 {
     use RefreshDatabase;

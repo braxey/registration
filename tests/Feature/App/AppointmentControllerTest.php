@@ -8,6 +8,9 @@ use App\Models\User;
 use App\Models\Appointment;
 use App\Models\AppointmentUser;
 
+/**
+ * @see AppointmentController
+ */
 class AppointmentControllerTest extends TestCase {
 
     use RefreshDatabase;

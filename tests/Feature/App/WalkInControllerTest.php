@@ -9,6 +9,9 @@ use App\Models\User;
 use App\Models\Appointment;
 use App\Models\WalkIn;
 
+/**
+ * @see WalkInController
+ */
 class WalkInControllerTest extends TestCase {
 
     use RefreshDatabase;
