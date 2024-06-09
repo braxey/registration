@@ -13,6 +13,7 @@ const mix = require('laravel-mix');
 
 mix.js('resources/js/app.js', 'public/js')
     .js('resources/js/authentication/ResetPassword.js', 'public/js')
+    .js('resources/js/organizations/ModifyOrganization.js', 'public/js')
     .sass('resources/sass/main.scss', 'public/css')
     .postCss('resources/css/app.css', 'public/css', [
        //

@@ -51,6 +51,8 @@ export default class NewPassword {
                     }
                 })
         })
+
+        return this
     }
 
     _inputChangeListeners() {

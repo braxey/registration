@@ -33,7 +33,7 @@ export default class ForgotPasswordVerify {
 
             axios.post(this._forgotPasswordVerifyForm.attr('action'), this._forgotPasswordVerifyForm.serialize())
                 .then((response) => {
-                    window.location.href = '/forgot-password/reset';
+                    window.location.href = '/forgot-password/reset'
                 })
                 .catch((error) => {
                     if (error.response && error.response.status === 400) {
@@ -42,6 +42,8 @@ export default class ForgotPasswordVerify {
                     }
                 })
         })
+
+        return this
     }
 
     _tokenChangeListener() {
@@ -54,6 +56,6 @@ export default class ForgotPasswordVerify {
     }
 
     _isValidToken() {
-        return /^\d{7}$/.test(this._tokenInput.val().trim());
+        return /^\d{7}$/.test(this._tokenInput.val().trim())
     }
 }

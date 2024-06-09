@@ -17,7 +17,7 @@ class OrganizationController extends Controller
             return response(null, 404);
         }
 
-        return view('organizations.edit_org', [
+        return view('organizations.edit', [
             'organization' => $organization
         ]);
     }

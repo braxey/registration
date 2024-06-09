@@ -38,6 +38,8 @@ export default class ForgotPassword {
                     }
                 })
         })
+
+        return this
     }
 
     _emailChangeListener() {
