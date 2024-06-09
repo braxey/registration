@@ -70,7 +70,7 @@ class VerificationManager
 
     private function hasHitLimit()
     {
-        $fiveMinutesAgo = Carbon::now('EST');
+        $fiveMinutesAgo = Carbon::now('EST')->subMinutes(5);
 
         $numberSentWithinPastFiveMinutes = $this->verifications->filter(function (PhoneVerification $verification) use ($fiveMinutesAgo) {
             return $verification->getParsedTimeSent()->gte($fiveMinutesAgo);

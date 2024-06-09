@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Managers\VerificationManager;
+use App\Exceptions\VerificationLimitHitException;
+use Exception;
 
 /**
  * @see PasswordResetControllerTest
@@ -20,19 +22,30 @@ class PasswordResetController extends Controller
 
     public function getVerifyEmailPage(Request $request)
     {
-        if ($request->session()->missing('email')) {
-            return redirect()->route('get-forgot-password');
+        try {
+            if ($request->session()->missing('email')) {
+                return redirect()->route('get-forgot-password');
+            }
+
+            $email = $request->session()->get('email');
+            $request->session()->put('reset-verified', 0);
+
+            $verificationManager = new VerificationManager($email);
+            $verificationManager->sendVerification(true);
+
+            return view('auth.forgot-pass-verify', [
+                'email' => $email,
+                'rate_limit' => false
+            ]);
+
+        } catch (VerificationLimitHitException $e) {
+            return view('auth.forgot-pass-verify', [
+                'email' => $email,
+                'rate_limit' => true
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Something went wrong'], 500);
         }
-
-        $email = $request->session()->get('email');
-        $request->session()->put('reset-verified', 0);
-
-        $verificationManager = new VerificationManager($email);
-        $verificationManager->sendVerification(true);
-
-        return view('auth.forgot-pass-verify', [
-            'email' => $email
-        ]);
     }
 
     public function getResetPasswordPage(Request $request)
@@ -90,8 +103,16 @@ class PasswordResetController extends Controller
             $verificationManager->sendVerification();
 
             return view('auth.forgot-pass-verify', [
-                'email' => $email
+                'email' => $email,
+                'rate_limit' => false
             ]);
+
+        } catch (VerificationLimitHitException $e) {
+            return view('auth.forgot-pass-verify', [
+                'email' => $email,
+                'rate_limit' => true
+            ]);
+
         } catch (Exception $e) {
             return response()->json(['message' => 'Something went wrong'], 500);
         }

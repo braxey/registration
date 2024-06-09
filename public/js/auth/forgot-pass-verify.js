@@ -1,6 +1,7 @@
 $(function(){
     $('#token').on('keyup', function () {
         hideWrongTokenMessage()
+        hideRateLimitMessage()
     })
 
     const form = $('#verify-form')
@@ -24,9 +25,16 @@ $(function(){
 
     function showWrongTokenMessage() {
         $('#wrong-token').show()
+        $('#rate-limit').hide()
     }
 
     function hideWrongTokenMessage() {
         $('#wrong-token').hide()
+        $('#rate-limit').hide()
+    }
+
+    function hideRateLimitMessage() {
+        $('#wrong-token').hide()
+        $('#rate-limit').hide()
     }
 })

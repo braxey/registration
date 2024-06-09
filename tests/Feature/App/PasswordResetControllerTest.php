@@ -57,7 +57,8 @@ class PasswordResetControllerTest extends TestCase
         $this->get(route('forgot-password.get-verify-email'))
             ->assertSuccessful()
             ->assertViewIs('auth.forgot-pass-verify')
-            ->assertViewHas('email', $email);
+            ->assertViewHas('email', $email)
+            ->assertViewHas('rate_limit', false);
 
         $this->assertTrue(session('reset-verified') === 0);
         Mail::assertSent(VerificationEmail::class, function ($mail) use ($email) {
@@ -66,6 +67,25 @@ class PasswordResetControllerTest extends TestCase
         $this->assertDatabaseHas('phone_verifications', [
             'user_id' => $this->user->getId()
         ]);
+    }
+
+    public function testTokenNotSentIfRateLimitReached()
+    {
+        $email = $this->user->getEmail();
+        $this->submitEmail($email);
+        // seed verification sends to breach rate limit
+        PhoneVerification::factory()->withUser($this->user)->count(config('mail.verification-limit'))->create();
+
+        $this->get(route('forgot-password.get-verify-email'))
+            ->assertSuccessful()
+            ->assertViewIs('auth.forgot-pass-verify')
+            ->assertViewHas('email', $email)
+            ->assertViewHas('rate_limit', true);
+
+        $this->assertTrue(session('reset-verified') === 0);
+        Mail::assertNotSent(VerificationEmail::class, function ($mail) use ($email) {
+            return $mail->hasTo($email);
+        });
     }
 
     public function testCannotReachTokenVerificationPageWithoutCheckedEmail()
@@ -112,8 +132,13 @@ class PasswordResetControllerTest extends TestCase
         $email = $this->user->getEmail();
         $this->submitEmail($email);
         $this->get(route('forgot-password.get-verify-email'));
-        $this->resendToken()->assertSuccessful()->assertViewIs('auth.forgot-pass-verify');
+        $this->resendToken()->assertSuccessful()->assertViewIs('auth.forgot-pass-verify')
+            ->assertViewHas('email', $email)->assertViewHas('rate_limit', false);
         $this->assertCount(2, PhoneVerification::where('user_id', $this->user->getId())->get());
+
+        Mail::assertSent(VerificationEmail::class, function ($mail) use ($email) {
+            return $mail->hasTo($email);
+        });
     }
 
     public function testOnlyResendWhenOnTokenVerifyStep()
@@ -130,6 +155,22 @@ class PasswordResetControllerTest extends TestCase
 
         $this->resendToken()->assertUnauthorized();
         $this->assertNull(PhoneVerification::fromUserEmail($this->user->getEmail()));
+    }
+
+    public function testCannotResendIfRateLimited()
+    {
+        $email = $this->user->getEmail();
+        $this->submitEmail($email);
+        // send verification sends to breach rate limit
+        PhoneVerification::factory()->withUser($this->user)->count(config('mail.verification-limit'))->create();
+        $this->get(route('forgot-password.get-verify-email'));
+
+        $this->resendToken()->assertSuccessful()->assertViewIs('auth.forgot-pass-verify')
+            ->assertViewHas('email', $email)->assertViewHas('rate_limit', true);
+
+        Mail::assertNotSent(VerificationEmail::class, function ($mail) use ($email) {
+            return $mail->hasTo($email);
+        });
     }
 
     /* ========== RESET PASSWORD ========== */

@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
 use Carbon\Carbon;
 
 class PhoneVerification extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['token', 'time_sent', 'user_id'];
 
     public function getToken(): string
