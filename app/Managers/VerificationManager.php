@@ -52,8 +52,8 @@ class VerificationManager
         ]);
 
         // kick off sending queued emails so verifications get sent as soon as they can
-        // $this->queueService->push($this->user->getEmail(), EmailTypes::VERIFICATION, ['token' => $token]);
-        // $this->queueService->handleQueueDispatch();
+        $this->queueService->push($this->user->getEmail(), EmailTypes::VERIFICATION, ['token' => $token]);
+        $this->queueService->handleQueueDispatch();
     }
 
     public function verify(?string $token)
