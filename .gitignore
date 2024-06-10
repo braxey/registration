@@ -3,6 +3,7 @@
 /public/hot
 /public/js/*.js
 /public/css/*.css
+/public/fonts
 /storage/*.key
 /vendor
 .env
