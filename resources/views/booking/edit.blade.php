@@ -3,8 +3,8 @@
 <html>
     <head>
         <title>{{ __('Edit Booking') }}</title>
-        <script type="text/javascript" src="{{ version(mix('js/Booking.js')) }}"></script>
         <link rel="stylesheet" href="{{ version(mix('css/main.css')) }}">
+        <script type="text/javascript" src="{{ version(mix('js/Booking.js')) }}"></script>
     </head>
     <body>
         <div id="edit_booking_container" class="flex justify-center text-center">
