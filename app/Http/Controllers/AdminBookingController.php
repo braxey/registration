@@ -23,7 +23,7 @@ class AdminBookingController extends Controller
 
     public function getAdminUserLookupPage(Request $request)
     {
-        return view('admin-user.lookup');
+        return view('admin.booking.landing');
     }
 
     public function lookupUser(Request $request)
@@ -37,7 +37,7 @@ class AdminBookingController extends Controller
                     ->take(25)
                     ->get();
 
-        return view('admin-user.lookup-results', [
+        return view('admin.booking.lookup', [
             'users' => $users
         ]);
     }
@@ -47,7 +47,7 @@ class AdminBookingController extends Controller
         $user = $request->offsetGet('user');
         $appointments = $user->getUpcomingAppointments();
 
-        return view('admin-user.user-bookings', [
+        return view('admin.booking.user', [
             'user'         => $user,
             'appointments' => $appointments
         ]);
@@ -63,7 +63,7 @@ class AdminBookingController extends Controller
             return response(null, 404);
         }
 
-        return view('admin-user.edit-booking', [
+        return view('admin.booking.edit', [
             'user'           => $user,
             'appointment'    => $appointment,
             'organization'   => $this->organization,

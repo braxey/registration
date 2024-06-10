@@ -42,31 +42,16 @@ export default class EditBooking {
             }
 
             if (slots - this._slotsForAppointment > this._slotsRemaining) {
-                let message = 'The requested number of slots is not available. There are only ' + this._slotsRemaining + ' open slots for this time'
-                if (this._slotsRemaining === 1) {
-                    message = 'The requested number of slots is not available. There is only ' + this._slotsRemaining + ' open slot for this time'
-                } else if (this._slotsRemaining === 0) {
-                    message = 'There are no slots remaining for this appointment'
-                }
-
-                return errorPopup('Error', message)
+                return errorPopup('Error', this._appointmentFullMessage())
             }
 
             if (slots + this._currentNumberOfSlots - this._slotsForAppointment > this._maxSlotsPerUser) {
-                let message = 'You can only book ' + this._maxSlotsPerUser + ' slots at a time, and '
-                let finish = 'you currently have no bookings'
-                if (this._currentNumberOfSlots > 0) {
-                    finish = 'you already have ' + this._currentNumberOfSlots + ' slots booked'
-                }
-
-                return errorPopup('Error', message + finish)
+                return errorPopup('Error', this._slotLimitReachedMessage())
             }
 
             Swal.fire({
                 title: 'Confirmation',
-                text: (slots === 0) 
-                    ? 'Are you sure you want to cancel your appointment?'
-                    : 'Are you sure you want to update your booking to '+ slots + ' slots?',
+                text: this._editPrompt(slots),
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Yes',
@@ -93,7 +78,7 @@ export default class EditBooking {
 
             Swal.fire({
                 title: 'Confirmation',
-                text: 'Are you sure you want to cancel your appointment?',
+                text: this._cancelPrompt(),
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Yes',
@@ -108,5 +93,39 @@ export default class EditBooking {
         })
 
         return this
+    }
+
+    _appointmentFullMessage() {
+        if (this._slotsRemaining === 1) {
+            return 'The requested number of slots is not available. There is only ' + this._slotsRemaining + ' open slot for this time'
+        }
+        
+        if (this._slotsRemaining === 0) {
+            return 'There are no slots remaining for this appointment'
+        }
+
+        return 'The requested number of slots is not available. There are only ' + this._slotsRemaining + ' open slots for this time'
+    }
+
+    _slotLimitReachedMessage() {
+        let message = 'You can only book ' + this._maxSlotsPerUser + ' slots at a time, and '
+
+        if (this._currentNumberOfSlots > 0) {
+            return message + 'you already have ' + this._currentNumberOfSlots + ' slots booked'
+        }
+
+        return message + 'you currently have no bookings'
+    }
+
+    _editPrompt(slots) {
+        if (slots === 0) {
+            return 'Are you sure you want to cancel your appointment?'
+        }
+
+        return 'Are you sure you want to update your booking to '+ slots + ' slots?'
+    }
+
+    _cancelPrompt() {
+        return 'Are you sure you want to cancel your appointment?'
     }
 }

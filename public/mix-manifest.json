@@ -3,6 +3,7 @@
     "/js/ResetPassword.js": "/js/ResetPassword.js",
     "/js/ModifyOrganization.js": "/js/ModifyOrganization.js",
     "/js/Booking.js": "/js/Booking.js",
+    "/js/AdminBooking.js": "/js/AdminBooking.js",
     "/js/UserDashboard.js": "/js/UserDashboard.js",
     "/js/Appointment.js": "/js/Appointment.js",
     "/js/WalkIn.js": "/js/WalkIn.js",

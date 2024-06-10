@@ -1,9 +1,9 @@
 <table class="table mx-auto border border-slate-300 appt-pagination">  
     <thead>
         <tr class="border border-slate-300">
-            <th class="border border-slate-300">Name</th>
-            <th class="border border-slate-300">Email</th>
-            <th class="border border-slate-300">Actions</th>
+            <th class="border border-slate-300">{{ __('Name') }}</th>
+            <th class="border border-slate-300">{{ __('Email') }}</th>
+            <th class="border border-slate-300">{{ __('Actions') }}</th>
         </tr>
     </thead>
     <tbody>
@@ -13,9 +13,9 @@
                 <td class="border border-slate-300">{{ $user->getEmail() }}</td>
                 <td class="border border-slate-300">
                     @if ($user->hasUpcomingAppointment())
-                        <a class="grn-btn" href="{{ route('admin-booking.user', $user->getId()) }}">Edit Bookings</a>
+                        <a class="grn-btn" href="{{ route('admin-booking.user', $user->getId()) }}">{{ __('Edit Bookings') }}</a>
                     @else
-                        Nothing Upcoming
+                    {{ __('Nothing Upcoming') }}
                     @endif
                 </td>
             </tr>
