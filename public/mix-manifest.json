@@ -2,6 +2,7 @@
     "/js/app.js": "/js/app.js",
     "/js/ResetPassword.js": "/js/ResetPassword.js",
     "/js/ModifyOrganization.js": "/js/ModifyOrganization.js",
+    "/js/Booking.js": "/js/Booking.js",
     "/css/app.css": "/css/app.css",
     "/css/main.css": "/css/main.css"
 }

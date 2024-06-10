@@ -54,7 +54,7 @@ export default class EditOrganization {
 
             e.preventDefault()
 
-            if (!this._maxSlotsIsNumeric()) {
+            if (!this._maxSlotsIsValid()) {
                 return errorPopup('Error', 'Max slots per user must be an integer')
             }
 
@@ -77,7 +77,8 @@ export default class EditOrganization {
         return this
     }
 
-    _maxSlotsIsNumeric() {
-        return Number.isInteger(Number(this._maxSlotsPerUserInput.val().trim()))
+    _maxSlotsIsValid() {
+        let maxSlots = Number(this._maxSlotsPerUserInput.val().trim())
+        return Number.isInteger(maxSlots) && maxSlots > 0
     }
 }
