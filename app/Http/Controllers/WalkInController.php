@@ -14,7 +14,7 @@ class WalkInController extends Controller
 {
     public function getWaitlist(Request $request)
     {
-        return view('appointments.walkin-waitlist', [
+        return view('walk-ins.waitlist', [
             'walkIns' => WalkIn::orderBy('created_at', 'desc')->get()
         ]);
     }

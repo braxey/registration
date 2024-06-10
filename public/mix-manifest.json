@@ -4,6 +4,7 @@
     "/js/ModifyOrganization.js": "/js/ModifyOrganization.js",
     "/js/Booking.js": "/js/Booking.js",
     "/js/UserDashboard.js": "/js/UserDashboard.js",
+    "/js/WalkIn.js": "/js/WalkIn.js",
     "/css/app.css": "/css/app.css",
     "/css/main.css": "/css/main.css"
 }

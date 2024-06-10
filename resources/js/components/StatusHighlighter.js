@@ -1,4 +1,5 @@
-import 'datatables.net'
+import DataTable from 'datatables.net-dt'
+import 'datatables.net-dt/css/dataTables.dataTables.min.css'
 
 export default class StatusHighlighter {
     constructor() {
@@ -14,16 +15,14 @@ export default class StatusHighlighter {
 
     _initializeTable() {
         if (this._table.length) {
-            this._table.DataTable({
+            new DataTable('.appt-pagination', {
                 paging: true,           // Enable pagination
                 pageLength: 20,         // Number of rows per page
                 lengthChange: false,    // Disable the option to change the number of rows per page
                 order: [],              // Disable automatic sorting
                 searching: false,       // Disable search option
                 ordering: false,        // Disable column sorting
-            })
-
-            this._table.on('draw.dt', (e) => {
+            }).on('draw.dt', (e) => {
                 this._highlight()
             })
         }

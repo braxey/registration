@@ -1,13 +1,13 @@
 <table class="table mx-auto border border-slate-300 appt-pagination">
     <thead>
         <tr class="border border-slate-300">
-            <th class="border border-slate-300">Time Entered</th>
-            <th class="border border-slate-300">Email</th>
-            <th class="border border-slate-300">Name</th>
-            <th class="border border-slate-300 slot-col">Slots</th>
-            <th class="border border-slate-300 slot-col">Desired Time</th>
-            <th class="border border-slate-300 slot-col">Appointment</th>
-            <th class="border border-slate-300 slot-col">Action</th>
+            <th class="border border-slate-300">{{ __('Time Entered') }}</th>
+            <th class="border border-slate-300">{{ __('Email') }}</th>
+            <th class="border border-slate-300">{{ __('Name') }}</th>
+            <th class="border border-slate-300 slot-col">{{ __('Slots') }}</th>
+            <th class="border border-slate-300 slot-col">{{ __('Desired Time') }}</th>
+            <th class="border border-slate-300 slot-col">{{ __('Appointment') }}</th>
+            <th class="border border-slate-300 slot-col">{{ __('Action') }}</th>
         </tr>
     </thead>
     <tbody>
@@ -34,7 +34,7 @@
                     <a class="{{ $walkIn->isAssigned() ? 'grn' : 'red' }}-btn text-center" href="{{ route('walk-in.get-link-appointment', $walkIn->getId()) }}">{{ $linked }}</a>
                 </td>
                 <td class="border border-slate-300">
-                    <a class="red-btn text-center" href="{{ route('walk-in.get-edit', $walkIn->getId()) }}">Edit</a>
+                    <a class="red-btn text-center" href="{{ route('walk-in.get-edit', $walkIn->getId()) }}">{{ __('Edit') }}</a>
                 </td>
             </tr>
         @endforeach
