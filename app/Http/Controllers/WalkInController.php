@@ -21,7 +21,7 @@ class WalkInController extends Controller
 
     public function getCreateWalkinPage()
     {
-        return view('appointments.create-walkin');
+        return view('walk-ins.create');
     }
 
     public function createWalkin(Request $request)
@@ -48,7 +48,7 @@ class WalkInController extends Controller
 
     public function getEditWalkinPage(Request $request)
     {
-        return view('appointments.edit-walkin', [
+        return view('walk-ins.edit', [
             'walkIn' => $request->offsetGet('walk-in')
         ]);
     }
