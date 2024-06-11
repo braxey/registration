@@ -160,7 +160,7 @@ class User extends Authenticatable
 
     public function isGilgamesh(): bool
     {
-        return $this->getId() === config('app.gilgamesh');
+        return $this->getId() === (int) config('app.gilgamesh');
     }
 
     public function getAllAppointments(): Collection

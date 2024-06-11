@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\Constants\EmailTypes;
 use App\Models\User;
+use App\Models\Logger;
 use App\Models\Appointment;
 use App\Services\QueueService;
 

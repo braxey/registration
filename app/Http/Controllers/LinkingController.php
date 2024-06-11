@@ -37,7 +37,7 @@ class LinkingController extends Controller
                 return $allowed;
             });
 
-        return view('appointments.appt-walk-in-link', [
+        return view('appointments.link-walk-in', [
             'walkIn'                   => $request->offsetGet('walk-in'),
             'nonCompletedAppointments' => $nonCompletedAppointments
         ]);
