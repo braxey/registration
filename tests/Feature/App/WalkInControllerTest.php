@@ -32,7 +32,7 @@ class WalkInControllerTest extends TestCase {
         $this->actingAs($this->admin)
             ->get(route('walk-in.get-create'))
             ->assertSuccessful()
-            ->assertViewIs('appointments.create-walkin');
+            ->assertViewIs('walk-ins.create');
     }
 
     public function testCreateWalkIn()
@@ -122,7 +122,7 @@ class WalkInControllerTest extends TestCase {
         $this->actingAs($this->admin)
             ->get(route('walk-in.get-edit', $walkIn->getId()))
             ->assertSuccessful()
-            ->assertViewIs('appointments.edit-walkin');
+            ->assertViewIs('walk-ins.edit');
     }
 
     public function testEditWalkIn()

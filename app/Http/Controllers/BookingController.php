@@ -34,7 +34,7 @@ class BookingController extends Controller
             return redirect()->route('booking.get-edit-booking', $this->appointment->getId());
         }
 
-        return view('appointments.book', [
+        return view('booking.create', [
             'appointment'    => $this->appointment,
             'availableSlots' => $this->appointment->getAvailableSlots(),
             'userSlots'      => $this->user->getCurrentNumberOfSlots(),
@@ -80,7 +80,7 @@ class BookingController extends Controller
             return redirect()->route('booking.get-booking', $this->appointment->getId());
         }
 
-        return view('appointments.edit_booking', [
+        return view('booking.edit', [
             'appointment'    => $this->appointment,
             'availableSlots' => $this->appointment->getAvailableSlots(),
             'bookingSlots'   => $booking->getSlotsTaken(),

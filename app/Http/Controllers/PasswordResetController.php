@@ -20,6 +20,18 @@ class PasswordResetController extends Controller
         return view('auth.forgot-password');
     }
 
+    public function verifyEmail(Request $request)
+    {
+        $email = trim($request->get('email'));
+        $user = User::fromEmail($email);
+        if ($user === null) {
+            return response()->json(['message' => 'No user found'], 400);
+        }
+        
+        $request->session()->put('email', $email);
+        return response(null, 200);
+    }
+
     public function getVerifyEmailPage(Request $request)
     {
         try {
@@ -33,44 +45,19 @@ class PasswordResetController extends Controller
             $verificationManager = new VerificationManager($email);
             $verificationManager->sendVerification(true);
 
-            return view('auth.forgot-pass-verify', [
+            return view('auth.forgot-password-verify', [
                 'email' => $email,
                 'rate_limit' => false
             ]);
 
         } catch (VerificationLimitHitException $e) {
-            return view('auth.forgot-pass-verify', [
+            return view('auth.forgot-password-verify', [
                 'email' => $email,
                 'rate_limit' => true
             ]);
         } catch (Exception $e) {
             return response()->json(['message' => 'Something went wrong'], 500);
         }
-    }
-
-    public function getResetPasswordPage(Request $request)
-    {
-        if ($request->session()->get('reset-verified') === 1) {
-            return view('auth.reset-password');
-        }
-        
-        if ($request->session()->has('email')) {
-            return redirect()->route('forgot-password.get-verify-email');
-        }
-
-        return redirect()->route('get-forgot-password');
-    }
-
-    public function verifyEmail(Request $request)
-    {
-        $email = trim($request->get('email'));
-        $user = User::fromEmail($email);
-        if ($user === null) {
-            return response()->json(['message' => 'No user found'], 400);
-        }
-        
-        $request->session()->put('email', $email);
-        return response(null, 200);
     }
 
     public function verifyToken(Request $request)
@@ -90,6 +77,19 @@ class PasswordResetController extends Controller
         }
     }
 
+    public function getResetPasswordPage(Request $request)
+    {
+        if ($request->session()->get('reset-verified') === 1) {
+            return view('auth.reset-password');
+        }
+        
+        if ($request->session()->has('email')) {
+            return redirect()->route('forgot-password.get-verify-email');
+        }
+
+        return redirect()->route('get-forgot-password');
+    }
+
     public function resendToken(Request $request)
     {
         try {
@@ -102,13 +102,13 @@ class PasswordResetController extends Controller
             $verificationManager = new VerificationManager($email);
             $verificationManager->sendVerification();
 
-            return view('auth.forgot-pass-verify', [
+            return view('auth.forgot-password-verify', [
                 'email' => $email,
                 'rate_limit' => false
             ]);
 
         } catch (VerificationLimitHitException $e) {
-            return view('auth.forgot-pass-verify', [
+            return view('auth.forgot-password-verify', [
                 'email' => $email,
                 'rate_limit' => true
             ]);

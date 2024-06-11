@@ -12,6 +12,14 @@ const mix = require('laravel-mix');
 */
 
 mix.js('resources/js/app.js', 'public/js')
-   .postCss('resources/css/app.css', 'public/css', [
+    .js('resources/js/authentication/ResetPassword.js', 'public/js')
+    .js('resources/js/organizations/ModifyOrganization.js', 'public/js')
+    .js('resources/js/booking/Booking.js', 'public/js')
+    .js('resources/js/booking/AdminBooking.js', 'public/js')
+    .js('resources/js/dashboards/UserDashboard.js', 'public/js')
+    .js('resources/js/appointments/Appointment.js', 'public/js')
+    .js('resources/js/walk-ins/WalkIn.js', 'public/js')
+    .sass('resources/sass/main.scss', 'public/css')
+    .postCss('resources/css/app.css', 'public/css', [
        //
-]);
+    ]);

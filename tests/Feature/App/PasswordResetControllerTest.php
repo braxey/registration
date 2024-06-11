@@ -56,7 +56,7 @@ class PasswordResetControllerTest extends TestCase
         $this->submitEmail($email);
         $this->get(route('forgot-password.get-verify-email'))
             ->assertSuccessful()
-            ->assertViewIs('auth.forgot-pass-verify')
+            ->assertViewIs('auth.forgot-password-verify')
             ->assertViewHas('email', $email)
             ->assertViewHas('rate_limit', false);
 
@@ -78,7 +78,7 @@ class PasswordResetControllerTest extends TestCase
 
         $this->get(route('forgot-password.get-verify-email'))
             ->assertSuccessful()
-            ->assertViewIs('auth.forgot-pass-verify')
+            ->assertViewIs('auth.forgot-password-verify')
             ->assertViewHas('email', $email)
             ->assertViewHas('rate_limit', true);
 
@@ -132,7 +132,7 @@ class PasswordResetControllerTest extends TestCase
         $email = $this->user->getEmail();
         $this->submitEmail($email);
         $this->get(route('forgot-password.get-verify-email'));
-        $this->resendToken()->assertSuccessful()->assertViewIs('auth.forgot-pass-verify')
+        $this->resendToken()->assertSuccessful()->assertViewIs('auth.forgot-password-verify')
             ->assertViewHas('email', $email)->assertViewHas('rate_limit', false);
         $this->assertCount(2, PhoneVerification::where('user_id', $this->user->getId())->get());
 
@@ -165,7 +165,7 @@ class PasswordResetControllerTest extends TestCase
         PhoneVerification::factory()->withUser($this->user)->count(config('mail.verification-limit'))->create();
         $this->get(route('forgot-password.get-verify-email'));
 
-        $this->resendToken()->assertSuccessful()->assertViewIs('auth.forgot-pass-verify')
+        $this->resendToken()->assertSuccessful()->assertViewIs('auth.forgot-password-verify')
             ->assertViewHas('email', $email)->assertViewHas('rate_limit', true);
 
         Mail::assertNotSent(VerificationEmail::class, function ($mail) use ($email) {

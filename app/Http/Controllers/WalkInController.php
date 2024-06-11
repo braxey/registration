@@ -14,14 +14,14 @@ class WalkInController extends Controller
 {
     public function getWaitlist(Request $request)
     {
-        return view('appointments.walkin-waitlist', [
+        return view('walk-ins.waitlist', [
             'walkIns' => WalkIn::orderBy('created_at', 'desc')->get()
         ]);
     }
 
     public function getCreateWalkinPage()
     {
-        return view('appointments.create-walkin');
+        return view('walk-ins.create');
     }
 
     public function createWalkin(Request $request)
@@ -48,7 +48,7 @@ class WalkInController extends Controller
 
     public function getEditWalkinPage(Request $request)
     {
-        return view('appointments.edit-walkin', [
+        return view('walk-ins.edit', [
             'walkIn' => $request->offsetGet('walk-in')
         ]);
     }
